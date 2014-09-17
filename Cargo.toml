@@ -1,0 +1,5 @@
+[package]
+
+name = "puffbird"
+version = "0.0.1"
+authors = ["Johann <git@johann-hofmann.com>"]
