@@ -1,3 +1,8 @@
+#![feature(phase)]
+#[phase(plugin)]
+extern crate regex_macros;
+extern crate regex;
+
 mod parser;
 
 fn main() {
@@ -5,8 +10,7 @@ fn main() {
                     ## Also
                     Stuff
                     ";
-    parser::parse(text);
-    let mut it = text.iter();
-    println!("{}", it.next());
+    let result = parser::parse(text);
+    println!("{}", result);
 }
 
