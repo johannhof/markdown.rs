@@ -4,6 +4,7 @@ extern crate regex_macros;
 extern crate regex;
 
 mod parser;
+mod html;
 
 fn main() {
     let text = " #### Hello World
@@ -11,6 +12,6 @@ fn main() {
                     Stuff
                     ";
     let result = parser::parse(text);
-    println!("{}", result);
+    println!("{}", html::to_html(result));
 }
 
