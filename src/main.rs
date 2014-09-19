@@ -3,7 +3,7 @@
 extern crate regex_macros;
 extern crate regex;
 
-use std::io::{File, Open, ReadWrite};
+use std::io::File;
 
 mod parser;
 mod html;
