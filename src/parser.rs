@@ -8,7 +8,7 @@ pub enum Element<'s> {
 }
 
 static SPLIT : Regex = regex!(r"\n\n");
-static ATX_HEADER : Regex = regex!(r"(?P<level>#{1,6})\s(?P<text>.*)");
+static ATX_HEADER : Regex = regex!(r"(?P<level>#{1,6})\s(?P<text>[^#]*)#*");
 static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
 static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");
 static BREAK : Regex = regex!(r"  ");
