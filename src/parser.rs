@@ -1,10 +1,15 @@
 use regex::Regex;
 
 #[deriving(Show)]
-pub enum Element<'s> {
-    Header(&'s str, uint),
+pub enum Block<'s> {
+    Header(Vec<Atomic<'s>>, uint),
     Break,
-    Paragraph(&'s str)
+    Paragraph(Vec<Atomic<'s>>)
+}
+
+#[deriving(Show)]
+pub enum Atomic<'s> {
+    Text(&'s str)
 }
 
 static SPLIT : Regex = regex!(r"\n\n");
@@ -13,11 +18,11 @@ static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
 static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");
 static BREAK : Regex = regex!(r"  ");
 
-pub fn parse (md : &str) -> Vec<Element> {
+pub fn parse (md : &str) -> Vec<Block> {
     let mut split = SPLIT.split(md);
     let mut tokens = vec![];
-    for text in split{
-        match parse_segment(text) {
+    for block in split{
+        match parse_block(block) {
             Some(e) => tokens.push(e),
             None => {},
         };
@@ -25,25 +30,41 @@ pub fn parse (md : &str) -> Vec<Element> {
     tokens
 }
 
-fn parse_segment (text : &str) -> Option<Element>{
+fn parse_atomics(text : &str) -> Vec<Atomic>{
+    return vec![Text(text)];
+}
+
+fn parse_block (text : &str) -> Option<Block>{
     if text.is_empty(){
         return None;
     }else if ATX_HEADER.is_match(text){
         let caps = ATX_HEADER.captures(text).unwrap();
-        return Some(Header (
-                caps.name("text"),
+        return Some(
+            Header(
+                parse_atomics(caps.name("text")),
                 caps.name("level").len()
-                ));
+                )
+            );
     }else if SETEXT_HEADER_1.is_match(text){
         let caps = SETEXT_HEADER_1.captures(text).unwrap();
-        return Some(Header (caps.name("text"), 1));
+        return Some(
+            Header(
+                parse_atomics(caps.name("text")),
+                1
+                )
+            );
     }else if SETEXT_HEADER_2.is_match(text){
         let caps = SETEXT_HEADER_2.captures(text).unwrap();
-        return Some(Header (caps.name("text"), 2));
+        return Some(
+            Header(
+                parse_atomics(caps.name("text")),
+                2
+                )
+            );
     }else if BREAK.is_match(text){
         return Some(Break);
     }else{
-        return Some(Paragraph(text));
+        return Some(Paragraph(parse_atomics(text)));
     }
 }
 
