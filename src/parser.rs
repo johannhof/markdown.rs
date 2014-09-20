@@ -17,28 +17,33 @@ pub fn parse (md : &str) -> Vec<Element> {
     let mut split = SPLIT.split(md);
     let mut tokens = vec![];
     for text in split{
-        tokens.push(parse_segment(text));
+        match parse_segment(text) {
+            Some(e) => tokens.push(e),
+            None => {},
+        };
     }
     tokens
 }
 
-fn parse_segment (text : &str) -> Element{
-    if ATX_HEADER.is_match(text){
+fn parse_segment (text : &str) -> Option<Element>{
+    if text.is_empty(){
+        return None;
+    }else if ATX_HEADER.is_match(text){
         let caps = ATX_HEADER.captures(text).unwrap();
-        return Header (
-            caps.name("text"),
-            caps.name("level").len()
-            );
+        return Some(Header (
+                caps.name("text"),
+                caps.name("level").len()
+                ));
     }else if SETEXT_HEADER_1.is_match(text){
         let caps = SETEXT_HEADER_1.captures(text).unwrap();
-        return Header (caps.name("text"), 1);
+        return Some(Header (caps.name("text"), 1));
     }else if SETEXT_HEADER_2.is_match(text){
         let caps = SETEXT_HEADER_2.captures(text).unwrap();
-        return Header (caps.name("text"), 2);
+        return Some(Header (caps.name("text"), 2));
     }else if BREAK.is_match(text){
-        return Break;
+        return Some(Break);
     }else{
-        return Paragraph(text);
+        return Some(Paragraph(text));
     }
 }
 
