@@ -1,4 +1,4 @@
-use parser::{Block, Atomic, Header, Text, Break, Paragraph};
+use parser::{Block, Span, Header, Text, Break, Paragraph};
 
 pub fn to_html (blocks : Vec<Block>) -> String {
     let mut ret = String::new();
@@ -13,7 +13,7 @@ pub fn to_html (blocks : Vec<Block>) -> String {
     ret
 }
 
-fn format_atomics(elements : &Vec<Atomic>) -> String {
+fn format_spans(elements : &Vec<Span>) -> String {
     let mut ret = String::new();
     for element in elements.iter(){
         let next = match element  {
@@ -24,10 +24,10 @@ fn format_atomics(elements : &Vec<Atomic>) -> String {
     ret
 }
 
-fn format_paragraph(elements : &Vec<Atomic>) -> String{
-    format!("<p>{}</p>\n", format_atomics(elements))
+fn format_paragraph(elements : &Vec<Span>) -> String{
+    format!("<p>{}</p>\n", format_spans(elements))
 }
 
-fn format_header(elements : &Vec<Atomic>, level : uint) -> String{
-    format!("<h{}>{}</h{}>\n", level, format_atomics(elements), level)
+fn format_header(elements : &Vec<Span>, level : uint) -> String{
+    format!("<h{}>{}</h{}>\n", level, format_spans(elements), level)
 }

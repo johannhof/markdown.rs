@@ -2,13 +2,13 @@ use regex::Regex;
 
 #[deriving(Show)]
 pub enum Block<'s> {
-    Header(Vec<Atomic<'s>>, uint),
+    Header(Vec<Span<'s>>, uint),
     Break,
-    Paragraph(Vec<Atomic<'s>>)
+    Paragraph(Vec<Span<'s>>)
 }
 
 #[deriving(Show)]
-pub enum Atomic<'s> {
+pub enum Span<'s> {
     Text(&'s str)
 }
 
@@ -30,7 +30,7 @@ pub fn parse (md : &str) -> Vec<Block> {
     tokens
 }
 
-fn parse_atomics(text : &str) -> Vec<Atomic>{
+fn parse_spans(text : &str) -> Vec<Span>{
     return vec![Text(text)];
 }
 
@@ -41,7 +41,7 @@ fn parse_block (text : &str) -> Option<Block>{
         let caps = ATX_HEADER.captures(text).unwrap();
         return Some(
             Header(
-                parse_atomics(caps.name("text")),
+                parse_spans(caps.name("text")),
                 caps.name("level").len()
                 )
             );
@@ -49,7 +49,7 @@ fn parse_block (text : &str) -> Option<Block>{
         let caps = SETEXT_HEADER_1.captures(text).unwrap();
         return Some(
             Header(
-                parse_atomics(caps.name("text")),
+                parse_spans(caps.name("text")),
                 1
                 )
             );
@@ -57,14 +57,14 @@ fn parse_block (text : &str) -> Option<Block>{
         let caps = SETEXT_HEADER_2.captures(text).unwrap();
         return Some(
             Header(
-                parse_atomics(caps.name("text")),
+                parse_spans(caps.name("text")),
                 2
                 )
             );
     }else if BREAK.is_match(text){
         return Some(Break);
     }else{
-        return Some(Paragraph(parse_atomics(text)));
+        return Some(Paragraph(parse_spans(text)));
     }
 }
 
