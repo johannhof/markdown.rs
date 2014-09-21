@@ -9,14 +9,24 @@ pub enum Block<'s> {
 
 #[deriving(Show)]
 pub enum Span<'s> {
-    Text(&'s str)
+    Text(&'s str),
+    Emphasis(&'s str),
+    Strong(&'s str),
+    Code(&'s str),
+    Link(&'s str, &'s str, &'s str),
+    Image(&'s str, &'s str, &'s str)
 }
 
-static SPLIT : Regex = regex!(r"\n\n");
-static ATX_HEADER : Regex = regex!(r"(?P<level>#{1,6})\s(?P<text>.*)");
+// Block Patters
+static SPLIT           : Regex = regex!(r"\n\n");
+static ATX_HEADER      : Regex = regex!(r"(?P<level>#{1,6})\s(?P<text>.*)");
 static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
 static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");
-static BREAK : Regex = regex!(r"  ");
+static BREAK           : Regex = regex!(r"  ");
+
+// Span Patters
+static SPANS : Regex = regex!(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)");
+static LINK  : Regex = regex!(r"\[(?P<text>.*)\]\((?P<url>.*?)(?:\s(?P<title>.*?))?\)");
 
 pub fn parse (md : &str) -> Vec<Block> {
     let mut split = SPLIT.split(md);
@@ -31,7 +41,26 @@ pub fn parse (md : &str) -> Vec<Block> {
 }
 
 fn parse_spans(text : &str) -> Vec<Span>{
-    return vec![Text(text)];
+    let mut tokens = vec![];
+    let mut current = 0;
+    for (begin, end) in SPANS.find_iter(text) {
+        tokens.push(Text(text.slice(current, begin)));
+        tokens.push(parse_span(text.slice(begin, end)));
+        current = end;
+    }
+    tokens
+}
+
+fn parse_span(text : &str) -> Span{
+    if LINK.is_match(text){
+        let caps = LINK.captures(text).unwrap();
+        return Link(
+            caps.name("text"),
+            caps.name("url"),
+            caps.name("title")
+            );
+    }
+    return Text(text);
 }
 
 fn parse_block (text : &str) -> Option<Block>{
@@ -63,8 +92,7 @@ fn parse_block (text : &str) -> Option<Block>{
             );
     }else if BREAK.is_match(text){
         return Some(Break);
-    }else{
-        return Some(Paragraph(parse_spans(text)));
     }
+    return Some(Paragraph(parse_spans(text)));
 }
 

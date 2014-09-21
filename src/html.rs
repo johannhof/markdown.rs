@@ -1,4 +1,4 @@
-use parser::{Block, Span, Header, Text, Break, Paragraph};
+use parser::{Block, Span, Header, Text, Link, Break, Paragraph};
 
 pub fn to_html (blocks : Vec<Block>) -> String {
     let mut ret = String::new();
@@ -17,7 +17,9 @@ fn format_spans(elements : &Vec<Span>) -> String {
     let mut ret = String::new();
     for element in elements.iter(){
         let next = match element  {
-            &Text(text) => text,
+            &Text(text) => format!("{}", text),
+            &Link(text, url, title) => format!("<a href='{}' title='{}'>{}</a>", url, title, text),
+            _ => format!("")
         };
         ret.push_str(next.as_slice())
     }
