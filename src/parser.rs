@@ -50,6 +50,7 @@ fn parse_spans(text : &str) -> Vec<Span>{
         tokens.push(parse_span(text.slice(begin, end)));
         current = end;
     }
+    tokens.push(Text(text.slice(current, text.len())));
     tokens
 }
 
