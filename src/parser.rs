@@ -54,6 +54,14 @@ fn parse_spans(text : &str) -> Vec<Span>{
     tokens
 }
 
+#[test]
+fn parse_link_test() {
+    match parse_span("[an example](example.com \"Title\")"){
+      Link("an example", "example.com", "Title") => {},
+      _ => fail!()
+    }
+}
+
 fn parse_span(text : &str) -> Span{
     if LINK.is_match(text){
         let caps = LINK.captures(text).unwrap();
