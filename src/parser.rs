@@ -27,6 +27,8 @@ static BREAK           : Regex = regex!(r"  ");
 // Span Patters
 static SPANS : Regex = regex!(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)");
 static LINK  : Regex = regex!(r"\[(?P<text>.*)\]\((?P<url>.*?)(?:\s(?P<title>.*?))?\)");
+static EMPHASIS_UNDERSCORE  : Regex = regex!(r"^_(?P<text>[^_].+?)_");
+static EMPHASIS_STAR  : Regex = regex!(r"^\*(?P<text>[^\*].+?)\*");
 
 pub fn parse (md : &str) -> Vec<Block> {
     let mut split = SPLIT.split(md);
@@ -59,6 +61,12 @@ fn parse_span(text : &str) -> Span{
             caps.name("url"),
             caps.name("title")
             );
+    }else if EMPHASIS_UNDERSCORE.is_match(text){
+        let caps = EMPHASIS_UNDERSCORE.captures(text).unwrap();
+        return Emphasis(caps.name("text"));
+    }else if EMPHASIS_STAR.is_match(text){
+        let caps = EMPHASIS_STAR.captures(text).unwrap();
+        return Emphasis(caps.name("text"));
     }
     return Text(text);
 }
