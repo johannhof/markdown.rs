@@ -55,9 +55,25 @@ fn parse_spans(text : &str) -> Vec<Span>{
 }
 
 #[test]
+fn parse_emphasis_test() {
+    match parse_span("_whatever_"){
+      Emphasis("whatever") => {},
+      _ => fail!()
+    }
+    match parse_span("__whatever__"){
+      Emphasis("whatever") => fail!(),
+      _ => {}
+    }
+}
+
+#[test]
 fn parse_link_test() {
+    match parse_span("[an example](example.com)"){
+      Link("an example", "example.com", "") => {},
+      _ => fail!()
+    }
     match parse_span("[an example](example.com \"Title\")"){
-      Link("an example", "example.com", "Title") => {},
+      Link("an example", "example.com", "Title") => assert!(true),
       _ => fail!()
     }
 }
