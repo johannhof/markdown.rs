@@ -26,7 +26,7 @@ static BREAK           : Regex = regex!(r"  ");
 
 // Span Patters
 static SPANS : Regex = regex!(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)");
-static LINK  : Regex = regex!(r"\[(?P<text>.*)\]\((?P<url>.*?)(?:\s(?P<title>.*?))?\)");
+static LINK  : Regex = regex!("\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");
 static EMPHASIS_UNDERSCORE  : Regex = regex!(r"^_(?P<text>[^_].+?)_");
 static EMPHASIS_STAR  : Regex = regex!(r"^\*(?P<text>[^\*].+?)\*");
 
