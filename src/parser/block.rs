@@ -2,7 +2,6 @@ use regex::Regex;
 use parser::span::parse_spans;
 use parser::{Block, Header, Break, Paragraph};
 
-// Block Patters
 static ATX_HEADER      : Regex = regex!(r"(?P<level>#{1,6})\s(?P<text>.*)");
 static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
 static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");

@@ -1,7 +1,6 @@
 use regex::Regex;
 use parser::{Span, Text, Emphasis, Strong, Code, Link, Image};
 
-// Span Patters
 static SPANS : Regex = regex!(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)");
 static LINK  : Regex = regex!("\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");
 static EMPHASIS_UNDERSCORE  : Regex = regex!(r"^_(?P<text>[^_].+?)_");
@@ -17,30 +16,6 @@ pub fn parse_spans(text : &str) -> Vec<Span>{
     }
     tokens.push(Text(text.slice(current, text.len())));
     tokens
-}
-
-#[test]
-fn parse_emphasis_test() {
-    match parse_span("_whatever_"){
-      Emphasis("whatever") => {},
-      _ => fail!()
-    }
-    match parse_span("__whatever__"){
-      Emphasis("whatever") => fail!(),
-      _ => {}
-    }
-}
-
-#[test]
-fn parse_link_test() {
-    match parse_span("[an example](example.com)"){
-      Link("an example", "example.com", "") => {},
-      _ => fail!()
-    }
-    match parse_span("[an example](example.com \"Title\")"){
-      Link("an example", "example.com", "Title") => assert!(true),
-      _ => fail!()
-    }
 }
 
 fn parse_span(text : &str) -> Span{
@@ -60,3 +35,68 @@ fn parse_span(text : &str) -> Span{
     }
     return Text(text);
 }
+
+#[test]
+fn parse_emphasis_test() {
+    match parse_span("_whatever_"){
+      Emphasis("whatever") => {},
+      _ => fail!()
+    }
+    match parse_span("__whatever__"){
+      Emphasis("whatever") => fail!(),
+      _ => {}
+    }
+    match parse_span("*whatever*"){
+      Emphasis("whatever") => {},
+      _ => fail!()
+    }
+    match parse_span("**whatever**"){
+      Emphasis("whatever") => fail!(),
+      _ => {}
+    }
+}
+
+#[test]
+fn parse_strong_test() {
+    match parse_span("__whatever__"){
+      Strong("whatever") => {},
+      _ => fail!()
+    }
+    match parse_span("_whatever_"){
+      Strong("whatever") => fail!(),
+      _ => {}
+    }
+    match parse_span("**whatever**"){
+      Strong("whatever") => {},
+      _ => fail!()
+    }
+    match parse_span("*whatever*"){
+      Strong("whatever") => fail!(),
+      _ => {}
+    }
+}
+
+#[test]
+fn parse_link_test() {
+    match parse_span("[an example](example.com)"){
+      Link("an example", "example.com", "") => {},
+      _ => fail!()
+    }
+    match parse_span("[an example](example.com \"Title\")"){
+      Link("an example", "example.com", "Title") => {},
+      _ => fail!()
+    }
+}
+
+#[test]
+fn parse_image_test() {
+    match parse_span("![an example](example.com)"){
+      Image("an example", "example.com", "") => {},
+      _ => fail!()
+    }
+    match parse_span("[an example](example.com \"Title\")"){
+      Image("an example", "example.com", "Title") => {},
+      _ => fail!()
+    }
+}
+
