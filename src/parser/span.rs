@@ -3,6 +3,7 @@ use parser::{Span, Text, Emphasis, Strong, Code, Link, Image};
 
 static SPANS : Regex = regex!(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)");
 static LINK  : Regex = regex!("\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");
+static IMAGE  : Regex = regex!("!\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");
 static EMPHASIS_UNDERSCORE  : Regex = regex!(r"^_(?P<text>[^_].+?)_");
 static EMPHASIS_STAR  : Regex = regex!(r"^\*(?P<text>[^\*].+?)\*");
 
@@ -19,7 +20,14 @@ pub fn parse_spans(text : &str) -> Vec<Span>{
 }
 
 fn parse_span(text : &str) -> Span{
-    if LINK.is_match(text){
+    if IMAGE.is_match(text){
+        let caps = IMAGE.captures(text).unwrap();
+        return Image(
+            caps.name("text"),
+            caps.name("url"),
+            caps.name("title")
+            );
+    }else if LINK.is_match(text){
         let caps = LINK.captures(text).unwrap();
         return Link(
             caps.name("text"),
@@ -62,12 +70,20 @@ fn parse_strong_test() {
       Strong("whatever") => {},
       _ => fail!()
     }
+    match parse_span("__what_ever__"){
+      Strong("what_ever") => {},
+      _ => fail!()
+    }
     match parse_span("_whatever_"){
       Strong("whatever") => fail!(),
       _ => {}
     }
     match parse_span("**whatever**"){
       Strong("whatever") => {},
+      _ => fail!()
+    }
+    match parse_span("**what*ever**"){
+      Strong("what*ever") => {},
       _ => fail!()
     }
     match parse_span("*whatever*"){
@@ -94,7 +110,7 @@ fn parse_image_test() {
       Image("an example", "example.com", "") => {},
       _ => fail!()
     }
-    match parse_span("[an example](example.com \"Title\")"){
+    match parse_span("![an example](example.com \"Title\")"){
       Image("an example", "example.com", "Title") => {},
       _ => fail!()
     }
