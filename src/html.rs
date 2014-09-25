@@ -20,7 +20,7 @@ fn format_spans(elements : &Vec<Span>) -> String {
         let next = match element  {
             &Text(text) => format!("{}", text),
             &Link(text, url, title) => format!("<a href='{}' title='{}'>{}</a>", url, title, text),
-            &Emphasis(text) => format!("<em>{}</em>", text),
+            &Emphasis(ref content) => format!("<em>{}</em>", format_spans(content)),
             _ => format!("")
         };
         ret.push_str(next.as_slice())
