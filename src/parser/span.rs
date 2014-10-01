@@ -47,29 +47,56 @@ fn parse_span(text : &str) -> Span{
 // HERE BE TEST
 
 #[test]
+fn parse_link_test() {
+    assert_eq!(parse_span("[an example](example.com)"),
+                Link("an example", "example.com", ""));
+
+    assert_eq!(parse_span("[an example](example.com \"Title\")"),
+                Link("an example", "example.com", "Title"));
+}
+
+#[test]
+fn parse_image_test() {
+    assert_eq!(parse_span("![an example](example.com)"),
+                Image("an example", "example.com", ""));
+    assert_eq!(parse_span("![an example](example.com \"Title\")"),
+                Image("an example", "example.com", "Title"));
+}
+
+
+#[test]
 fn parse_emphasis_test() {
 
     // simple text behaviour
-    let one_word = vec![Text("whatever")];
-    match parse_span("_whatever_"){
-      Emphasis(one_word) => {},
-      _ => fail!()
-    }
-    match parse_span("*whatever*"){
-      Emphasis(one_word) => {},
-      _ => fail!()
-    }
+    assert_eq!(parse_span("_whatever_"), Emphasis(vec![Text("whatever")]));
+    assert_eq!(parse_span("*whatever*"), Emphasis(vec![Text("whatever")]));
 
     // multiple words
-    let simple_text = vec![Text("markdown is better than nothing")];
-    match parse_span("_markdown is better than nothing_"){
-      Emphasis(simple_text) => {},
-      _ => fail!()
-    }
-    match parse_span("*markdown is better than nothing*"){
-      Emphasis(simple_text) => {},
-      _ => fail!()
-    }
+    assert_eq!(
+        parse_span("_markdown is better than nothing_"),
+        Emphasis(vec![Text("markdown is better than nothing")])
+              );
+    assert_eq!(
+        parse_span("*markdown is better than nothing*"),
+        Emphasis(vec![Text("markdown is better than nothing")])
+              );
+
+    // multiple words
+    assert_eq!(
+        parse_span("_[an example](example.com) is better than nothing_"),
+        Emphasis(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is better than nothing")
+                 ])
+              );
+
+    assert_eq!(
+        parse_span("*[an example](example.com) is better than nothing*"),
+        Emphasis(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is better than nothing")
+                 ])
+              );
 
     // does not compile strong
     match parse_span("__whatever__"){
@@ -110,28 +137,4 @@ fn parse_emphasis_test() {
       //_ => {}
     //}
 //}
-
-#[test]
-fn parse_link_test() {
-    match parse_span("[an example](example.com)"){
-      Link("an example", "example.com", "") => {},
-      _ => fail!()
-    }
-    match parse_span("[an example](example.com \"Title\")"){
-      Link("an example", "example.com", "Title") => {},
-      _ => fail!()
-    }
-}
-
-#[test]
-fn parse_image_test() {
-    match parse_span("![an example](example.com)"){
-      Image("an example", "example.com", "") => {},
-      _ => fail!()
-    }
-    match parse_span("![an example](example.com \"Title\")"){
-      Image("an example", "example.com", "Title") => {},
-      _ => fail!()
-    }
-}
 
