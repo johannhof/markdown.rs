@@ -1,8 +1,9 @@
 use regex::Regex;
 use parser::span::parse_spans;
 use parser::{Block, Header, Break, Paragraph};
+use parser::{Span, Text, Emphasis, Strong, Code, Link, Image};
 
-static ATX_HEADER      : Regex = regex!(r"(?P<level>#{1,6})\s(?P<text>.*)");
+static ATX_HEADER      : Regex = regex!(r"^(?P<level>#{1,6})\s(?P<text>.*)");
 static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
 static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");
 static BREAK           : Regex = regex!(r"  ");
@@ -38,5 +39,29 @@ pub fn parse_block (text : &str) -> Option<Block>{
         return Some(Break);
     }
     return Some(Paragraph(parse_spans(text)));
+}
+
+
+#[test]
+fn parse_atx_header_test() {
+    assert_eq!(
+        parse_block("### Test").unwrap(),
+        Header(vec![Text("Test")], 3)
+    );
+
+    assert_eq!(
+        parse_block("# Test").unwrap(),
+        Header(vec![Text("Test")], 1)
+    );
+
+    assert_eq!(
+        parse_block("###### Test").unwrap(),
+        Header(vec![Text("Test")], 6)
+    );
+
+    assert_eq!(
+        parse_block("####### Test").unwrap(),
+        Paragraph(vec![Text("####### Test")])
+    );
 }
 
