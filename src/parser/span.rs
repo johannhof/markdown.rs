@@ -11,7 +11,10 @@ pub fn parse_spans(text : &str) -> Vec<Span>{
     let mut tokens = vec![];
     let mut current = 0;
     for (begin, end) in SPANS.find_iter(text) {
-        tokens.push(Text(text.slice(current, begin)));
+        match text.slice(current, begin){
+            "" => {}
+            t => tokens.push(Text(t))
+        };
         tokens.push(parse_span(text.slice(begin, end)));
         current = end;
     }
@@ -20,7 +23,13 @@ pub fn parse_spans(text : &str) -> Vec<Span>{
 }
 
 fn parse_span(text : &str) -> Span{
-    if IMAGE.is_match(text){
+    if EMPHASIS_UNDERSCORE.is_match(text){
+        let caps = EMPHASIS_UNDERSCORE.captures(text).unwrap();
+        return Emphasis(parse_spans(caps.name("text")));
+    }else if EMPHASIS_STAR.is_match(text){
+        let caps = EMPHASIS_STAR.captures(text).unwrap();
+        return Emphasis(parse_spans(caps.name("text")));
+    }else if IMAGE.is_match(text){
         let caps = IMAGE.captures(text).unwrap();
         return Image(
             caps.name("text"),
@@ -34,12 +43,6 @@ fn parse_span(text : &str) -> Span{
             caps.name("url"),
             caps.name("title")
             );
-    }else if EMPHASIS_UNDERSCORE.is_match(text){
-        let caps = EMPHASIS_UNDERSCORE.captures(text).unwrap();
-        return Emphasis(parse_spans(caps.name("text")));
-    }else if EMPHASIS_STAR.is_match(text){
-        let caps = EMPHASIS_STAR.captures(text).unwrap();
-        return Emphasis(parse_spans(caps.name("text")));
     }
     return Text(text);
 }
@@ -67,11 +70,9 @@ fn parse_image_test() {
 #[test]
 fn parse_emphasis_test() {
 
-    // simple text behaviour
     assert_eq!(parse_span("_whatever_"), Emphasis(vec![Text("whatever")]));
     assert_eq!(parse_span("*whatever*"), Emphasis(vec![Text("whatever")]));
 
-    // multiple words
     assert_eq!(
         parse_span("_markdown is better than nothing_"),
         Emphasis(vec![Text("markdown is better than nothing")])
@@ -81,7 +82,6 @@ fn parse_emphasis_test() {
         Emphasis(vec![Text("markdown is better than nothing")])
               );
 
-    // multiple words
     assert_eq!(
         parse_span("_[an example](example.com) is better than nothing_"),
         Emphasis(vec![
@@ -108,33 +108,3 @@ fn parse_emphasis_test() {
       _ => {}
     }
 }
-
-//#[test]
-//#[ignore]
-//fn parse_strong_test() {
-    //match parse_span("__whatever__"){
-      //Strong("whatever") => {},
-      //_ => fail!()
-    //}
-    //match parse_span("__what_ever__"){
-      //Strong("what_ever") => {},
-      //_ => fail!()
-    //}
-    //match parse_span("_whatever_"){
-      //Strong("whatever") => fail!(),
-      //_ => {}
-    //}
-    //match parse_span("**whatever**"){
-      //Strong("whatever") => {},
-      //_ => fail!()
-    //}
-    //match parse_span("**what*ever**"){
-      //Strong("what*ever") => {},
-      //_ => fail!()
-    //}
-    //match parse_span("*whatever*"){
-      //Strong("whatever") => fail!(),
-      //_ => {}
-    //}
-//}
-
