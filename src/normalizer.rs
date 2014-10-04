@@ -12,3 +12,12 @@ pub fn normalize(text : &str) -> Box<String> {
     ret = BREAK.replace_all(ret.as_slice(), "\n\n  \n\n");
     box ret
 }
+
+#[test]
+fn normalize_test() {
+    assert_eq!(normalize("### ABC ####\n"),
+                box "### ABC\n\n".to_string());
+    assert_eq!(normalize("### ABC####\n"),
+                box "### ABC\n\n".to_string());
+}
+

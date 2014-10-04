@@ -98,6 +98,26 @@ fn parse_emphasis_test() {
                  ])
               );
 
+    assert_eq!(
+        parse_span("*[an example](example.com) is _better_ than nothing*"),
+        Emphasis(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is "),
+                 Emphasis(vec![Text("better")]),
+                 Text(" than nothing")
+                 ])
+              );
+
+    assert_eq!(
+        parse_span("_[an example](example.com) is *better* than nothing_"),
+        Emphasis(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is "),
+                 Emphasis(vec![Text("better")]),
+                 Text(" than nothing")
+                 ])
+              );
+
     // does not compile strong
     match parse_span("__whatever__"){
       Emphasis(_) => fail!(),
@@ -108,3 +128,86 @@ fn parse_emphasis_test() {
       _ => {}
     }
 }
+
+#[test]
+fn parse_strong_test() {
+
+    assert_eq!(parse_span("__whatever__"), Strong(vec![Text("whatever")]));
+    assert_eq!(parse_span("**whatever**"), Strong(vec![Text("whatever")]));
+
+    assert_eq!(
+        parse_span("__markdown is better than nothing__"),
+        Strong(vec![Text("markdown is better than nothing")])
+              );
+    assert_eq!(
+        parse_span("**markdown is better than nothing**"),
+        Strong(vec![Text("markdown is better than nothing")])
+              );
+
+    assert_eq!(
+        parse_span("__[an example](example.com) is better than nothing__"),
+        Strong(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is better than nothing")
+                 ])
+              );
+
+    assert_eq!(
+        parse_span("**[an example](example.com) is better than nothing**"),
+        Strong(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is better than nothing")
+                 ])
+              );
+
+    assert_eq!(
+        parse_span("**[an example](example.com) is __better__ than nothing**"),
+        Strong(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is "),
+                 Strong(vec![Text("better")]),
+                 Text(" than nothing")
+                 ])
+              );
+
+    assert_eq!(
+        parse_span("**[an example](example.com) is *better* than nothing**"),
+        Strong(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is "),
+                 Emphasis(vec![Text("better")]),
+                 Text(" than nothing")
+                 ])
+              );
+
+    assert_eq!(
+        parse_span("__[an example](example.com) is **better** than nothing__"),
+        Strong(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is "),
+                 Strong(vec![Text("better")]),
+                 Text(" than nothing")
+                 ])
+              );
+
+    assert_eq!(
+        parse_span("__[an example](example.com) is _better_ than nothing__"),
+        Strong(vec![
+                 Link("an example", "example.com", ""),
+                 Text(" is "),
+                 Emphasis(vec![Text("better")]),
+                 Text(" than nothing")
+                 ])
+              );
+
+    // does not compile emphasis
+    match parse_span("_whatever_"){
+      Strong(_) => fail!(),
+      _ => {}
+    }
+    match parse_span("*whatever*"){
+      Strong(_) => fail!(),
+      _ => {}
+    }
+}
+
