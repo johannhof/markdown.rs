@@ -6,8 +6,8 @@ static LINK  : Regex = regex!("\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<titl
 static IMAGE  : Regex = regex!("!\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");
 static EMPHASIS_UNDERSCORE  : Regex = regex!(r"^_(?P<text>[^_].+?)_");
 static EMPHASIS_STAR  : Regex = regex!(r"^\*(?P<text>[^\*].+?)\*");
-static STRONG_UNDERSCORE  : Regex = regex!(r"^__(?P<text>[^_].+?)__");
-static STRONG_STAR  : Regex = regex!(r"^\*\*(?P<text>[^\*].+?)\*\*");
+static STRONG_UNDERSCORE  : Regex = regex!(r"^__(?P<text>.+?)__");
+static STRONG_STAR  : Regex = regex!(r"^\*\*(?P<text>.+?)\*\*");
 
 pub fn parse_spans(text : &str) -> Vec<Span>{
     let mut tokens = vec![];
@@ -27,10 +27,10 @@ pub fn parse_spans(text : &str) -> Vec<Span>{
 fn parse_span(text : &str) -> Span{
     if STRONG_UNDERSCORE.is_match(text){
         let caps = STRONG_UNDERSCORE.captures(text).unwrap();
-        return Emphasis(parse_spans(caps.name("text")));
+        return Strong(parse_spans(caps.name("text")));
     }else if STRONG_STAR.is_match(text){
         let caps = STRONG_STAR.captures(text).unwrap();
-        return Emphasis(parse_spans(caps.name("text")));
+        return Strong(parse_spans(caps.name("text")));
     }else if EMPHASIS_UNDERSCORE.is_match(text){
         let caps = EMPHASIS_UNDERSCORE.captures(text).unwrap();
         return Emphasis(parse_spans(caps.name("text")));
