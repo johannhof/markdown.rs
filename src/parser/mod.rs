@@ -15,12 +15,12 @@ pub enum Block<'s> {
 #[deriving(Show, PartialEq)]
 pub enum Span<'s> {
     Text(&'s str),
+    Code(&'s str),
     Link(&'s str, &'s str, &'s str),
     Image(&'s str, &'s str, &'s str),
 
     Emphasis(Vec<Span<'s>>),
-    Strong(Vec<Span<'s>>),
-    Code(Vec<Span<'s>>)
+    Strong(Vec<Span<'s>>)
 }
 
 pub fn parse (md : &str) -> Vec<Block> {
