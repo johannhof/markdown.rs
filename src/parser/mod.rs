@@ -8,12 +8,12 @@ static SPLIT : Regex = regex!(r"\n\n");
 #[deriving(Show, PartialEq)]
 pub enum Block<'s> {
     Header(Vec<Span<'s>>, uint),
-    Break,
     Paragraph(Vec<Span<'s>>)
 }
 
 #[deriving(Show, PartialEq)]
 pub enum Span<'s> {
+    Break,
     Text(&'s str),
     Code(&'s str),
     Link(&'s str, &'s str, &'s str),

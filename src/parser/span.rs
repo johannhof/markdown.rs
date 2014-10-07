@@ -1,7 +1,7 @@
 use regex::Regex;
-use parser::{Span, Text, Emphasis, Strong, Code, Link, Image};
+use parser::{Break, Span, Text, Emphasis, Strong, Code, Link, Image};
 
-static SPANS : Regex = regex!(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)");
+static SPANS : Regex = regex!(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)|( {2})$");
 static LINK  : Regex = regex!("\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");
 static IMAGE  : Regex = regex!("!\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");
 static EMPHASIS_UNDERSCORE  : Regex = regex!(r"^_(?P<text>[^_].+?)_");
@@ -10,6 +10,7 @@ static STRONG_UNDERSCORE  : Regex = regex!(r"^__(?P<text>.+?)__");
 static STRONG_STAR  : Regex = regex!(r"^\*\*(?P<text>.+?)\*\*");
 static CODE_SINGLE  : Regex = regex!(r"^`(?P<text>[^`].+?)`");
 static CODE_DOUBLE  : Regex = regex!(r"^``(?P<text>.+?)``");
+static BREAK : Regex = regex!(r" {2}$");
 
 pub fn parse_spans(text : &str) -> Vec<Span>{
     let mut tokens = vec![];
@@ -22,7 +23,10 @@ pub fn parse_spans(text : &str) -> Vec<Span>{
         tokens.push(parse_span(text.slice(begin, end)));
         current = end;
     }
-    tokens.push(Text(text.slice(current, text.len())));
+    match text.slice(current, text.len()){
+        "" => {}
+        t => tokens.push(Text(t))
+    };
     tokens
 }
 
@@ -64,11 +68,27 @@ fn parse_span(text : &str) -> Span{
             caps.name("url"),
             caps.name("title")
             );
+
+    }else if BREAK.is_match(text){
+        println!("BREAK FOUND");
+        return Break;
     }
+
     return Text(text);
 }
 
 // HERE BE TEST
+
+#[test]
+fn parse_break_test() {
+    assert_eq!(parse_span("  "), Break);
+    assert_eq!(parse_spans("this is a test  "), vec![Text("this is a test"), Break])
+    match parse_span(" "){
+      Break => fail!(),
+      _ => {}
+    }
+}
+
 
 #[test]
 fn parse_link_test() {

@@ -1,12 +1,11 @@
 use regex::Regex;
 use parser::span::parse_spans;
-use parser::{Block, Header, Break, Paragraph};
-use parser::{Span, Text, Emphasis, Strong, Code, Link, Image};
+use parser::{Block, Header, Paragraph};
+use parser::{Break, Span, Text, Emphasis, Strong, Code, Link, Image};
 
 static ATX_HEADER      : Regex = regex!(r"^(?P<level>#{1,6})\s(?P<text>.*)");
 static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
 static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");
-static BREAK           : Regex = regex!(r"  ");
 
 pub fn parse_block (text : &str) -> Option<Block>{
     if text.is_empty(){
@@ -35,8 +34,6 @@ pub fn parse_block (text : &str) -> Option<Block>{
                 2
                 )
             );
-    }else if BREAK.is_match(text){
-        return Some(Break);
     }
     return Some(Paragraph(parse_spans(text)));
 }
