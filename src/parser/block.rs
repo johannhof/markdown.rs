@@ -52,22 +52,22 @@ pub fn parse_block (text : &str) -> Option<Block>{
 fn parse_atx_header_test() {
     assert_eq!(
         parse_block("### Test").unwrap(),
-        Header(vec![Text("Test")], 3)
+        Header(vec![Text("Test".to_string())], 3)
     );
 
     assert_eq!(
         parse_block("# Test").unwrap(),
-        Header(vec![Text("Test")], 1)
+        Header(vec![Text("Test".to_string())], 1)
     );
 
     assert_eq!(
         parse_block("###### Test").unwrap(),
-        Header(vec![Text("Test")], 6)
+        Header(vec![Text("Test".to_string())], 6)
     );
 
     assert_eq!(
         parse_block("####### Test").unwrap(),
-        Paragraph(vec![Text("####### Test")])
+        Paragraph(vec![Text("####### Test".to_string())])
     );
 }
 

@@ -14,18 +14,18 @@ pub fn normalize(text : &str) -> String {
 #[test]
 fn normalize_setext_header_test() {
     assert_eq!(normalize("wot\nABC\n=======\nwat"),
-                box "wot\n\nABC\n=======\n\nwat".to_string());
+                "wot\n\nABC\n=======\n\nwat".to_string());
     assert_eq!(normalize("=======\nABC\n=======\n======="),
-                box "=======\n\nABC\n=======\n\n=======".to_string());
+                "=======\n\nABC\n=======\n\n=======".to_string());
 
     assert_eq!(normalize("wot\nABC\n-------\nwat"),
-                box "wot\n\nABC\n-------\n\nwat".to_string());
+                "wot\n\nABC\n-------\n\nwat".to_string());
 }
 
 #[test]
 fn normalize_atx_header_test() {
     assert_eq!(normalize("### ABC ####\n"),
-                box "### ABC\n\n".to_string());
+                "### ABC\n\n".to_string());
     //assert_eq!(normalize("### ABC####\n"),
                 //box "### ABC####\n\n".to_string());
 }

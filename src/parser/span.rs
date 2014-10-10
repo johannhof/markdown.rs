@@ -81,7 +81,7 @@ fn parse_span(text : &str) -> Span{
 #[test]
 fn parse_break_test() {
     assert_eq!(parse_span("  "), Break);
-    assert_eq!(parse_spans("this is a test  "), vec![Text("this is a test"), Break])
+    assert_eq!(parse_spans("this is a test  "), vec![Text("this is a test".to_string()), Break])
     match parse_span(" "){
       Break => fail!(),
       _ => {}
@@ -92,69 +92,69 @@ fn parse_break_test() {
 #[test]
 fn parse_link_test() {
     assert_eq!(parse_span("[an example](example.com)"),
-                Link("an example", "example.com", ""));
+                Link("an example".to_string(), "example.com".to_string(), "".to_string()));
 
     assert_eq!(parse_span("[an example](example.com \"Title\")"),
-                Link("an example", "example.com", "Title"));
+                Link("an example".to_string(), "example.com".to_string(), "Title".to_string()));
 }
 
 #[test]
 fn parse_image_test() {
     assert_eq!(parse_span("![an example](example.com)"),
-                Image("an example", "example.com", ""));
+                Image("an example".to_string(), "example.com".to_string(), "".to_string()));
     assert_eq!(parse_span("![an example](example.com \"Title\")"),
-                Image("an example", "example.com", "Title"));
+                Image("an example".to_string(), "example.com".to_string(), "Title".to_string()));
 }
 
 
 #[test]
 fn parse_emphasis_test() {
 
-    assert_eq!(parse_span("_whatever_"), Emphasis(vec![Text("whatever")]));
-    assert_eq!(parse_span("*whatever*"), Emphasis(vec![Text("whatever")]));
+    assert_eq!(parse_span("_whatever_"), Emphasis(vec![Text("whatever".to_string())]));
+    assert_eq!(parse_span("*whatever*"), Emphasis(vec![Text("whatever".to_string())]));
 
     assert_eq!(
         parse_span("_markdown is better than nothing_"),
-        Emphasis(vec![Text("markdown is better than nothing")])
+        Emphasis(vec![Text("markdown is better than nothing".to_string())])
               );
     assert_eq!(
         parse_span("*markdown is better than nothing*"),
-        Emphasis(vec![Text("markdown is better than nothing")])
+        Emphasis(vec![Text("markdown is better than nothing".to_string())])
               );
 
     assert_eq!(
         parse_span("_[an example](example.com) is better than nothing_"),
         Emphasis(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is better than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is better than nothing".to_string())
                  ])
               );
 
     assert_eq!(
         parse_span("*[an example](example.com) is better than nothing*"),
         Emphasis(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is better than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is better than nothing".to_string())
                  ])
               );
 
     assert_eq!(
         parse_span("*[an example](example.com) is _better_ than nothing*"),
         Emphasis(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is "),
-                 Emphasis(vec![Text("better")]),
-                 Text(" than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is ".to_string()),
+                 Emphasis(vec![Text("better".to_string())]),
+                 Text(" than nothing".to_string())
                  ])
               );
 
     assert_eq!(
         parse_span("_[an example](example.com) is *better* than nothing_"),
         Emphasis(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is "),
-                 Emphasis(vec![Text("better")]),
-                 Text(" than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is ".to_string()),
+                 Emphasis(vec![Text("better".to_string())]),
+                 Text(" than nothing".to_string())
                  ])
               );
 
@@ -172,71 +172,71 @@ fn parse_emphasis_test() {
 #[test]
 fn parse_strong_test() {
 
-    assert_eq!(parse_span("__whatever__"), Strong(vec![Text("whatever")]));
-    assert_eq!(parse_span("**whatever**"), Strong(vec![Text("whatever")]));
+    assert_eq!(parse_span("__whatever__"), Strong(vec![Text("whatever".to_string())]));
+    assert_eq!(parse_span("**whatever**"), Strong(vec![Text("whatever".to_string())]));
 
     assert_eq!(
         parse_span("__markdown is better than nothing__"),
-        Strong(vec![Text("markdown is better than nothing")])
+        Strong(vec![Text("markdown is better than nothing".to_string())])
               );
     assert_eq!(
         parse_span("**markdown is better than nothing**"),
-        Strong(vec![Text("markdown is better than nothing")])
+        Strong(vec![Text("markdown is better than nothing".to_string())])
               );
 
     assert_eq!(
         parse_span("__[an example](example.com) is better than nothing__"),
         Strong(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is better than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is better than nothing".to_string())
                  ])
               );
 
     assert_eq!(
         parse_span("**[an example](example.com) is better than nothing**"),
         Strong(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is better than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is better than nothing".to_string())
                  ])
               );
 
     assert_eq!(
         parse_span("**[an example](example.com) is __better__ than nothing**"),
         Strong(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is "),
-                 Strong(vec![Text("better")]),
-                 Text(" than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is ".to_string()),
+                 Strong(vec![Text("better".to_string())]),
+                 Text(" than nothing".to_string())
                  ])
               );
 
     assert_eq!(
         parse_span("**[an example](example.com) is *better* than nothing**"),
         Strong(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is "),
-                 Emphasis(vec![Text("better")]),
-                 Text(" than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is ".to_string()),
+                 Emphasis(vec![Text("better".to_string())]),
+                 Text(" than nothing".to_string())
                  ])
               );
 
     assert_eq!(
         parse_span("__[an example](example.com) is **better** than nothing__"),
         Strong(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is "),
-                 Strong(vec![Text("better")]),
-                 Text(" than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is ".to_string()),
+                 Strong(vec![Text("better".to_string())]),
+                 Text(" than nothing".to_string())
                  ])
               );
 
     assert_eq!(
         parse_span("__[an example](example.com) is _better_ than nothing__"),
         Strong(vec![
-                 Link("an example", "example.com", ""),
-                 Text(" is "),
-                 Emphasis(vec![Text("better")]),
-                 Text(" than nothing")
+                 Link("an example".to_string(), "example.com".to_string(), "".to_string()),
+                 Text(" is ".to_string()),
+                 Emphasis(vec![Text("better".to_string())]),
+                 Text(" than nothing".to_string())
                  ])
               );
 
