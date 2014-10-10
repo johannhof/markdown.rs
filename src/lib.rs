@@ -12,6 +12,6 @@ mod normalizer;
 pub fn to_html(text : &str) -> String{
     let normalized = normalizer::normalize(text.as_slice());
     let result = parser::parse(normalized.as_slice());
-    html::to_html(result)
+    html::to_html(&result)
 }
 

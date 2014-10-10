@@ -3,24 +3,25 @@ use regex::Regex;
 mod span;
 mod block;
 
-static SPLIT : Regex = regex!(r"\n\n");
+static SPLIT : Regex = regex!(r"\n\s*?\n");
 
 #[deriving(Show, PartialEq)]
-pub enum Block<'s> {
-    Header(Vec<Span<'s>>, uint),
-    Paragraph(Vec<Span<'s>>)
+pub enum Block {
+    Header(Vec<Span>, uint),
+    Paragraph(Vec<Span>),
+    Blockquote(Vec<Block>)
 }
 
 #[deriving(Show, PartialEq)]
-pub enum Span<'s> {
+pub enum Span {
     Break,
-    Text(&'s str),
-    Code(&'s str),
-    Link(&'s str, &'s str, &'s str),
-    Image(&'s str, &'s str, &'s str),
+    Text(String),
+    Code(String),
+    Link(String, String, String),
+    Image(String, String, String),
 
-    Emphasis(Vec<Span<'s>>),
-    Strong(Vec<Span<'s>>)
+    Emphasis(Vec<Span>),
+    Strong(Vec<Span>)
 }
 
 pub fn parse (md : &str) -> Vec<Block> {

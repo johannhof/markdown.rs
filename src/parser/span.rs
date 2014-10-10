@@ -18,14 +18,14 @@ pub fn parse_spans(text : &str) -> Vec<Span>{
     for (begin, end) in SPANS.find_iter(text) {
         match text.slice(current, begin){
             "" => {}
-            t => tokens.push(Text(t))
+            t => tokens.push(Text(t.to_string()))
         };
         tokens.push(parse_span(text.slice(begin, end)));
         current = end;
     }
     match text.slice(current, text.len()){
         "" => {}
-        t => tokens.push(Text(t))
+        t => tokens.push(Text(t.to_string()))
     };
     tokens
 }
@@ -48,33 +48,32 @@ fn parse_span(text : &str) -> Span{
 
     }else if CODE_DOUBLE.is_match(text){
         let caps = CODE_DOUBLE.captures(text).unwrap();
-        return Code(caps.name("text"));
+        return Code(caps.name("text").to_string());
     }else if CODE_SINGLE.is_match(text){
         let caps = CODE_SINGLE.captures(text).unwrap();
-        return Code(caps.name("text"));
+        return Code(caps.name("text").to_string());
 
     }else if IMAGE.is_match(text){
         let caps = IMAGE.captures(text).unwrap();
         return Image(
-            caps.name("text"),
-            caps.name("url"),
-            caps.name("title")
+            caps.name("text").to_string(),
+            caps.name("url").to_string(),
+            caps.name("title").to_string()
             );
 
     }else if LINK.is_match(text){
         let caps = LINK.captures(text).unwrap();
         return Link(
-            caps.name("text"),
-            caps.name("url"),
-            caps.name("title")
+            caps.name("text").to_string(),
+            caps.name("url").to_string(),
+            caps.name("title").to_string()
             );
 
     }else if BREAK.is_match(text){
-        println!("BREAK FOUND");
         return Break;
     }
 
-    return Text(text);
+    return Text(text.to_string());
 }
 
 // HERE BE TEST

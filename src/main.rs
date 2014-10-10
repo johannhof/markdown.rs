@@ -26,6 +26,6 @@ fn main() {
     let normalized = normalizer::normalize(text.as_slice());
     println!("{}", normalized);
     let result = parser::parse(normalized.as_slice());
-    println!("{}", html::to_html(result));
+    println!("{}", html::to_html(&result));
 }
 
