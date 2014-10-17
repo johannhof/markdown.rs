@@ -1,4 +1,4 @@
-markdown.rs
+markdown.rs [![Build Status](https://travis-ci.org/johannhof/markdown.rs.svg?branch=master)](https://travis-ci.org/johannhof/markdown.rs)
 ===========
 
 A native Rust library for parsing Markdown and (outputting HTML) written to be used by my WIP static site generator [Lava](https://github.com/johannhof/lava).
