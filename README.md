@@ -8,7 +8,7 @@ Usage
 
 To include markdown in your project add the following to your Cargo.toml:
 
-```Toml
+```
 [dependencies.markdown]
 
 git = "https://github.com/johannhof/markdown.rs.git"
