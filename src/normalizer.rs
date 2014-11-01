@@ -2,12 +2,12 @@ use regex::Regex;
 
 // TODO: i don't like what this file does, get rid of it eventually
 
-static SETEXT_HEADER : Regex = regex!(r"(^\n)?(\S+) *(\n[-=]{3,}+\n)(\n)?");
-static ATX_HEADER : Regex = regex!(r"(\n#{1,6}\s.*)[^(?: #+\n)]|(?: #+\n)");
+static SETEXT_HEADER : Regex = regex!(r"\n(\S+) *(\n[-=]{3,}+)\n?");
+static ATX_HEADER : Regex = regex!(r"(?m)^(#{1,6}\s.*?)(?:\s#+\s*?)?\n");
 
 pub fn normalize(text : &str) -> String {
-    let mut ret = SETEXT_HEADER.replace_all(text, "\n$2$3\n");
-    ret = ATX_HEADER.replace_all(ret.as_slice(), "\n$1\n");
+    let mut ret = SETEXT_HEADER.replace_all(text, "\n\n$1$2\n\n");
+    ret = ATX_HEADER.replace_all(ret.as_slice(), "\n$1\n\n");
     ret
 }
 
@@ -25,8 +25,10 @@ fn normalize_setext_header_test() {
 #[test]
 fn normalize_atx_header_test() {
     assert_eq!(normalize("### ABC ####\n"),
-                "### ABC\n\n".to_string());
-    //assert_eq!(normalize("### ABC####\n"),
-                //box "### ABC####\n\n".to_string());
+                "\n### ABC\n\n".to_string());
+    assert_eq!(normalize("### ABC####\n"),
+                "\n### ABC####\n\n".to_string());
+    assert_eq!(normalize("### ABC#### #\n"),
+                "\n### ABC####\n\n".to_string());
 }
 
