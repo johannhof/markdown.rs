@@ -83,7 +83,7 @@ fn parse_break_test() {
     assert_eq!(parse_span("  "), Break);
     assert_eq!(parse_spans("this is a test  "), vec![Text("this is a test".to_string()), Break])
     match parse_span(" "){
-      Break => fail!(),
+      Break => panic!(),
       _ => {}
     }
 }
@@ -160,11 +160,11 @@ fn parse_emphasis_test() {
 
     // does not compile strong
     match parse_span("__whatever__"){
-      Emphasis(_) => fail!(),
+      Emphasis(_) => panic!(),
       _ => {}
     }
     match parse_span("**whatever**"){
-      Emphasis(_) => fail!(),
+      Emphasis(_) => panic!(),
       _ => {}
     }
 }
@@ -242,11 +242,11 @@ fn parse_strong_test() {
 
     // does not compile emphasis
     match parse_span("_whatever_"){
-      Strong(_) => fail!(),
+      Strong(_) => panic!(),
       _ => {}
     }
     match parse_span("*whatever*"){
-      Strong(_) => fail!(),
+      Strong(_) => panic!(),
       _ => {}
     }
 }
