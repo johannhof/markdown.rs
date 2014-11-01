@@ -14,12 +14,12 @@ fn main() {
     let display = path.display();
 
     let mut file = match File::open(&path) {
-        Err(why) => fail!("couldn't open {}: {}", display, why.desc),
+        Err(why) => panic!("couldn't open {}: {}", display, why.desc),
         Ok(file) => file,
     };
 
     let text = match file.read_to_string() {
-        Err(why) => fail!("couldn't read {}: {}", display, why.desc),
+        Err(why) => panic!("couldn't read {}: {}", display, why.desc),
         Ok(string) => string
     };
 
