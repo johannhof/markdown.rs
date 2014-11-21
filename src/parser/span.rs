@@ -1,5 +1,6 @@
 use regex::Regex;
-use parser::{Break, Span, Text, Emphasis, Strong, Code, Link, Image};
+use parser::Span;
+use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
 static SPANS : Regex = regex!(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)|( {2})$");
 static LINK  : Regex = regex!("\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");

@@ -1,5 +1,7 @@
-use parser::{Block, Header, Paragraph, Blockquote};
-use parser::{Break, Span, Text, Code, Link, Image, Emphasis};
+use parser::Block;
+use parser::Block::{Header, Paragraph, Blockquote};
+use parser::Span;
+use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
 pub fn to_html (blocks : &Vec<Block>) -> String {
     let mut ret = String::new();

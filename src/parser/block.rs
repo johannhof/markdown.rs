@@ -2,8 +2,10 @@ use regex::Regex;
 use parser::parse;
 use normalizer::normalize;
 use parser::span::parse_spans;
-use parser::{Block, Header, Paragraph, Blockquote};
-use parser::{Break, Span, Text, Emphasis, Strong, Code, Link, Image};
+use parser::Block;
+use parser::Block::{Header, Paragraph, Blockquote};
+use parser::Span;
+use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
 static ATX_HEADER      : Regex = regex!(r"^(?P<level>#{1,6})\s(?P<text>.*)");
 static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
