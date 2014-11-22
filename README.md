@@ -25,3 +25,25 @@ There is no full documentation right now, the only function exported by the libr
 ```rust
 let html : String = markdown::to_html("__I am markdown__");
 ```
+
+Roadmap
+----------
+
+Implement all John Gruber Markdown features and have them tested
+
+- [ ] Inline HTML
+- [ ] Automatic Escaping for Special Characters
+- [ ] Backslash Escapes
+- [ ] Automatic Links
+- [ ] Block Elements
+  - [ ] Paragraphs and Line Breaks
+  - [ ] Headers
+  - [ ] Blockquotes
+  - [ ] Lists
+  - [ ] Code Blocks
+  - [ ] Horizontal Rules
+- [ ] Span Elements
+  - [ ] Links
+  - [ ] Emphasis
+  - [ ] Code
+  - [ ] Images
