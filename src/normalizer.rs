@@ -30,5 +30,7 @@ fn normalize_atx_header_test() {
                 "\n### ABC####\n\n".to_string());
     assert_eq!(normalize("### ABC#### #\n"),
                 "\n### ABC####\n\n".to_string());
+    assert_eq!(normalize("wat\n### ABC#### #\n"),
+                "wat\n\n### ABC####\n\n".to_string());
 }
 

@@ -36,14 +36,52 @@ Implement all John Gruber Markdown features and have them tested
 - [ ] Backslash Escapes
 - [ ] Automatic Links
 - [ ] Block Elements
-  - [ ] Paragraphs and Line Breaks
-  - [ ] Headers
+  - [ ] Paragraphs
+    - [ ] Parsing
+    - [x] HTML
+    - [ ] Tests
+  - [ ] Line Breaks
+    - [x] Parsing
+    - [x] HTML
+    - [ ] Tests
+  - [x] Headers
+    - [x] Parsing
+    - [x] HTML
+    - [x] Tests
   - [ ] Blockquotes
+    - [x] Parsing
+    - [x] HTML
+    - [ ] Tests
   - [ ] Lists
+    - [ ] Parsing
+    - [ ] HTML
+    - [ ] Tests
   - [ ] Code Blocks
+    - [ ] Parsing
+    - [ ] HTML
+    - [ ] Tests
   - [ ] Horizontal Rules
+    - [ ] Parsing
+    - [ ] HTML
+    - [ ] Tests
 - [ ] Span Elements
   - [ ] Links
-  - [ ] Emphasis
+    - [x] Parsing
+    - [x] HTML
+    - [ ] Tests
+  - [x] Emphasis
+    - [x] Parsing
+    - [x] HTML
+    - [x] Tests
+  - [x] Strong
+    - [x] Parsing
+    - [x] HTML
+    - [x] Tests
   - [ ] Code
+    - [x] Parsing
+    - [x] HTML
+    - [ ] Tests
   - [ ] Images
+    - [x] Parsing
+    - [x] HTML
+    - [ ] Tests
