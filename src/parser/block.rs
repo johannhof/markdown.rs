@@ -73,3 +73,18 @@ fn parse_atx_header_test() {
     );
 }
 
+
+#[test]
+fn parse_blockquote_test() {
+    assert_eq!(
+        parse_block("> One Paragraph\n>\n> > Another blockquote\n>\n").unwrap(),
+        Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),
+                   Blockquote(vec![Paragraph(vec![Text("Another blockquote".to_string())])])])
+    );
+
+    assert_eq!(
+        parse_block("> One Paragraph\n>\n> ## H2 \n>\n").unwrap(),
+        Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]), Header(vec![Text("H2 ".to_string())], 2)])
+    );
+}
+
