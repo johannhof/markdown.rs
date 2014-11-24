@@ -3,7 +3,7 @@ use regex::Regex;
 mod span;
 mod block;
 
-static SPLIT : Regex = regex!(r"\n\s*?\n");
+static SPLIT : Regex = regex!(r"\n(?:\s*\n|$)");
 
 #[deriving(Show, PartialEq)]
 pub enum Block {
