@@ -77,14 +77,35 @@ fn parse_atx_header_test() {
 #[test]
 fn parse_blockquote_test() {
     assert_eq!(
+        parse_block("> One Paragraph\n>\n> ## H2 \n>\n").unwrap(),
+        Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]), Header(vec![Text("H2 ".to_string())], 2)])
+    );
+
+    assert_eq!(
         parse_block("> One Paragraph\n>\n> > Another blockquote\n>\n").unwrap(),
         Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),
                    Blockquote(vec![Paragraph(vec![Text("Another blockquote".to_string())])])])
     );
 
     assert_eq!(
-        parse_block("> One Paragraph\n>\n> ## H2 \n>\n").unwrap(),
-        Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]), Header(vec![Text("H2 ".to_string())], 2)])
+        parse_block("> > One Paragraph\n> >\n> > Another blockquote\n>\n").unwrap(),
+        Blockquote(vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),
+                   Paragraph(vec![Text("Another blockquote".to_string())])])])
+    );
+
+    assert_eq!(
+        parse_block("> One Paragraph, just > text \n>\n").unwrap(),
+        Blockquote(vec![Paragraph(vec![Text("One Paragraph, just > text ".to_string())])])
+    );
+
+    assert_eq!(
+        parse_block("> One Paragraph,\n just\n > text ").unwrap(),
+        Blockquote(vec![Paragraph(vec![Text("One Paragraph,\n just\n > text ".to_string())])])
+    );
+
+    assert_eq!(
+        parse_block("> One Paragraph\n>\n> just > text \n>\n").unwrap(),
+        Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),Paragraph(vec![Text("just > text ".to_string())])])
     );
 }
 
