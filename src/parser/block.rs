@@ -3,13 +3,14 @@ use parser::parse;
 use normalizer::normalize;
 use parser::span::parse_spans;
 use parser::Block;
-use parser::Block::{Header, Paragraph, Blockquote};
+use parser::Block::{Header, Paragraph, Blockquote, Hr};
 use parser::Span;
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
 static ATX_HEADER      : Regex = regex!(r"^(?P<level>#{1,6})\s(?P<text>.*)");
 static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
 static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");
+static HORIZONTAL_RULE : Regex = regex!(r"\n---+");
 static BLOCKQUOTE      : Regex = regex!(r"(?m)^> ?");
 
 pub fn parse_block (text : &str) -> Option<Block>{
@@ -45,6 +46,8 @@ pub fn parse_block (text : &str) -> Option<Block>{
                 2
                 )
             );
+    }else if HORIZONTAL_RULE.is_match(text){
+        return Some(Hr);
     }
     return Some(Paragraph(parse_spans(text)));
 }

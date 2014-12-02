@@ -1,5 +1,5 @@
 use parser::Block;
-use parser::Block::{Header, Paragraph, Blockquote};
+use parser::Block::{Header, Paragraph, Blockquote, Hr};
 use parser::Span;
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
@@ -9,7 +9,8 @@ pub fn to_html (blocks : &Vec<Block>) -> String {
         let next = match block {
             &Header (ref elements, level) => format_header(elements, level),
             &Paragraph (ref elements) => format_paragraph(elements),
-            &Blockquote (ref elements) => format_blockquote(elements)
+            &Blockquote (ref elements) => format_blockquote(elements),
+            &Hr => format!("<hr>")
         };
         ret.push_str(next.as_slice())
     }
