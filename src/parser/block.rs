@@ -10,7 +10,7 @@ use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 static ATX_HEADER      : Regex = regex!(r"^(?P<level>#{1,6})\s(?P<text>.*)");
 static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
 static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");
-static HORIZONTAL_RULE : Regex = regex!(r"\n---+");
+static HORIZONTAL_RULE : Regex = regex!(r"(===+)|(---+)");
 static BLOCKQUOTE      : Regex = regex!(r"(?m)^> ?");
 
 pub fn parse_block (text : &str) -> Option<Block>{
@@ -109,6 +109,18 @@ fn parse_blockquote_test() {
     assert_eq!(
         parse_block("> One Paragraph\n>\n> just > text \n>\n").unwrap(),
         Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),Paragraph(vec![Text("just > text ".to_string())])])
+    );
+}
+
+#[test]
+fn parse_horizontal_rule_test() {
+    assert_eq!(
+        parse_block("--------").unwrap(),
+        Hr
+    );
+    assert_eq!(
+        parse_block("========").unwrap(),
+        Hr
     );
 }
 
