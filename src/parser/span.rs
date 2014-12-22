@@ -35,39 +35,39 @@ fn parse_span(text : &str) -> Span{
 
     if STRONG_UNDERSCORE.is_match(text){
         let caps = STRONG_UNDERSCORE.captures(text).unwrap();
-        return Strong(parse_spans(caps.name("text")));
+        return Strong(parse_spans(caps.name("text").unwrap()));
     }else if STRONG_STAR.is_match(text){
         let caps = STRONG_STAR.captures(text).unwrap();
-        return Strong(parse_spans(caps.name("text")));
+        return Strong(parse_spans(caps.name("text").unwrap()));
 
     }else if EMPHASIS_UNDERSCORE.is_match(text){
         let caps = EMPHASIS_UNDERSCORE.captures(text).unwrap();
-        return Emphasis(parse_spans(caps.name("text")));
+        return Emphasis(parse_spans(caps.name("text").unwrap()));
     }else if EMPHASIS_STAR.is_match(text){
         let caps = EMPHASIS_STAR.captures(text).unwrap();
-        return Emphasis(parse_spans(caps.name("text")));
+        return Emphasis(parse_spans(caps.name("text").unwrap()));
 
     }else if CODE_DOUBLE.is_match(text){
         let caps = CODE_DOUBLE.captures(text).unwrap();
-        return Code(caps.name("text").to_string());
+        return Code(caps.name("text").unwrap().to_string());
     }else if CODE_SINGLE.is_match(text){
         let caps = CODE_SINGLE.captures(text).unwrap();
-        return Code(caps.name("text").to_string());
+        return Code(caps.name("text").unwrap().to_string());
 
     }else if IMAGE.is_match(text){
         let caps = IMAGE.captures(text).unwrap();
         return Image(
-            caps.name("text").to_string(),
-            caps.name("url").to_string(),
-            caps.name("title").to_string()
+            caps.name("text").unwrap_or("").to_string(),
+            caps.name("url").unwrap_or("").to_string(),
+            caps.name("title").unwrap_or("").to_string()
             );
 
     }else if LINK.is_match(text){
         let caps = LINK.captures(text).unwrap();
         return Link(
-            caps.name("text").to_string(),
-            caps.name("url").to_string(),
-            caps.name("title").to_string()
+            caps.name("text").unwrap_or("").to_string(),
+            caps.name("url").unwrap_or("").to_string(),
+            caps.name("title").unwrap_or("").to_string()
             );
 
     }else if BREAK.is_match(text){
@@ -82,7 +82,7 @@ fn parse_span(text : &str) -> Span{
 #[test]
 fn parse_break_test() {
     assert_eq!(parse_span("  "), Break);
-    assert_eq!(parse_spans("this is a test  "), vec![Text("this is a test".to_string()), Break])
+    assert_eq!(parse_spans("this is a test  "), vec![Text("this is a test".to_string()), Break]);
     match parse_span(" "){
       Break => panic!(),
       _ => {}

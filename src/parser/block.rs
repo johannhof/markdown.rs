@@ -26,15 +26,15 @@ pub fn parse_block (text : &str) -> Option<Block>{
         let caps = ATX_HEADER.captures(text).unwrap();
         return Some(
             Header(
-                parse_spans(caps.name("text")),
-                caps.name("level").len()
+                parse_spans(caps.name("text").unwrap()),
+                caps.name("level").unwrap().len()
                 )
             );
     }else if SETEXT_HEADER_1.is_match(text){
         let caps = SETEXT_HEADER_1.captures(text).unwrap();
         return Some(
             Header(
-                parse_spans(caps.name("text")),
+                parse_spans(caps.name("text").unwrap()),
                 1
                 )
             );
@@ -42,7 +42,7 @@ pub fn parse_block (text : &str) -> Option<Block>{
         let caps = SETEXT_HEADER_2.captures(text).unwrap();
         return Some(
             Header(
-                parse_spans(caps.name("text")),
+                parse_spans(caps.name("text").unwrap()),
                 2
                 )
             );
