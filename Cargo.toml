@@ -5,4 +5,5 @@ version = "0.0.1"
 authors = ["Johann <git@johann-hofmann.com>"]
 
 [dependencies]
-regex_macros = "*"
+regex_macros = "0.1.5"
+regex = "0.1.10"

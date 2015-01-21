@@ -1,3 +1,4 @@
+
 use regex::Regex;
 
 mod span;
@@ -5,7 +6,7 @@ mod block;
 
 static SPLIT : Regex = regex!(r"\n(?:\s*\n|$)");
 
-#[deriving(Show, PartialEq)]
+#[derive(Show, PartialEq)]
 pub enum Block {
     Header(Vec<Span>, uint),
     Paragraph(Vec<Span>),
@@ -13,7 +14,7 @@ pub enum Block {
     Hr
 }
 
-#[deriving(Show, PartialEq)]
+#[derive(Show, PartialEq)]
 pub enum Span {
     Break,
     Text(String),
