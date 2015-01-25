@@ -2,7 +2,16 @@
 
 name = "markdown"
 version = "0.0.1"
-authors = ["Johann <git@johann-hofmann.com>"]
+authors = ["Johann Hofmann <mail@johann-hofmann.com>"]
+description = "Native Rust library for parsing Markdown and (outputting HTML)"
+repository = "https://github.com/johannhof/markdown.rs"
+readme = "README.md"
+keywords = ["markdown", "md", "html", "parser"]
+license = "MIT"
+
+exclude = [
+    "test.md"
+]
 
 [dependencies]
 regex_macros = "0.1.5"
