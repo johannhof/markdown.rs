@@ -57,10 +57,10 @@ Implement all John Gruber Markdown features and have them tested
     - [ ] HTML
     - [ ] Tests
   - [ ] Code Blocks
-    - [ ] Parsing
-    - [ ] HTML
+    - [x] Parsing
+    - [x] HTML
     - [ ] Tests
-  - [ ] Horizontal Rules
+  - [x] Horizontal Rules
     - [x] Parsing
     - [x] HTML
     - [x] Tests

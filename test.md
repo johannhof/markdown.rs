@@ -31,3 +31,10 @@ this is [an example](http://example.com/ "Title") stuff *single asterisks* _sing
 > This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
 > consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
 Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+
+Here is an example of AppleScript:
+
+    tell application "Foo"
+        beep
+    end tell
+

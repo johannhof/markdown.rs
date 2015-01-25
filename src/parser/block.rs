@@ -2,7 +2,7 @@ use regex::Regex;
 use parser::parse;
 use parser::span::parse_spans;
 use parser::Block;
-use parser::Block::{Header, Paragraph, Blockquote, Hr};
+use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock};
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
 static ATX_HEADER      : Regex = regex!(r"^(?P<level>#{1,6})\s(?P<text>.*)");
@@ -10,10 +10,15 @@ static SETEXT_HEADER_1 : Regex = regex!(r"(?P<text>.+)\n===+");
 static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");
 static HORIZONTAL_RULE : Regex = regex!(r"(===+)|(---+)");
 static BLOCKQUOTE      : Regex = regex!(r"(?m)^> ?");
+static CODE_BLOCK      : Regex = regex!(r"(?m)^ {4}");
 
 pub fn parse_block (text : &str) -> Option<Block>{
     if text.is_empty(){
         return None;
+    }else if CODE_BLOCK.is_match(text){
+        // remove top-level spaces
+        let caps = CODE_BLOCK.replace_all(text, "");
+        return Some(CodeBlock(caps));
     }else if BLOCKQUOTE.is_match(text){
         // remove top-level >s
         let caps = BLOCKQUOTE.replace_all(text, "");

@@ -11,6 +11,7 @@ pub enum Block {
     Header(Vec<Span>, usize),
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
+    CodeBlock(String),
     Hr
 }
 

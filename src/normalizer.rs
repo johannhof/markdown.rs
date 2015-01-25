@@ -4,10 +4,14 @@ use regex::Regex;
 
 static SETEXT_HEADER : Regex = regex!(r"\n(\S+) *(\n[-=]{3,}+)\n?");
 static ATX_HEADER : Regex = regex!(r"(?m)^(#{1,6}\s.*?)(?:\s#+\s*?)?\n");
+static CODE_BLOCK : Regex = regex!(r"(( {4}.*\n)+)");
 
 pub fn normalize(text : &str) -> String {
-    let mut ret = SETEXT_HEADER.replace_all(text, "\n\n$1$2\n\n");
+    let mut ret = "\n".to_string();
+    ret.push_str(text);
+    ret = SETEXT_HEADER.replace_all(&ret[], "\n\n$1$2\n\n");
     ret = ATX_HEADER.replace_all(&ret[], "\n$1\n\n");
+    ret = CODE_BLOCK.replace_all(&ret[], "\n$1\n\n");
     ret
 }
 
