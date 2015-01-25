@@ -61,9 +61,9 @@ Implement all John Gruber Markdown features and have them tested
     - [ ] HTML
     - [ ] Tests
   - [ ] Horizontal Rules
-    - [ ] Parsing
-    - [ ] HTML
-    - [ ] Tests
+    - [x] Parsing
+    - [x] HTML
+    - [x] Tests
 - [ ] Span Elements
   - [ ] Links
     - [x] Parsing
