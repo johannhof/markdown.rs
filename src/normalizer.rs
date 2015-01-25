@@ -18,23 +18,23 @@ pub fn normalize(text : &str) -> String {
 #[test]
 fn normalize_setext_header_test() {
     assert_eq!(normalize("wot\nABC\n=======\nwat"),
-                "wot\n\nABC\n=======\n\nwat".to_string());
+                "\nwot\n\nABC\n=======\n\nwat".to_string());
     assert_eq!(normalize("=======\nABC\n=======\n======="),
-                "=======\n\nABC\n=======\n\n=======".to_string());
+                "\n=======\n\nABC\n=======\n\n=======".to_string());
 
     assert_eq!(normalize("wot\nABC\n-------\nwat"),
-                "wot\n\nABC\n-------\n\nwat".to_string());
+                "\nwot\n\nABC\n-------\n\nwat".to_string());
 }
 
 #[test]
 fn normalize_atx_header_test() {
     assert_eq!(normalize("### ABC ####\n"),
-                "\n### ABC\n\n".to_string());
+                "\n\n### ABC\n\n".to_string());
     assert_eq!(normalize("### ABC####\n"),
-                "\n### ABC####\n\n".to_string());
+                "\n\n### ABC####\n\n".to_string());
     assert_eq!(normalize("### ABC#### #\n"),
-                "\n### ABC####\n\n".to_string());
+                "\n\n### ABC####\n\n".to_string());
     assert_eq!(normalize("wat\n### ABC#### #\n"),
-                "wat\n\n### ABC####\n\n".to_string());
+                "\nwat\n\n### ABC####\n\n".to_string());
 }
 
