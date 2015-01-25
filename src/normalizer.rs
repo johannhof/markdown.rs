@@ -7,7 +7,7 @@ static ATX_HEADER : Regex = regex!(r"(?m)^(#{1,6}\s.*?)(?:\s#+\s*?)?\n");
 
 pub fn normalize(text : &str) -> String {
     let mut ret = SETEXT_HEADER.replace_all(text, "\n\n$1$2\n\n");
-    ret = ATX_HEADER.replace_all(ret.as_slice(), "\n$1\n\n");
+    ret = ATX_HEADER.replace_all(&ret[], "\n$1\n\n");
     ret
 }
 

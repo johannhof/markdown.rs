@@ -1,10 +1,8 @@
 use regex::Regex;
 use parser::parse;
-use normalizer::normalize;
 use parser::span::parse_spans;
 use parser::Block;
 use parser::Block::{Header, Paragraph, Blockquote, Hr};
-use parser::Span;
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
 static ATX_HEADER      : Regex = regex!(r"^(?P<level>#{1,6})\s(?P<text>.*)");
@@ -20,7 +18,7 @@ pub fn parse_block (text : &str) -> Option<Block>{
         // remove top-level >s
         let caps = BLOCKQUOTE.replace_all(text, "");
         return Some(
-            Blockquote(parse(caps.as_slice()))
+            Blockquote(parse(&caps[]))
         );
     }else if ATX_HEADER.is_match(text){
         let caps = ATX_HEADER.captures(text).unwrap();

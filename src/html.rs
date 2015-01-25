@@ -12,7 +12,7 @@ pub fn to_html (blocks : &Vec<Block>) -> String {
             &Blockquote (ref elements) => format_blockquote(elements),
             &Hr => format!("<hr>")
         };
-        ret.push_str(next.as_slice())
+        ret.push_str(&next[])
     }
     ret
 }
@@ -29,7 +29,7 @@ fn format_spans(elements : &Vec<Span>) -> String {
             &Emphasis(ref content) => format!("<em>{}</em>", format_spans(content)),
             _ => format!("")
         };
-        ret.push_str(next.as_slice())
+        ret.push_str(&next[])
     }
     ret
 }
@@ -42,6 +42,6 @@ fn format_paragraph(elements : &Vec<Span>) -> String{
     format!("<p>{}</p>\n", format_spans(elements))
 }
 
-fn format_header(elements : &Vec<Span>, level : uint) -> String{
+fn format_header(elements : &Vec<Span>, level : usize) -> String{
     format!("<h{}>{}</h{}>\n", level, format_spans(elements), level)
 }

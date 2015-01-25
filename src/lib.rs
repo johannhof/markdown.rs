@@ -13,8 +13,8 @@ mod html;
 mod normalizer;
 
 pub fn to_html(text : &str) -> String{
-    let normalized = normalizer::normalize(text.as_slice());
-    let result = parser::parse(normalized.as_slice());
+    let normalized = normalizer::normalize(&text[]);
+    let result = parser::parse(&normalized[]);
     html::to_html(&result)
 }
 
@@ -29,8 +29,8 @@ pub fn file_to_html(path : &Path) -> Result<String, IoError>{
         Err(e) => return Err(e)
     };
 
-    let normalized = normalizer::normalize(text.as_slice());
-    let result = parser::parse(normalized.as_slice());
+    let normalized = normalizer::normalize(&text[]);
+    let result = parser::parse(&normalized[]);
     Ok(html::to_html(&result))
 }
 

@@ -8,7 +8,7 @@ static SPLIT : Regex = regex!(r"\n(?:\s*\n|$)");
 
 #[derive(Show, PartialEq)]
 pub enum Block {
-    Header(Vec<Span>, uint),
+    Header(Vec<Span>, usize),
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
     Hr

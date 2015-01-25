@@ -17,14 +17,14 @@ pub fn parse_spans(text : &str) -> Vec<Span>{
     let mut tokens = vec![];
     let mut current = 0;
     for (begin, end) in SPANS.find_iter(text) {
-        match text.slice(current, begin){
+        match &text[current .. begin]{
             "" => {}
             t => tokens.push(Text(t.to_string()))
         };
-        tokens.push(parse_span(text.slice(begin, end)));
+        tokens.push(parse_span(&text[begin .. end]));
         current = end;
     }
-    match text.slice(current, text.len()){
+    match &text[current .. text.len()]{
         "" => {}
         t => tokens.push(Text(t.to_string()))
     };
