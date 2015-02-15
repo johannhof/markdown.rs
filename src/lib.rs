@@ -1,12 +1,14 @@
 #![crate_name = "markdown"]
 
+#![feature(fs)]
+#![feature(io)]
 #![feature(plugin)]
-#[plugin] #[no_link]
+#![plugin(regex_macros)]
 extern crate regex_macros;
 extern crate regex;
 
-use std::io::File;
-use std::io::IoError;
+use std::fs::File;
+use std::io::{Read, Error};
 
 mod parser;
 mod html;
@@ -18,14 +20,15 @@ pub fn to_html(text : &str) -> String{
     html::to_html(&result)
 }
 
-pub fn file_to_html(path : &Path) -> Result<String, IoError>{
+pub fn file_to_html(path : &Path) -> Result<String, Error>{
     let mut file = match File::open(path) {
         Ok(file) => file,
         Err(e) => return Err(e)
     };
 
-    let text = match file.read_to_string() {
-        Ok(string) => string,
+    let mut text = String::new();
+    match file.read_to_string(&mut text) {
+        Ok(()) => (),
         Err(e) => return Err(e)
     };
 

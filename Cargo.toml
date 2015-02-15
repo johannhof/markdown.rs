@@ -14,5 +14,5 @@ exclude = [
 ]
 
 [dependencies]
-regex_macros = "0.1.5"
-regex = "0.1.10"
+regex_macros = "0.1.8"
+regex = "0.1.14"

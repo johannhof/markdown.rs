@@ -6,7 +6,7 @@ mod block;
 
 static SPLIT : Regex = regex!(r"\n(?:\s*\n|$)");
 
-#[derive(Show, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Block {
     Header(Vec<Span>, usize),
     Paragraph(Vec<Span>),
@@ -15,7 +15,7 @@ pub enum Block {
     Hr
 }
 
-#[derive(Show, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Span {
     Break,
     Text(String),
