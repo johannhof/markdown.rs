@@ -1,5 +1,5 @@
 use parser::Block;
-use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock};
+use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock, List};
 use parser::Span;
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
@@ -11,6 +11,7 @@ pub fn to_html (blocks : &Vec<Block>) -> String {
             &Paragraph (ref elements) => format_paragraph(elements),
             &Blockquote (ref elements) => format_blockquote(elements),
             &CodeBlock (ref elements) => format_codeblock(elements),
+            &List (ref elements) => format_list(elements),
             &Hr => format!("<hr>")
         };
         ret.push_str(&next[])
@@ -33,6 +34,14 @@ fn format_spans(elements : &Vec<Span>) -> String {
         ret.push_str(&next[])
     }
     ret
+}
+
+fn format_list(elements : &Vec<Vec<Span>>) -> String{
+    let mut ret = String::new();
+    for li in elements{
+        ret.push_str(&format!("<li>{}</li>\n", format_spans(li)))
+    }
+    format!("<ul>{}</ul>\n", ret)
 }
 
 fn format_codeblock(elements : &String) -> String{

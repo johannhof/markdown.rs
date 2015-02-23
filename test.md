@@ -38,3 +38,7 @@ Here is an example of AppleScript:
         beep
     end tell
 
+* first
+* second
+
+* third

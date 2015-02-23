@@ -12,6 +12,7 @@ pub enum Block {
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
     CodeBlock(String),
+    List(Vec<Vec<Span>>),
     Hr
 }
 

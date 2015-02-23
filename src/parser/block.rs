@@ -2,7 +2,7 @@ use regex::Regex;
 use parser::parse;
 use parser::span::parse_spans;
 use parser::Block;
-use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock};
+use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock, List};
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
 static ATX_HEADER      : Regex = regex!(r"^(?P<level>#{1,6})\s(?P<text>.*)");
@@ -11,6 +11,7 @@ static SETEXT_HEADER_2 : Regex = regex!(r"(?P<text>.+)\n---+");
 static HORIZONTAL_RULE : Regex = regex!(r"(===+)|(---+)");
 static BLOCKQUOTE      : Regex = regex!(r"(?m)^> ?");
 static CODE_BLOCK      : Regex = regex!(r"(?m)^ {4}");
+static LIST            : Regex = regex!(r"(?m)^\* +([^\*]*)");
 
 pub fn parse_block (text : &str) -> Option<Block>{
     if text.is_empty(){
@@ -51,8 +52,19 @@ pub fn parse_block (text : &str) -> Option<Block>{
             );
     }else if HORIZONTAL_RULE.is_match(text){
         return Some(Hr);
+    }else if LIST.is_match(text){
+        return Some(parse_list(text));
     }
     return Some(Paragraph(parse_spans(text)));
+}
+
+fn parse_list(text: &str) -> Block {
+    let mut elements = vec![];
+    for cap in LIST.captures_iter(text) {
+        elements.push(parse_spans(cap.at(1).unwrap_or("")));
+    }
+    println!("{:?}", elements);
+    List(elements)
 }
 
 
