@@ -14,7 +14,7 @@ pub fn to_html (blocks : &Vec<Block>) -> String {
             &List (ref elements) => format_list(elements),
             &Hr => format!("<hr>")
         };
-        ret.push_str(&next[])
+        ret.push_str(&next)
     }
     ret
 }
@@ -31,7 +31,7 @@ fn format_spans(elements : &Vec<Span>) -> String {
             &Emphasis(ref content) => format!("<em>{}</em>", format_spans(content)),
             _ => format!("")
         };
-        ret.push_str(&next[])
+        ret.push_str(&next)
     }
     ret
 }

@@ -9,9 +9,9 @@ static CODE_BLOCK : Regex = regex!(r"(( {4}.*\n)+)");
 pub fn normalize(text : &str) -> String {
     let mut ret = "\n".to_string();
     ret.push_str(text);
-    ret = SETEXT_HEADER.replace_all(&ret[], "\n\n$1$2\n\n");
-    ret = ATX_HEADER.replace_all(&ret[], "\n$1\n\n");
-    ret = CODE_BLOCK.replace_all(&ret[], "\n$1\n\n");
+    ret = SETEXT_HEADER.replace_all(&ret, "\n\n$1$2\n\n");
+    ret = ATX_HEADER.replace_all(&ret, "\n$1\n\n");
+    ret = CODE_BLOCK.replace_all(&ret, "\n$1\n\n");
     ret
 }
 

@@ -24,7 +24,7 @@ pub fn parse_block (text : &str) -> Option<Block>{
         // remove top-level >s
         let caps = BLOCKQUOTE.replace_all(text, "");
         return Some(
-            Blockquote(parse(&caps[]))
+            Blockquote(parse(&caps))
         );
     }else if ATX_HEADER.is_match(text){
         let caps = ATX_HEADER.captures(text).unwrap();
@@ -63,7 +63,6 @@ fn parse_list(text: &str) -> Block {
     for cap in LIST.captures_iter(text) {
         elements.push(parse_spans(cap.at(1).unwrap_or("")));
     }
-    println!("{:?}", elements);
     List(elements)
 }
 
