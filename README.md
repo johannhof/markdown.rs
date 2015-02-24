@@ -29,7 +29,7 @@ let html : String = markdown::to_html("__I am markdown__");
 Roadmap
 ----------
 
-Implement all John Gruber Markdown features and have them tested
+Short-Term: Implement all John Gruber Markdown features and have them tested
 
 - [ ] Inline HTML
 - [ ] Automatic Escaping for Special Characters
@@ -85,3 +85,6 @@ Implement all John Gruber Markdown features and have them tested
     - [x] Parsing
     - [x] HTML
     - [ ] Tests
+
+Long-Term: Modularize all Features and move away from regex
+

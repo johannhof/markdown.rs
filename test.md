@@ -14,7 +14,7 @@ this is [an example](http://example.com/ "Title") stuff *single asterisks* _sing
 
 *[an example](example.com) is better than nothing*
 
-> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+> This is a blockquote & with two paragraphs. Lorem ipsum dolor sit amet,
 >
 > > consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
 >    

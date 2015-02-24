@@ -24,16 +24,21 @@ fn format_spans(elements : &Vec<Span>) -> String {
     for element in elements.iter(){
         let next = match element  {
             &Break => format!("<br>"),
-            &Text(ref text) => format!("{}", text),
-            &Code(ref text) => format!("<code>{}</code>", text),
-            &Link(ref text, ref url, ref title) => format!("<a href='{}' title='{}'>{}</a>", url, title, text),
-            &Image(ref text, ref url, ref title) => format!("<img src='{}' title='{}' alt='{}'>", url, title, text),
+            &Text(ref text) => format!("{}", &escape(text)),
+            &Code(ref text) => format!("<code>{}</code>", &escape(text)),
+            &Link(ref text, ref url, ref title) => format!("<a href='{}' title='{}'>{}</a>", &escape(url), &escape(title), &escape(text)),
+            &Image(ref text, ref url, ref title) => format!("<img src='{}' title='{}' alt='{}'>", &escape(url), &escape(title), &escape(text)),
             &Emphasis(ref content) => format!("<em>{}</em>", format_spans(content)),
             _ => format!("")
         };
         ret.push_str(&next)
     }
     ret
+}
+
+fn escape(text: &str) -> String{
+    text.replace("<", "&lt;")
+        .replace("&", "&amp;")
 }
 
 fn format_list(elements : &Vec<Vec<Span>>) -> String{
