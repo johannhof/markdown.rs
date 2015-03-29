@@ -2,7 +2,7 @@ use regex::Regex;
 
 // TODO: i don't like what this file does, get rid of it eventually
 
-static SETEXT_HEADER : Regex = regex!(r"\n(\S+) *(\n[-=]{3,}+)\n?");
+static SETEXT_HEADER : Regex = regex!(r"\n(\S+) *(\n[-=]{3,})\n?");
 static ATX_HEADER : Regex = regex!(r"(?m)^(#{1,6}\s.*?)(?:\s#+\s*?)?\n");
 static CODE_BLOCK : Regex = regex!(r"(( {4}.*\n)+)");
 

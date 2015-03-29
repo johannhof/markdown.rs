@@ -29,7 +29,7 @@ pub fn file_to_html(path : &Path) -> Result<String, Error>{
 
     let mut text = String::new();
     match file.read_to_string(&mut text) {
-        Ok(()) => (),
+        Ok(_) => (),
         Err(e) => return Err(e)
     };
 

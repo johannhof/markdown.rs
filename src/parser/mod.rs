@@ -29,7 +29,7 @@ pub enum Span {
 }
 
 pub fn parse (md : &str) -> Vec<Block> {
-    let mut split = SPLIT.split(md);
+    let split = SPLIT.split(md);
     let mut tokens = vec![];
     for block in split{
         match block::parse_block(block) {
