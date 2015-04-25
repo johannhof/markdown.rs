@@ -1,11 +1,10 @@
 #![crate_name = "markdown"]
 
-#![feature(fs)]
-#![feature(io)]
 #![feature(plugin)]
+#![feature(test)]
 #![plugin(regex_macros)]
-extern crate regex_macros;
 extern crate regex;
+extern crate test;
 
 use std::fs::File;
 use std::path::Path;
