@@ -4,8 +4,6 @@ use regex::Regex;
 mod span;
 mod block;
 
-static SPLIT : Regex = regex!(r"\n(?:\s*\n|$)");
-
 #[derive(Debug, PartialEq)]
 pub enum Block {
     Header(Vec<Span>, usize),
@@ -29,6 +27,7 @@ pub enum Span {
 }
 
 pub fn parse (md : &str) -> Vec<Block> {
+    let SPLIT : Regex = Regex::new(r"\n(?:\s*\n|$)").unwrap();
     let split = SPLIT.split(md);
     let mut tokens = vec![];
     for block in split{
