@@ -2,18 +2,9 @@ use regex::Regex;
 use parser::Span;
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
-static SPANS : Regex = regex!(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)|( {2})$");
-static LINK  : Regex = regex!("\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");
-static IMAGE  : Regex = regex!("!\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)");
-static EMPHASIS_UNDERSCORE  : Regex = regex!(r"^_(?P<text>[^_].+?)_");
-static EMPHASIS_STAR  : Regex = regex!(r"^\*(?P<text>[^\*].+?)\*");
-static STRONG_UNDERSCORE  : Regex = regex!(r"^__(?P<text>.+?)__");
-static STRONG_STAR  : Regex = regex!(r"^\*\*(?P<text>.+?)\*\*");
-static CODE_SINGLE  : Regex = regex!(r"^`(?P<text>[^`].+?)`");
-static CODE_DOUBLE  : Regex = regex!(r"^``(?P<text>.+?)``");
-static BREAK : Regex = regex!(r" {2}$");
-
 pub fn parse_spans(text : &str) -> Vec<Span>{
+    let SPANS : Regex = Regex::new(r"(!?\[.*\]\([^\(\)]*\))|(\*[^\*].+?\*)|(\*\*.+?\*\*)|(_[^_].+?_)|(__.+?__)|(`[^`].+?`)|(``.+?``)|( {2})$").unwrap();
+
     let mut tokens = vec![];
     let mut current = 0;
     for (begin, end) in SPANS.find_iter(text) {
@@ -32,6 +23,15 @@ pub fn parse_spans(text : &str) -> Vec<Span>{
 }
 
 fn parse_span(text : &str) -> Span{
+    let LINK  : Regex = Regex::new("\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
+    let IMAGE  : Regex = Regex::new("!\\[(?P<text>.*)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
+    let EMPHASIS_UNDERSCORE  : Regex = Regex::new(r"^_(?P<text>[^_].+?)_").unwrap();
+    let EMPHASIS_STAR  : Regex = Regex::new(r"^\*(?P<text>[^\*].+?)\*").unwrap();
+    let STRONG_UNDERSCORE  : Regex = Regex::new(r"^__(?P<text>.+?)__").unwrap();
+    let STRONG_STAR  : Regex = Regex::new(r"^\*\*(?P<text>.+?)\*\*").unwrap();
+    let CODE_SINGLE  : Regex = Regex::new(r"^`(?P<text>[^`].+?)`").unwrap();
+    let CODE_DOUBLE  : Regex = Regex::new(r"^``(?P<text>.+?)``").unwrap();
+    let BREAK : Regex = Regex::new(r" {2}$").unwrap();
 
     if STRONG_UNDERSCORE.is_match(text){
         let caps = STRONG_UNDERSCORE.captures(text).unwrap();
