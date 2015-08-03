@@ -14,6 +14,11 @@ mod parser;
 mod html;
 mod normalizer;
 
+//pub trait MdElement {
+    //fn isElement (tokens: &[Token], text: &str) -> bool;
+    //fn render (tokens: &[Token], text: &str) -> Option<String>;
+//}
+
 pub fn to_html(text : &str) -> String{
     let normalized = normalizer::normalize(&text);
     let result = parser::parse(&normalized);

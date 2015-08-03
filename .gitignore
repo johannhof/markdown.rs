@@ -9,3 +9,5 @@
 
 # Executables
 *.exe
+
+.DS_Store
