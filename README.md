@@ -29,46 +29,46 @@ let html : String = markdown::to_html("__I am markdown__");
 Roadmap
 ----------
 
-Short-Term: Implement all John Gruber Markdown features and have them tested
+Implement all John Gruber Markdown features and have them tested
 
 - [ ] Inline HTML
 - [ ] Automatic Escaping for Special Characters
 - [ ] Backslash Escapes
 - [ ] Automatic Links
 - [ ] Block Elements
-  - [ ] Paragraphs
-    - [ ] Parsing
-    - [x] HTML
-    - [ ] Tests
-  - [ ] Line Breaks
+  - [x] Paragraphs
     - [x] Parsing
     - [x] HTML
-    - [ ] Tests
+    - [x] Tests
+  - [x] Line Breaks
+    - [x] Parsing
+    - [x] HTML
+    - [x] Tests
   - [x] Headers
     - [x] Parsing
     - [x] HTML
     - [x] Tests
-  - [ ] Blockquotes
+  - [x] Blockquotes
     - [x] Parsing
     - [x] HTML
-    - [ ] Tests
+    - [x] Tests
   - [ ] Lists
-    - [ ] Parsing
-    - [ ] HTML
-    - [ ] Tests
-  - [ ] Code Blocks
     - [x] Parsing
     - [x] HTML
     - [ ] Tests
+  - [x] Code Blocks
+    - [x] Parsing
+    - [x] HTML
+    - [x] Tests
   - [x] Horizontal Rules
     - [x] Parsing
     - [x] HTML
     - [x] Tests
-- [ ] Span Elements
-  - [ ] Links
+- [x] Span Elements
+  - [x] Links
     - [x] Parsing
     - [x] HTML
-    - [ ] Tests
+    - [x] Tests
   - [x] Emphasis
     - [x] Parsing
     - [x] HTML
@@ -77,14 +77,12 @@ Short-Term: Implement all John Gruber Markdown features and have them tested
     - [x] Parsing
     - [x] HTML
     - [x] Tests
-  - [ ] Code
+  - [x] Code
     - [x] Parsing
     - [x] HTML
-    - [ ] Tests
-  - [ ] Images
+    - [x] Tests
+  - [x] Images
     - [x] Parsing
     - [x] HTML
-    - [ ] Tests
-
-Long-Term: Modularize all Features and move away from regex
+    - [x] Tests
 

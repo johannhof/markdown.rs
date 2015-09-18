@@ -14,8 +14,8 @@ exclude = [
 ]
 
 [dependencies]
-regex_macros = "0.1.21"
 regex = "0.1.41"
+pipeline = "0.5.0"
 
 [dependencies.text-diff]
 git = "https://github.com/johannhof/text-diff.rs.git"

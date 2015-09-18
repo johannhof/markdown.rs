@@ -1,10 +1,12 @@
+//! A crate for parsing Markdown in Rust
 #![crate_name = "markdown"]
+#![deny(missing_docs)]
+//#![deny(warnings)]
 
-#![feature(plugin)]
-#![feature(test)]
-#![plugin(regex_macros)]
 extern crate regex;
-extern crate test;
+
+#[macro_use]
+extern crate pipeline;
 
 use std::fs::File;
 use std::path::Path;
@@ -12,19 +14,21 @@ use std::io::{Read, Error};
 
 mod parser;
 mod html;
-mod normalizer;
 
-//pub trait MdElement {
-    //fn isElement (tokens: &[Token], text: &str) -> bool;
-    //fn render (tokens: &[Token], text: &str) -> Option<String>;
-//}
+use parser::Block;
 
+/// Converts a Markdown string to HTML
 pub fn to_html(text : &str) -> String{
-    let normalized = normalizer::normalize(&text);
-    let result = parser::parse(&normalized);
+    let result = parser::parse(text);
     html::to_html(&result)
 }
 
+/// Converts a Markdown string to a tokenset of Markdown items
+pub fn tokenize(text : &str) -> Vec<Block>{
+    parser::parse(text)
+}
+
+/// Opens a file and converts its contents to HTML
 pub fn file_to_html(path : &Path) -> Result<String, Error>{
     let mut file = match File::open(path) {
         Ok(file) => file,
@@ -37,8 +41,7 @@ pub fn file_to_html(path : &Path) -> Result<String, Error>{
         Err(e) => return Err(e)
     };
 
-    let normalized = normalizer::normalize(&text);
-    let result = parser::parse(&normalized);
+    let result = parser::parse(&text);
     Ok(html::to_html(&result))
 }
 

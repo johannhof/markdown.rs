@@ -1,10 +1,5 @@
-
-use regex::Regex;
-
 mod span;
 mod block;
-
-static SPLIT : Regex = regex!(r"\n(?:\s*\n|$)");
 
 #[derive(Debug, PartialEq)]
 pub enum Block {
@@ -12,7 +7,8 @@ pub enum Block {
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
     CodeBlock(String),
-    List(Vec<Vec<Span>>),
+    List(Vec<(Vec<Span>, usize)>),
+    Raw(String),
     Hr
 }
 
@@ -21,23 +17,14 @@ pub enum Span {
     Break,
     Text(String),
     Code(String),
-    Link(String, String, String),
-    Image(String, String, String),
+    Link(String, String, Option<String>),
+    Image(String, String, Option<String>),
 
     Emphasis(Vec<Span>),
     Strong(Vec<Span>)
 }
 
 pub fn parse (md : &str) -> Vec<Block> {
-    let split = SPLIT.split(md);
-    let mut tokens = vec![];
-    for block in split{
-        match block::parse_block(block) {
-            Some(e) => tokens.push(e),
-            None => {},
-        };
-    }
-    tokens
+    block::parse_blocks(md)
 }
-
 
