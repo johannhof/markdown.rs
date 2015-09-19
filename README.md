@@ -9,9 +9,8 @@ Usage
 To include markdown in your project add the following to your Cargo.toml:
 
 ```toml
-[dependencies.markdown]
-
-git = "https://github.com/johannhof/markdown.rs.git"
+[dependencies]
+markdown = "0.1"
 
 ```
 
