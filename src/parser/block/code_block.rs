@@ -10,14 +10,14 @@ pub fn parse_code_block(lines: &[&str]) -> Option<(Block, usize)>{
     let mut i = 0;
     for line in lines {
         if CODE_BLOCK_SPACES.is_match(line){
-            if i > 0 {
+            if i > 0 && !content.is_empty() {
                 content.push('\n');
             }
             // remove top-level spaces
             content.push_str(&line[4 .. line.len()]);
             i += 1;
         }else if CODE_BLOCK_TABS.is_match(line){
-            if i > 0 {
+            if i > 0 && !content.is_empty() {
                 content.push('\n');
             }
             // remove top-level spaces

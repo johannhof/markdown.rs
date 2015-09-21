@@ -2,7 +2,7 @@ use std::path::Path;
 use std::fs::File;
 use std::io::Read;
 use markdown;
-use text_diff;
+use difference;
 
 fn compare(name: &str) {
     let html = format!("tests/fixtures/docs-maruku-unittest/{}.html", name);
@@ -15,7 +15,7 @@ fn compare(name: &str) {
     File::open(md).unwrap().read_to_string(&mut tokens);
     println!("{:?}", markdown::tokenize(&tokens));
 
-    text_diff::assert_diff(&comp, &markdown::file_to_html(md).unwrap(), " ", 0);
+    difference::assert_diff(&comp, &markdown::file_to_html(md).unwrap(), " ", 0);
 }
 
 #[test]
@@ -34,9 +34,29 @@ pub fn code() {
 }
 
 #[test]
+pub fn code2() {
+    compare("code2")
+}
+
+#[test]
+pub fn code3() {
+    compare("code3")
+}
+
+#[test]
 pub fn easy() {
     compare("easy")
 }
+
+#[test]
+pub fn headers() {
+    compare("headers")
+}
+
+//#[test]
+//pub fn entities() {
+    //compare("entities")
+//}
 
 #[test]
 pub fn one() {
@@ -57,3 +77,8 @@ pub fn paragraphs() {
 pub fn test() {
     compare("test")
 }
+
+//#[test]
+//pub fn wrapping() {
+    //compare("wrapping")
+//}

@@ -3,6 +3,28 @@ use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock, List, Raw};
 use parser::Span;
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
+// takes a number of elements and returns their collective text as a slug
+fn slugify(elements : &Vec<Span>) -> String {
+    let mut ret = String::new();
+
+    for el in elements {
+        let next = match el {
+            &Break => "".to_string(),
+            &Text(ref text)
+            | &Link(ref text, _, _)
+            | &Image(ref text, _, _)
+            | &Code(ref text) => text.trim().replace(" ", "_").to_lowercase().to_string(),
+            &Strong(ref content) | &Emphasis(ref content) => slugify(content),
+        };
+        if !ret.is_empty(){
+            ret.push('_');
+        }
+        ret.push_str(&next);
+    }
+
+    ret
+}
+
 pub fn to_html (blocks : &Vec<Block>) -> String {
     let mut ret = String::new();
     for block in blocks.iter(){
@@ -53,7 +75,7 @@ fn format_list(elements : &Vec<(Vec<Span>, usize)>) -> String{
     for &(ref li, _indent) in elements{
         ret.push_str(&format!("<li>{}</li>", format_spans(li)))
     }
-    format!("<ul>{}</ul>", ret)
+    format!("<ul>\n{}</ul>\n\n", ret)
 }
 
 fn format_codeblock(elements : &String) -> String{
@@ -61,7 +83,7 @@ fn format_codeblock(elements : &String) -> String{
 }
 
 fn format_blockquote(elements : &Vec<Block>) -> String{
-    format!("<blockquote>{}</blockquote>", to_html(elements))
+    format!("<blockquote>\n{}</blockquote>\n\n", to_html(elements))
 }
 
 fn format_paragraph(elements : &Vec<Span>) -> String{
@@ -69,5 +91,5 @@ fn format_paragraph(elements : &Vec<Span>) -> String{
 }
 
 fn format_header(elements : &Vec<Span>, level : usize) -> String{
-    format!("<h{}>{}</h{}>", level, format_spans(elements), level)
+    format!("<h{} id='{}'>{}</h{}>\n\n", level, slugify(elements), format_spans(elements), level)
 }

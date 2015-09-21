@@ -29,10 +29,10 @@ pub fn parse_list(lines: &[&str]) -> Option<(Block, usize)>{
     for line in lines {
         // stop parsing on two newlines or if the paragraph after
         // a newline isn't started with a *
-        if prev_newline && (line.is_empty() || &line[0..1] != "*") {
+        if prev_newline && (line.is_empty() || &line[0 .. 1] != "*") {
             break;
         }
-        if line.is_empty() {
+        if line.is_empty(){
             prev_newline = true;
             if !content.is_empty() {
                 contents.push((parse_spans(&content), indent));
@@ -75,34 +75,39 @@ mod test {
             _ => panic!()
         }
 
-        //match parse_blockquote(&vec!["> A citation", "> is good,", "very good"]) {
-            //Some((Blockquote(_), 3)) => (),
-            //_ => panic!()
-        //}
+        match parse_list(&vec!["* A list", "* is good", "laksjdnflakdsjnf"]) {
+            Some((List(_), 3)) => (),
+            _ => panic!()
+        }
     }
 
-    //#[test]
-    //fn knows_when_to_stop() {
-        //match parse_blockquote(&vec!["> A citation", "> is good", "", "whatever"]) {
-            //Some((Blockquote(_), 3)) => (),
-            //_ => panic!()
-        //}
-    //}
+    #[test]
+    fn knows_when_to_stop() {
+        match parse_list(&vec!["* A list", "* is good", "", "laksjdnflakdsjnf"]) {
+            Some((List(_), 3)) => (),
+            _ => panic!()
+        }
 
-    //#[test]
-    //fn no_false_positives() {
-        //assert_eq!(
-            //parse_blockquote(&vec!["wat > this"]),
-            //None
-        //);
-    //}
+        match parse_list(&vec!["* A list", "", "laksjdnflakdsjnf"]) {
+            Some((List(_), 2)) => (),
+            _ => panic!()
+        }
+    }
 
-    //#[test]
-    //fn no_early_matching() {
-        //assert_eq!(
-            //parse_blockquote(&vec!["Hello", "> A citation", "> is good", "", "whatever"]),
-            //None
-        //);
-    //}
+    #[test]
+    fn no_false_positives() {
+        assert_eq!(
+            parse_list(&vec!["test * test"]),
+            None
+        );
+    }
+
+    #[test]
+    fn no_early_matching() {
+        assert_eq!(
+            parse_list(&vec!["test", "* whot", "* a list"]),
+            None
+        );
+    }
 }
 
