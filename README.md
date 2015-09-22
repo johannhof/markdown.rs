@@ -22,7 +22,6 @@ extern crate markdown;
 There is no full documentation right now, the only function exported by the library is `to_html`, which takes a markdown `&str` and converts it to an owned `String` containing html.
 
 ```rust
-extern crate markdown;
 let html : String = markdown::to_html("__I am markdown__");
 
 assert_eq!(&html, "<strong>I am markdown</strong>")
@@ -34,3 +33,4 @@ TODO
 - [ ] Inline HTML
 - [ ] Backslash Escapes
 - [ ] Automatic Links
+- [ ] Reference-Style Links
