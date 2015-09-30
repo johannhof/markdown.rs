@@ -1,5 +1,6 @@
 use parser::Block;
 use parser::Block::List;
+use parser::Span::Text;
 use parser::span::parse_spans;
 
 pub fn parse_list(lines: &[&str]) -> Option<(Block, usize)>{
@@ -13,7 +14,7 @@ pub fn parse_list(lines: &[&str]) -> Option<(Block, usize)>{
     let mut contents = vec![];
 
     // the content of a single list item
-    let mut content = String::new();
+    let mut content = vec![];
 
     // keeps track of the current indentation
     let mut indent = 0;
@@ -29,27 +30,38 @@ pub fn parse_list(lines: &[&str]) -> Option<(Block, usize)>{
     for line in lines {
         // stop parsing on two newlines or if the paragraph after
         // a newline isn't started with a *
-        if prev_newline && (line.is_empty() || &line[0 .. 1] != "*") {
+        if prev_newline && (line.is_empty() || &line.trim_left()[0 .. 1] != "*") {
             break;
         }
         if line.is_empty(){
             prev_newline = true;
-            if !content.is_empty() {
-                contents.push((parse_spans(&content), indent));
-                content = String::new();
-            }
-            indent = 0;
         }else{
             prev_newline = false;
         }
+        if line.is_empty() || &line.trim_left()[0 .. 1] == "*"{
+            if !content.is_empty() {
+                contents.push((content, indent));
+                content = vec![];
+            }
+            indent = 0;
+        }
         for c in line.chars(){
             if c == '*' {
-                content.push_str(&line[indent + 1 .. line.len()]);
+                for span in parse_spans(&line[indent + 1 .. line.len()]) {
+                    content.push(span);
+                }
                 break;
             }else if c == ' ' {
                 indent += 1;
             }else{
-                content.push_str(line);
+                // if the last item of the line is a text,
+                if let Some(&Text(_)) = content.last() {
+                    // add a whitespace between linebreaks
+                    content.push(Text(" ".to_string()));
+                }
+                for span in parse_spans(&line){
+                    content.push(span);
+                }
                 break;
             }
         }

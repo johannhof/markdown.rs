@@ -78,7 +78,7 @@ pub fn test() {
     compare("test")
 }
 
-//#[test]
-//pub fn wrapping() {
-    //compare("wrapping")
-//}
+#[test]
+pub fn wrapping() {
+    compare("wrapping")
+}

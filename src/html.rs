@@ -73,9 +73,9 @@ fn escape(text: &str) -> String{
 fn format_list(elements : &Vec<(Vec<Span>, usize)>) -> String{
     let mut ret = String::new();
     for &(ref li, _indent) in elements{
-        ret.push_str(&format!("<li>{}</li>", format_spans(li)))
+        ret.push_str(&format!("\n<li>{}</li>\n", format_spans(li)))
     }
-    format!("<ul>\n{}</ul>\n\n", ret)
+    format!("<ul>{}</ul>\n\n", ret)
 }
 
 fn format_codeblock(elements : &String) -> String{

@@ -49,7 +49,7 @@ pub fn parse_blocks (md : &str) -> Vec<Block> {
                     t.push(Text(" ".to_string()));
                 }
 
-                // TODO use append once it's stable
+                // TODO use push_all once it's stable
                 for span in parse_spans(lines[i]) {
                     t.push(span);
                 }
@@ -142,12 +142,12 @@ mod test {
 
         assert_eq!(
             parse_blocks("> One Paragraph, just > text \n>\n"),
-            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph, just > text ".to_string())])])]
+            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph, just > text".to_string())])])]
         );
 
         assert_eq!(
             parse_blocks("> One Paragraph\n>\n> just > text \n>\n"),
-            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),Paragraph(vec![Text("just > text ".to_string())])])]
+            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),Paragraph(vec![Text("just > text".to_string())])])]
         );
     }
 }
