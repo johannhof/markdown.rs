@@ -1,4 +1,4 @@
-markdown.rs [![](https://travis-ci.org/johannhof/markdown.rs.svg?branch=master)](https://travis-ci.org/johannhof/markdown.rs)
+markdown.rs [![](https://travis-ci.org/johannhof/markdown.rs.svg?branch=master)](https://travis-ci.org/johannhof/markdown.rs) [![](https://img.shields.io/crates/v/markdown.svg)](https://crates.io/crates/markdown)
 ===========
 
 A simple native Rust library for parsing Markdown and (outputting HTML).
