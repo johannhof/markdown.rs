@@ -1,5 +1,6 @@
 use parser::Block;
-use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock, List, Raw};
+use parser::ListItem;
+use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock, UnorderedList, Raw};
 use parser::Span;
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
@@ -33,7 +34,7 @@ pub fn to_html (blocks : &Vec<Block>) -> String {
             &Paragraph (ref elements) => format_paragraph(elements),
             &Blockquote (ref elements) => format_blockquote(elements),
             &CodeBlock (ref elements) => format_codeblock(elements),
-            &List (ref elements) => format_list(elements),
+            &UnorderedList (ref elements) => format_unordered_list(elements),
             &Raw (ref elements) => elements.to_string(),
             &Hr => format!("<hr>")
         };
@@ -67,13 +68,28 @@ fn escape(text: &str) -> String{
     text.replace("&", "&amp;")
         .replace("<", "&lt;")
         .replace("\"", "&quot;")
+        .replace("'", "&#8217;")
         .replace(">", "&gt;")
 }
 
-fn format_list(elements : &Vec<(Vec<Span>, usize)>) -> String{
+fn format_unordered_list(elements : &Vec<ListItem>) -> String{
     let mut ret = String::new();
-    for &(ref li, _indent) in elements{
-        ret.push_str(&format!("\n<li>{}</li>\n", format_spans(li)))
+    for list_item in elements{
+        let mut content = String::new();
+        match list_item {
+            &ListItem::Simple(ref els, _indent) => {
+                content.push_str(&format!("{}", format_spans(els)))
+            },
+            &ListItem::Paragraph(ref paragraphs, _indent) => {
+                for p in paragraphs {
+                    if let &Paragraph(ref els) = p {
+                        content.push_str(&format!("\n<p>{}</p>\n", format_spans(els)))
+                    }
+                }
+            },
+        }
+
+        ret.push_str(&format!("\n<li>{}</li>\n", content))
     }
     format!("<ul>{}</ul>\n\n", ret)
 }

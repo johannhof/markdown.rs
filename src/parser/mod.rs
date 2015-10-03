@@ -1,18 +1,25 @@
 mod span;
 mod block;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Block {
     Header(Vec<Span>, usize),
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
     CodeBlock(String),
-    List(Vec<(Vec<Span>, usize)>),
+    //OrderedList(Vec<ListItem>),
+    UnorderedList(Vec<ListItem>),
     Raw(String),
     Hr
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
+pub enum ListItem {
+    Simple(Vec<Span>, usize),
+    Paragraph(Vec<Block>, usize)
+}
+
+#[derive(Debug, PartialEq, Clone)]
 pub enum Span {
     Break,
     Text(String),

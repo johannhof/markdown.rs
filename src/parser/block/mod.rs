@@ -1,6 +1,6 @@
 use parser::Block;
-use parser::Block::{Paragraph, Raw};
-use parser::Span::Text;
+use parser::Block::Paragraph;
+use parser::Span::{Text, Break};
 use parser::span::parse_spans;
 
 mod atx_header;
@@ -8,13 +8,13 @@ mod setext_header;
 mod hr;
 mod code_block;
 mod blockquote;
-mod list;
+mod unordered_list;
 use self::atx_header::parse_atx_header;
 use self::setext_header::parse_setext_header;
 use self::hr::parse_hr;
 use self::code_block::parse_code_block;
 use self::blockquote::parse_blockquote;
-use self::list::parse_list;
+use self::unordered_list::parse_unordered_list;
 
 pub fn parse_blocks (md : &str) -> Vec<Block> {
     let mut blocks = vec![];
@@ -43,14 +43,19 @@ pub fn parse_blocks (md : &str) -> Vec<Block> {
                     t = Vec::new();
                 }
 
-                // if the last item of the line is a text,
-                if let Some(&Text(_)) = t.last() {
-                    // add a whitespace between linebreaks
-                    t.push(Text(" ".to_string()));
+                let spans = parse_spans(lines[i]);
+
+                // add a whitespace between linebreaks
+                // except when we have a break element or nothing
+                match (t.last(), spans.first()) {
+                    (Some(&Break), _) => {},
+                    (_, None) => {},
+                    (None, _) => {},
+                    _ => t.push(Text(" ".to_string()))
                 }
 
                 // TODO use push_all once it's stable
-                for span in parse_spans(lines[i]) {
+                for span in spans {
                     t.push(span);
                 }
                 i += 1;
@@ -71,7 +76,7 @@ fn parse_block (lines: &[&str]) -> Option<(Block, usize)>{
         => parse_setext_header
         => parse_code_block
         => parse_blockquote
-        => parse_list
+        => parse_unordered_list
     )
 }
 
