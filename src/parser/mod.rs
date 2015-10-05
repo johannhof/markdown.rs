@@ -15,8 +15,8 @@ pub enum Block {
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum ListItem {
-    Simple(Vec<Span>, usize),
-    Paragraph(Vec<Block>, usize)
+    Simple(Vec<Span>),
+    Paragraph(Vec<Block>)
 }
 
 #[derive(Debug, PartialEq, Clone)]

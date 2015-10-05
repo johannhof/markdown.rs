@@ -59,8 +59,18 @@ pub fn headers() {
 //}
 
 #[test]
+pub fn list1() {
+    compare("list1")
+}
+
+#[test]
 pub fn list2() {
     compare("list2")
+}
+
+#[test]
+pub fn lists() {
+    compare("lists")
 }
 
 #[test]

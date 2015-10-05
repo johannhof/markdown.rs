@@ -77,15 +77,11 @@ fn format_unordered_list(elements : &Vec<ListItem>) -> String{
     for list_item in elements{
         let mut content = String::new();
         match list_item {
-            &ListItem::Simple(ref els, _indent) => {
-                content.push_str(&format!("{}", format_spans(els)))
+            &ListItem::Simple(ref els) => {
+                content.push_str(&format_spans(els))
             },
-            &ListItem::Paragraph(ref paragraphs, _indent) => {
-                for p in paragraphs {
-                    if let &Paragraph(ref els) = p {
-                        content.push_str(&format!("\n<p>{}</p>\n", format_spans(els)))
-                    }
-                }
+            &ListItem::Paragraph(ref paragraphs) => {
+                content.push_str(&format!("\n{}", to_html(paragraphs)))
             },
         }
 

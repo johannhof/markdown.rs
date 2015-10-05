@@ -1,4 +1,5 @@
 use parser::Block;
+use parser::block::parse_blocks;
 use parser::Block::{UnorderedList, Paragraph};
 use parser::ListItem;
 use parser::Span::{Text, Break};
@@ -7,7 +8,7 @@ use regex::Regex;
 
 pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
     let list_begin = Regex::new(r"^(?P<indent> *)(-|\+|\*) (?P<content>.*)").unwrap();
-    let new_paragraph = Regex::new(r"^ {4}(?P<content>.*)").unwrap();
+    let new_paragraph = Regex::new(r"^ +(?P<content>.*)").unwrap();
 
     // if the beginning doesn't match a list don't even bother
     if !list_begin.is_match(lines[0]) {
@@ -17,6 +18,8 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
     // a vec holding the contents and indentation
     // of each list item
     let mut contents = vec![];
+    let mut is_block = false;
+    let mut prev_newline = false;
     let mut is_paragraph = false;
 
     // counts the number of parsed lines to return
@@ -27,44 +30,31 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
 
     // loop for list items
     loop {
-        let mut content = vec![];
-        let mut paragraph = vec![];
-        let mut prev_newline = false;
+        let mut content = String::new();
 
         if line.is_none() || !list_begin.is_match(line.unwrap()) {
             break;
         }
+        if prev_newline {
+            is_paragraph = true;
+            prev_newline = false;
+        }
 
         let caps = list_begin.captures(line.unwrap()).unwrap();
 
-        let indent = caps.name("indent").unwrap().len();
-        for span in parse_spans(&caps.name("content").unwrap()){
-            paragraph.push(span);
-        }
+        content.push_str(&caps.name("content").unwrap());
         i += 1;
 
         // parse additional lines of the listitem
         loop {
             line = line_iter.next();
 
-            // break if:
-            // the line is a list item
-
-            if line.is_none() {
+            if line.is_none() || (prev_newline && !new_paragraph.is_match(line.unwrap())) {
                 break;
             }
 
-            if list_begin.is_match(line.unwrap()) {
+            if list_begin.is_match(line.unwrap()){
                 break;
-            }
-
-            // there is no indent hinting at another paragraph
-            if prev_newline && !new_paragraph.is_match(line.unwrap()) {
-                break;
-            } else if prev_newline{
-                is_paragraph = true;
-                content.push(paragraph);
-                paragraph = vec![];
             }
 
             // newline means we start a new paragraph
@@ -74,35 +64,26 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
                 prev_newline = false;
             }
 
-            let spans = parse_spans(&line.unwrap());
-
-            // add a whitespace between linebreaks
-            // except when we have a break element or nothing
-            match (paragraph.last(), spans.first()) {
-                (Some(&Break), _) => {},
-                (_, None) => {},
-                (None, _) => {},
-                _ => paragraph.push(Text(" ".to_string()))
-            }
-
-            for span in spans{
-                paragraph.push(span);
+            content.push('\n');
+            if new_paragraph.is_match(line.unwrap()) {
+                let caps = new_paragraph.captures(line.unwrap()).unwrap();
+                content.push_str(&caps.name("content").unwrap());
+            }else{
+                content.push_str(&line.unwrap());
             }
 
             i += 1;
         }
-        content.push(paragraph);
-        contents.push((content, indent));
+        contents.push(parse_blocks(&content));
     }
 
     let mut list_contents = vec![];
 
-    for (c, indent) in contents {
-        if is_paragraph {
-            let content = c.into_iter().map(|p| Paragraph(p)).collect();
-            list_contents.push(ListItem::Paragraph(content, indent));
-        }else{
-            list_contents.push(ListItem::Simple(c[0].clone(), indent));
+    for c in contents {
+        if is_paragraph || c.len() > 1 {
+            list_contents.push(ListItem::Paragraph(c));
+        }else if let Paragraph(content) = c[0].clone(){
+            list_contents.push(ListItem::Simple(content));
         }
     }
 
