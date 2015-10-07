@@ -29,6 +29,11 @@ pub fn blank() {
 }
 
 #[test]
+pub fn blanks_in_code() {
+    compare("blanks_in_code")
+}
+
+#[test]
 pub fn code() {
     compare("code")
 }
@@ -71,6 +76,11 @@ pub fn list2() {
 #[test]
 pub fn lists() {
     compare("lists")
+}
+
+#[test]
+pub fn lists8() {
+    compare("lists8")
 }
 
 #[test]

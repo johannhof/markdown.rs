@@ -20,15 +20,18 @@ pub fn parse_code_block(lines: &[&str]) -> Option<(Block, usize)>{
             if i > 0 && !content.is_empty() {
                 content.push('\n');
             }
-            // remove top-level spaces
-            content.push_str(&line[1 .. line.len()]);
+
+            if !(i == 0 && line.trim().is_empty()){
+                // remove top-level spaces
+                content.push_str(&line[1 .. line.len()]);
+            }
             i += 1;
         }else{
             break;
         }
     }
     if i > 0 {
-        return Some((CodeBlock(content.to_string()), i));
+        return Some((CodeBlock(content.trim_matches('\n').to_string()), i));
     }
     return None;
 }
