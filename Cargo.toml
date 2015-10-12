@@ -17,6 +17,10 @@ exclude = [
     "test.md"
 ]
 
+[features]
+default = []
+unstable = []
+
 [dependencies]
 regex = "0.1.41"
 pipeline = "0.5.0"
