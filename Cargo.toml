@@ -9,6 +9,10 @@ readme = "README.md"
 keywords = ["markdown", "md", "html", "parser"]
 license = "MIT"
 
+[[bin]]
+name = "markdown"
+doc = false
+
 exclude = [
     "test.md"
 ]
@@ -16,5 +20,7 @@ exclude = [
 [dependencies]
 regex = "0.1.41"
 pipeline = "0.5.0"
+
+[dev-dependencies]
 difference = "0.4"
 
