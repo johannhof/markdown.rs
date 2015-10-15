@@ -74,6 +74,11 @@ pub fn list2() {
 }
 
 #[test]
+pub fn list3() {
+    compare("list3")
+}
+
+#[test]
 pub fn lists() {
     compare("lists")
 }

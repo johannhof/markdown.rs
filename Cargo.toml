@@ -9,13 +9,13 @@ readme = "README.md"
 keywords = ["markdown", "md", "html", "parser"]
 license = "MIT"
 
-[[bin]]
-name = "markdown"
-doc = false
-
 exclude = [
     "test.md"
 ]
+
+[[bin]]
+name = "markdown"
+doc = false
 
 [features]
 default = []

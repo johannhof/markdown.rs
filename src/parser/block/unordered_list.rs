@@ -8,7 +8,8 @@ use regex::Regex;
 
 pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
     let list_begin = Regex::new(r"^(?P<indent> *)(-|\+|\*) (?P<content>.*)").unwrap();
-    let new_paragraph = Regex::new(r"^ +(?P<content>.*)").unwrap();
+    let new_paragraph = Regex::new(r"^ +").unwrap();
+    let indented = Regex::new(r"^ {0,4}(?P<content>.*)").unwrap();
 
     // if the beginning doesn't match a list don't even bother
     if !list_begin.is_match(lines[0]) {
@@ -31,6 +32,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
     // loop for list items
     loop {
         let mut content = String::new();
+        let mut last_indent = 0;
 
         if line.is_none() || !list_begin.is_match(line.unwrap()) {
             break;
@@ -43,6 +45,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
         let caps = list_begin.captures(line.unwrap()).unwrap();
 
         content.push_str(&caps.name("content").unwrap());
+        last_indent = caps.name("indent").unwrap().len();
         i += 1;
 
         // parse additional lines of the listitem
@@ -54,7 +57,11 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
             }
 
             if list_begin.is_match(line.unwrap()){
-                break;
+                let caps = list_begin.captures(line.unwrap()).unwrap();
+                let indent = caps.name("indent").unwrap().len();
+                if(indent < 2 || indent <= last_indent){
+                    break;
+                }
             }
 
             // newline means we start a new paragraph
@@ -65,12 +72,8 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
             }
 
             content.push('\n');
-            if new_paragraph.is_match(line.unwrap()) {
-                let caps = new_paragraph.captures(line.unwrap()).unwrap();
-                content.push_str(&caps.name("content").unwrap());
-            }else{
-                content.push_str(&line.unwrap());
-            }
+            let caps = indented.captures(line.unwrap()).unwrap();
+            content.push_str(&caps.name("content").unwrap());
 
             i += 1;
         }
