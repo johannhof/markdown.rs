@@ -49,7 +49,7 @@ pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)>{
         return Some((Blockquote(parse_blocks(&content)), i));
     }
 
-    return None;
+    None
 }
 
 #[cfg(test)]

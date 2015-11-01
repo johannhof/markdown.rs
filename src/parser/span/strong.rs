@@ -4,19 +4,19 @@ use parser::Span;
 use parser::Span::Strong;
 
 pub fn parse_strong(text: &str) -> Option<(Span, usize)>{
-    let STRONG_UNDERSCORE = Regex::new(r"^__(?P<text>.+?)__").unwrap();
-    let STRONG_STAR = Regex::new(r"^\*\*(?P<text>.+?)\*\*").unwrap();
+    let strong_underscore = Regex::new(r"^__(?P<text>.+?)__").unwrap();
+    let strong_star = Regex::new(r"^\*\*(?P<text>.+?)\*\*").unwrap();
 
-    if STRONG_UNDERSCORE.is_match(text){
-        let caps = STRONG_UNDERSCORE.captures(text).unwrap();
+    if strong_underscore.is_match(text){
+        let caps = strong_underscore.captures(text).unwrap();
         let t = caps.name("text").unwrap();
         return Some((Strong(parse_spans(t)), t.len() + 4));
-    }else if STRONG_STAR.is_match(text){
-        let caps = STRONG_STAR.captures(text).unwrap();
+    }else if strong_star.is_match(text){
+        let caps = strong_star.captures(text).unwrap();
         let t = caps.name("text").unwrap();
         return Some((Strong(parse_spans(t)), t.len() + 4));
     }
-    return None;
+    None
 }
 
 #[cfg(test)]
@@ -28,32 +28,32 @@ mod test {
     fn finds_strong() {
         assert_eq!(
             parse_strong("__testing things__ test"),
-            Some((Strong(vec![Text("testing things".to_string())]), 18))
+            Some((Strong(vec![Text("testing things".to_owned())]), 18))
         );
 
         assert_eq!(
             parse_strong("**testing things** test"),
-            Some((Strong(vec![Text("testing things".to_string())]), 18))
+            Some((Strong(vec![Text("testing things".to_owned())]), 18))
         );
 
         assert_eq!(
             parse_strong("__testing things__ things__ test"),
-            Some((Strong(vec![Text("testing things".to_string())]), 18))
+            Some((Strong(vec![Text("testing things".to_owned())]), 18))
         );
 
         assert_eq!(
             parse_strong("__w__ things_ test"),
-            Some((Strong(vec![Text("w".to_string())]), 5))
+            Some((Strong(vec![Text("w".to_owned())]), 5))
         );
 
         assert_eq!(
             parse_strong("**w** things** test"),
-            Some((Strong(vec![Text("w".to_string())]), 5))
+            Some((Strong(vec![Text("w".to_owned())]), 5))
         );
 
         assert_eq!(
             parse_strong("__w___ testing things test"),
-            Some((Strong(vec![Text("w".to_string())]), 5))
+            Some((Strong(vec![Text("w".to_owned())]), 5))
         );
     }
 

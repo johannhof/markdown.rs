@@ -3,12 +3,12 @@ use parser::Block;
 use parser::Block::Hr;
 
 pub fn parse_hr(lines: &[&str]) -> Option<(Block, usize)> {
-    let HORIZONTAL_RULE = Regex::new(r"^(===+)$|^(---+)$").unwrap();
+    let horizontal_rule = Regex::new(r"^(===+)$|^(---+)$").unwrap();
 
-    if HORIZONTAL_RULE.is_match(lines[0]){
+    if horizontal_rule.is_match(lines[0]){
         return Some((Hr, 1));
     }
-    return None;
+    None
 }
 
 #[cfg(test)]

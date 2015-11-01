@@ -3,20 +3,20 @@ use parser::Block;
 use parser::Block::CodeBlock;
 
 pub fn parse_code_block(lines: &[&str]) -> Option<(Block, usize)>{
-    let CODE_BLOCK_SPACES = Regex::new(r"^ {4}").unwrap();
-    let CODE_BLOCK_TABS = Regex::new(r"^\t").unwrap();
+    let code_block_spaces = Regex::new(r"^ {4}").unwrap();
+    let code_block_tabs = Regex::new(r"^\t").unwrap();
 
     let mut content = String::new();
     let mut i = 0;
     for line in lines {
-        if CODE_BLOCK_SPACES.is_match(line){
+        if code_block_spaces.is_match(line){
             if i > 0 && !content.is_empty() {
                 content.push('\n');
             }
             // remove top-level spaces
             content.push_str(&line[4 .. line.len()]);
             i += 1;
-        }else if CODE_BLOCK_TABS.is_match(line){
+        }else if code_block_tabs.is_match(line){
             if i > 0 && !content.is_empty() {
                 content.push('\n');
             }
@@ -31,9 +31,9 @@ pub fn parse_code_block(lines: &[&str]) -> Option<(Block, usize)>{
         }
     }
     if i > 0 {
-        return Some((CodeBlock(content.trim_matches('\n').to_string()), i));
+        return Some((CodeBlock(content.trim_matches('\n').to_owned()), i));
     }
-    return None;
+    None
 }
 
 #[cfg(test)]
@@ -45,12 +45,12 @@ mod test {
     fn finds_code_block() {
         assert_eq!(
             parse_code_block(&vec!["    Test"]).unwrap(),
-            ((CodeBlock("Test".to_string()), 1))
+            ((CodeBlock("Test".to_owned()), 1))
         );
 
         assert_eq!(
             parse_code_block(&vec!["    Test", "    this"]).unwrap(),
-            ((CodeBlock("Test\nthis".to_string()), 2))
+            ((CodeBlock("Test\nthis".to_owned()), 2))
         );
     }
 
@@ -58,7 +58,7 @@ mod test {
     fn knows_when_to_stop() {
         assert_eq!(
             parse_code_block(&vec!["    Test", "    this", "stuff", "    now"]).unwrap(),
-            ((CodeBlock("Test\nthis".to_string()), 2))
+            ((CodeBlock("Test\nthis".to_owned()), 2))
         );
     }
 

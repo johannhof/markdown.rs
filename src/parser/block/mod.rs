@@ -19,7 +19,7 @@ use self::unordered_list::parse_unordered_list;
 pub fn parse_blocks (md : &str) -> Vec<Block> {
     let mut blocks = vec![];
     let mut t = vec![];
-    let lines : Vec<&str> = md.lines_any().collect();
+    let lines : Vec<&str> = md.lines().collect();
     let mut i = 0;
     while i < lines.len() {
         match parse_block(&lines[i .. lines.len()]){
@@ -51,7 +51,7 @@ pub fn parse_blocks (md : &str) -> Vec<Block> {
                     (Some(&Break), _) => {},
                     (_, None) => {},
                     (None, _) => {},
-                    _ => t.push(Text(" ".to_string()))
+                    _ => t.push(Text(" ".to_owned()))
                 }
 
                 // TODO use push_all once it's stable
@@ -90,7 +90,7 @@ mod test {
     fn finds_atx_header() {
         assert_eq!(
             parse_blocks("### Test"),
-            vec![Header(vec![Text("Test".to_string())], 3)]
+            vec![Header(vec![Text("Test".to_owned())], 3)]
         );
     }
 
@@ -98,11 +98,11 @@ mod test {
     fn finds_setext_header() {
         assert_eq!(
             parse_blocks("Test\n-------"),
-            vec![Header(vec![Text("Test".to_string())], 2)]
+            vec![Header(vec![Text("Test".to_owned())], 2)]
         );
         assert_eq!(
             parse_blocks("Test\n======="),
-            vec![Header(vec![Text("Test".to_string())], 1)]
+            vec![Header(vec![Text("Test".to_owned())], 1)]
         );
     }
 
@@ -122,7 +122,7 @@ mod test {
     fn finds_code_block() {
         assert_eq!(
             parse_blocks("    this is code\n    and this as well"),
-            vec![CodeBlock("this is code\nand this as well".to_string())]
+            vec![CodeBlock("this is code\nand this as well".to_owned())]
         );
     }
 
@@ -130,29 +130,29 @@ mod test {
     fn finds_blockquotes() {
         assert_eq!(
             parse_blocks("> One Paragraph\n>\n> ## H2 \n>\n"),
-            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]), Header(vec![Text("H2".to_string())], 2)])]
+            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_owned())]), Header(vec![Text("H2".to_owned())], 2)])]
         );
 
         assert_eq!(
             parse_blocks("> One Paragraph\n>\n> > Another blockquote\n>\n"),
-            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),
-                       Blockquote(vec![Paragraph(vec![Text("Another blockquote".to_string())])])])]
+            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_owned())]),
+                       Blockquote(vec![Paragraph(vec![Text("Another blockquote".to_owned())])])])]
         );
 
         assert_eq!(
             parse_blocks("> > One Paragraph\n> >\n> > Another blockquote\n>\n"),
-            vec![Blockquote(vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),
-                       Paragraph(vec![Text("Another blockquote".to_string())])])])]
+            vec![Blockquote(vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_owned())]),
+                       Paragraph(vec![Text("Another blockquote".to_owned())])])])]
         );
 
         assert_eq!(
             parse_blocks("> One Paragraph, just > text \n>\n"),
-            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph, just > text".to_string())])])]
+            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph, just > text".to_owned())])])]
         );
 
         assert_eq!(
             parse_blocks("> One Paragraph\n>\n> just > text \n>\n"),
-            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_string())]),Paragraph(vec![Text("just > text".to_string())])])]
+            vec![Blockquote(vec![Paragraph(vec![Text("One Paragraph".to_owned())]),Paragraph(vec![Text("just > text".to_owned())])])]
         );
     }
 }

@@ -3,6 +3,9 @@
 #![deny(missing_docs)]
 //#![deny(warnings)]
 
+#![cfg_attr(feature="clippy", feature(plugin))]
+#![cfg_attr(feature="clippy", plugin(clippy))]
+
 extern crate regex;
 
 #[macro_use]

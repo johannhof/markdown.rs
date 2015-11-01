@@ -3,50 +3,50 @@ use parser::Span;
 use parser::Span::Image;
 
 pub fn parse_image(text: &str) -> Option<(Span, usize)>{
-    let IMAGE = Regex::new("^!\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
+    let image = Regex::new("^!\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
 
-    if IMAGE.is_match(text){
-        let caps = IMAGE.captures(text).unwrap();
-        let text = caps.name("text").unwrap_or("").to_string();
-        let url = caps.name("url").unwrap_or("").to_string();
-        let title = caps.name("title").map(|t| t.to_string());
+    if image.is_match(text){
+        let caps = image.captures(text).unwrap();
+        let text = caps.name("text").unwrap_or("").to_owned();
+        let url = caps.name("url").unwrap_or("").to_owned();
+        let title = caps.name("title").map(|t| t.to_owned());
         // TODO correctly get whitespace length between url and title
         let len = text.len() + url.len() + 5 + title.clone().map_or(0, |t| t.len() + 3);
         return Some((Image(text, url, title), len));
     }
-    return None;
+    None
 }
 
 #[test]
 fn finds_image() {
     assert_eq!(
         parse_image("![an example](example.com) test"),
-        Some((Image("an example".to_string(), "example.com".to_string(), None), 26))
+        Some((Image("an example".to_owned(), "example.com".to_owned(), None), 26))
     );
 
     assert_eq!(
         parse_image("![](example.com) test"),
-        Some((Image("".to_string(), "example.com".to_string(), None), 16))
+        Some((Image("".to_owned(), "example.com".to_owned(), None), 16))
     );
 
     assert_eq!(
         parse_image("![an example]() test"),
-        Some((Image("an example".to_string(), "".to_string(), None), 15))
+        Some((Image("an example".to_owned(), "".to_owned(), None), 15))
     );
 
     assert_eq!(
         parse_image("![]() test"),
-        Some((Image("".to_string(), "".to_string(), None), 5))
+        Some((Image("".to_owned(), "".to_owned(), None), 5))
     );
 
     assert_eq!(
         parse_image("![an example](example.com \"Title\") test"),
-        Some((Image("an example".to_string(), "example.com".to_string(), Some("Title".to_string())), 34))
+        Some((Image("an example".to_owned(), "example.com".to_owned(), Some("Title".to_owned())), 34))
     );
 
     assert_eq!(
         parse_image("![an example](example.com) test [a link](example.com)"),
-        Some((Image("an example".to_string(), "example.com".to_string(), None), 26))
+        Some((Image("an example".to_owned(), "example.com".to_owned(), None), 26))
     );
 }
 

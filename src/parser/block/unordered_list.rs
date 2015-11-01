@@ -2,8 +2,6 @@ use parser::Block;
 use parser::block::parse_blocks;
 use parser::Block::{UnorderedList, Paragraph};
 use parser::ListItem;
-use parser::Span::{Text, Break};
-use parser::span::parse_spans;
 use regex::Regex;
 
 pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
@@ -19,7 +17,6 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
     // a vec holding the contents and indentation
     // of each list item
     let mut contents = vec![];
-    let mut is_block = false;
     let mut prev_newline = false;
     let mut is_paragraph = false;
 
@@ -59,13 +56,13 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
             if list_begin.is_match(line.unwrap()){
                 let caps = list_begin.captures(line.unwrap()).unwrap();
                 let indent = caps.name("indent").unwrap().len();
-                if(indent < 2 || indent <= last_indent){
+                if indent < 2 || indent <= last_indent {
                     break;
                 }
             }
 
             // newline means we start a new paragraph
-            if(line.unwrap().is_empty()){
+            if line.unwrap().is_empty() {
                 prev_newline = true;
             }else{
                 prev_newline = false;
@@ -94,7 +91,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
         return Some((UnorderedList(list_contents), i));
     }
 
-    return None;
+    None
 }
 
 #[cfg(test)]

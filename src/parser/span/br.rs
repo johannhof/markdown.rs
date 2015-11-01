@@ -3,12 +3,12 @@ use parser::Span;
 use parser::Span::Break;
 
 pub fn parse_break(text: &str) -> Option<(Span, usize)>{
-    let BREAK = Regex::new(r"^ {2}$").unwrap();
+    let br = Regex::new(r"^ {2}$").unwrap();
 
-    if BREAK.is_match(text){
+    if br.is_match(text){
         return Some((Break, 2));
     }
-    return None;
+    None
 }
 
 #[cfg(test)]

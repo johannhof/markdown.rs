@@ -3,56 +3,56 @@ use parser::Span;
 use parser::Span::Code;
 
 pub fn parse_code(text: &str) -> Option<(Span, usize)>{
-    let CODE_SINGLE = Regex::new(r"^`(?P<text>.+?)`").unwrap();
-    let CODE_DOUBLE = Regex::new(r"^``(?P<text>.+?)``").unwrap();
+    let code_single = Regex::new(r"^`(?P<text>.+?)`").unwrap();
+    let code_double = Regex::new(r"^``(?P<text>.+?)``").unwrap();
 
-    if CODE_DOUBLE.is_match(text){
-        let caps = CODE_DOUBLE.captures(text).unwrap();
+    if code_double.is_match(text){
+        let caps = code_double.captures(text).unwrap();
         let t = caps.name("text").unwrap();
-        return Some((Code(t.to_string()), t.len() + 4));
-    }else if CODE_SINGLE.is_match(text){
-        let caps = CODE_SINGLE.captures(text).unwrap();
+        return Some((Code(t.to_owned()), t.len() + 4));
+    }else if code_single.is_match(text){
+        let caps = code_single.captures(text).unwrap();
         let t = caps.name("text").unwrap();
-        return Some((Code(t.to_string()), t.len() + 2));
+        return Some((Code(t.to_owned()), t.len() + 2));
     }
-    return None;
+    None
 }
 
 #[test]
 fn finds_code() {
     assert_eq!(
         parse_code("`testing things` test"),
-        Some((Code("testing things".to_string()), 16))
+        Some((Code("testing things".to_owned()), 16))
     );
 
     assert_eq!(
         parse_code("``testing things`` test"),
-        Some((Code("testing things".to_string()), 18))
+        Some((Code("testing things".to_owned()), 18))
     );
 
     assert_eq!(
         parse_code("``testing things`` things`` test"),
-        Some((Code("testing things".to_string()), 18))
+        Some((Code("testing things".to_owned()), 18))
     );
 
     assert_eq!(
         parse_code("`w` testing things test"),
-        Some((Code("w".to_string()), 3))
+        Some((Code("w".to_owned()), 3))
     );
 
     assert_eq!(
         parse_code("`w`` testing things test"),
-        Some((Code("w".to_string()), 3))
+        Some((Code("w".to_owned()), 3))
     );
 
     assert_eq!(
         parse_code("``w`` testing things test"),
-        Some((Code("w".to_string()), 5))
+        Some((Code("w".to_owned()), 5))
     );
 
     assert_eq!(
         parse_code("``w``` testing things test"),
-        Some((Code("w".to_string()), 5))
+        Some((Code("w".to_owned()), 5))
     );
 }
 

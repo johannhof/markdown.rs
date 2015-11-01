@@ -25,7 +25,7 @@ pub fn parse_spans(text: &str) -> Vec<Span>{
                     // if this text is on the very left
                     // trim the left whitespace
                     if tokens.is_empty() {
-                        t = t.trim_left().to_string()
+                        t = t.trim_left().to_owned()
                     }
                     tokens.push(Text(t));
                 }
@@ -43,11 +43,11 @@ pub fn parse_spans(text: &str) -> Vec<Span>{
         // if this text is on the very left
         // trim the left whitespace
         if tokens.is_empty() {
-            t = t.trim_left().to_string();
+            t = t.trim_left().to_owned();
         }
         // we're at the very end of this line,
         // trim trailing whitespace
-        t = t.trim_right().to_string();
+        t = t.trim_right().to_owned();
         tokens.push(Text(t));
     }
     tokens
@@ -72,37 +72,37 @@ mod test {
 
     #[test]
     fn converts_into_text() {
-        assert_eq!(parse_spans("this is a test"), vec![Text("this is a test".to_string())]);
+        assert_eq!(parse_spans("this is a test"), vec![Text("this is a test".to_owned())]);
     }
 
     #[test]
     fn finds_breaks() {
-        assert_eq!(parse_spans("this is a test  "), vec![Text("this is a test".to_string()), Break]);
+        assert_eq!(parse_spans("this is a test  "), vec![Text("this is a test".to_owned()), Break]);
     }
 
     #[test]
     fn finds_code() {
-        assert_eq!(parse_spans("this `is a` test"), vec![Text("this ".to_string()), Code("is a".to_string()), Text(" test".to_string())]);
-        assert_eq!(parse_spans("this ``is a`` test"), vec![Text("this ".to_string()), Code("is a".to_string()), Text(" test".to_string())]);
+        assert_eq!(parse_spans("this `is a` test"), vec![Text("this ".to_owned()), Code("is a".to_owned()), Text(" test".to_owned())]);
+        assert_eq!(parse_spans("this ``is a`` test"), vec![Text("this ".to_owned()), Code("is a".to_owned()), Text(" test".to_owned())]);
     }
 
     #[test]
     fn finds_emphasis() {
-        assert_eq!(parse_spans("this _is a_ test"), vec![Text("this ".to_string()), Emphasis(vec![Text("is a".to_string())]), Text(" test".to_string())]);
-        assert_eq!(parse_spans("this *is a* test"), vec![Text("this ".to_string()), Emphasis(vec![Text("is a".to_string())]), Text(" test".to_string())]);
+        assert_eq!(parse_spans("this _is a_ test"), vec![Text("this ".to_owned()), Emphasis(vec![Text("is a".to_owned())]), Text(" test".to_owned())]);
+        assert_eq!(parse_spans("this *is a* test"), vec![Text("this ".to_owned()), Emphasis(vec![Text("is a".to_owned())]), Text(" test".to_owned())]);
     }
 
     #[test]
     fn finds_strong() {
-        assert_eq!(parse_spans("this __is a__ test"), vec![Text("this ".to_string()), Strong(vec![Text("is a".to_string())]), Text(" test".to_string())]);
-        assert_eq!(parse_spans("this **is a** test"), vec![Text("this ".to_string()), Strong(vec![Text("is a".to_string())]), Text(" test".to_string())]);
+        assert_eq!(parse_spans("this __is a__ test"), vec![Text("this ".to_owned()), Strong(vec![Text("is a".to_owned())]), Text(" test".to_owned())]);
+        assert_eq!(parse_spans("this **is a** test"), vec![Text("this ".to_owned()), Strong(vec![Text("is a".to_owned())]), Text(" test".to_owned())]);
     }
 
     #[test]
     fn finds_link() {
         assert_eq!(
             parse_spans("this is [an example](example.com) test"),
-            vec![Text("this is ".to_string()), Link("an example".to_string(), "example.com".to_string(), None), Text(" test".to_string())]
+            vec![Text("this is ".to_owned()), Link("an example".to_owned(), "example.com".to_owned(), None), Text(" test".to_owned())]
         );
     }
 
@@ -110,7 +110,7 @@ mod test {
     fn finds_image() {
         assert_eq!(
             parse_spans("this is ![an example](example.com) test"),
-            vec![Text("this is ".to_string()), Image("an example".to_string(), "example.com".to_string(), None), Text(" test".to_string())]
+            vec![Text("this is ".to_owned()), Image("an example".to_owned(), "example.com".to_owned(), None), Text(" test".to_owned())]
         );
     }
 
@@ -119,16 +119,16 @@ mod test {
         assert_eq!(
             parse_spans("some text ![an image](image.com) _emphasis_ __strong__ `teh codez` [a link](example.com)  "),
             vec![
-                Text("some text ".to_string()),
-                Image("an image".to_string(), "image.com".to_string(), None),
-                Text(" ".to_string()),
-                Emphasis(vec![Text("emphasis".to_string())]),
-                Text(" ".to_string()),
-                Strong(vec![Text("strong".to_string())]),
-                Text(" ".to_string()),
-                Code("teh codez".to_string()),
-                Text(" ".to_string()),
-                Link("a link".to_string(), "example.com".to_string(), None),
+                Text("some text ".to_owned()),
+                Image("an image".to_owned(), "image.com".to_owned(), None),
+                Text(" ".to_owned()),
+                Emphasis(vec![Text("emphasis".to_owned())]),
+                Text(" ".to_owned()),
+                Strong(vec![Text("strong".to_owned())]),
+                Text(" ".to_owned()),
+                Code("teh codez".to_owned()),
+                Text(" ".to_owned()),
+                Link("a link".to_owned(), "example.com".to_owned(), None),
                 Break
             ]
         );
