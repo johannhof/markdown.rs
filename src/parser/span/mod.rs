@@ -62,7 +62,7 @@ fn parse_span(text: &str) -> Option<(Span, usize)>{
         => parse_break
         => parse_image
         => parse_link
-    )
+        )
 }
 
 #[cfg(test)]
@@ -103,7 +103,7 @@ mod test {
         assert_eq!(
             parse_spans("this is [an example](example.com) test"),
             vec![Text("this is ".to_owned()), Link("an example".to_owned(), "example.com".to_owned(), None), Text(" test".to_owned())]
-        );
+            );
     }
 
     #[test]
@@ -111,7 +111,7 @@ mod test {
         assert_eq!(
             parse_spans("this is ![an example](example.com) test"),
             vec![Text("this is ".to_owned()), Image("an example".to_owned(), "example.com".to_owned(), None), Text(" test".to_owned())]
-        );
+            );
     }
 
     #[test]
@@ -119,19 +119,19 @@ mod test {
         assert_eq!(
             parse_spans("some text ![an image](image.com) _emphasis_ __strong__ `teh codez` [a link](example.com)  "),
             vec![
-                Text("some text ".to_owned()),
-                Image("an image".to_owned(), "image.com".to_owned(), None),
-                Text(" ".to_owned()),
-                Emphasis(vec![Text("emphasis".to_owned())]),
-                Text(" ".to_owned()),
-                Strong(vec![Text("strong".to_owned())]),
-                Text(" ".to_owned()),
-                Code("teh codez".to_owned()),
-                Text(" ".to_owned()),
-                Link("a link".to_owned(), "example.com".to_owned(), None),
-                Break
+            Text("some text ".to_owned()),
+            Image("an image".to_owned(), "image.com".to_owned(), None),
+            Text(" ".to_owned()),
+            Emphasis(vec![Text("emphasis".to_owned())]),
+            Text(" ".to_owned()),
+            Strong(vec![Text("strong".to_owned())]),
+            Text(" ".to_owned()),
+            Code("teh codez".to_owned()),
+            Text(" ".to_owned()),
+            Link("a link".to_owned(), "example.com".to_owned(), None),
+            Break
             ]
-        );
+            );
     }
 }
 

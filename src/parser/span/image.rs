@@ -2,10 +2,11 @@ use regex::Regex;
 use parser::Span;
 use parser::Span::Image;
 
-pub fn parse_image(text: &str) -> Option<(Span, usize)>{
-    let image = Regex::new("^!\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
+pub fn parse_image(text: &str) -> Option<(Span, usize)> {
+    let image = Regex::new("^!\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)")
+                    .unwrap();
 
-    if image.is_match(text){
+    if image.is_match(text) {
         let caps = image.captures(text).unwrap();
         let text = caps.name("text").unwrap_or("").to_owned();
         let url = caps.name("url").unwrap_or("").to_owned();
@@ -19,54 +20,37 @@ pub fn parse_image(text: &str) -> Option<(Span, usize)>{
 
 #[test]
 fn finds_image() {
-    assert_eq!(
-        parse_image("![an example](example.com) test"),
-        Some((Image("an example".to_owned(), "example.com".to_owned(), None), 26))
-    );
+    assert_eq!(parse_image("![an example](example.com) test"),
+               Some((Image("an example".to_owned(), "example.com".to_owned(), None),
+                     26)));
 
-    assert_eq!(
-        parse_image("![](example.com) test"),
-        Some((Image("".to_owned(), "example.com".to_owned(), None), 16))
-    );
+    assert_eq!(parse_image("![](example.com) test"),
+               Some((Image("".to_owned(), "example.com".to_owned(), None), 16)));
 
-    assert_eq!(
-        parse_image("![an example]() test"),
-        Some((Image("an example".to_owned(), "".to_owned(), None), 15))
-    );
+    assert_eq!(parse_image("![an example]() test"),
+               Some((Image("an example".to_owned(), "".to_owned(), None), 15)));
 
-    assert_eq!(
-        parse_image("![]() test"),
-        Some((Image("".to_owned(), "".to_owned(), None), 5))
-    );
+    assert_eq!(parse_image("![]() test"),
+               Some((Image("".to_owned(), "".to_owned(), None), 5)));
 
-    assert_eq!(
-        parse_image("![an example](example.com \"Title\") test"),
-        Some((Image("an example".to_owned(), "example.com".to_owned(), Some("Title".to_owned())), 34))
-    );
+    assert_eq!(parse_image("![an example](example.com \"Title\") test"),
+               Some((Image("an example".to_owned(),
+                           "example.com".to_owned(),
+                           Some("Title".to_owned())),
+                     34)));
 
-    assert_eq!(
-        parse_image("![an example](example.com) test [a link](example.com)"),
-        Some((Image("an example".to_owned(), "example.com".to_owned(), None), 26))
-    );
+    assert_eq!(parse_image("![an example](example.com) test [a link](example.com)"),
+               Some((Image("an example".to_owned(), "example.com".to_owned(), None),
+                     26)));
 }
 
 #[test]
 fn no_false_positives() {
-    assert_eq!(
-        parse_image("![()] testing things test"),
-        None
-    );
-    assert_eq!(
-        parse_image("!()[] testing things test"),
-        None
-    );
+    assert_eq!(parse_image("![()] testing things test"), None);
+    assert_eq!(parse_image("!()[] testing things test"), None);
 }
 
 #[test]
 fn no_early_matching() {
-    assert_eq!(
-        parse_image("were ![an example](example.com) test"),
-        None
-    );
+    assert_eq!(parse_image("were ![an example](example.com) test"), None);
 }
-

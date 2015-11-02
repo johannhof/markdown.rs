@@ -2,10 +2,10 @@ use regex::Regex;
 use parser::Span;
 use parser::Span::Break;
 
-pub fn parse_break(text: &str) -> Option<(Span, usize)>{
+pub fn parse_break(text: &str) -> Option<(Span, usize)> {
     let br = Regex::new(r"^ {2}$").unwrap();
 
-    if br.is_match(text){
+    if br.is_match(text) {
         return Some((Break, 2));
     }
     None
@@ -28,4 +28,3 @@ mod test {
         assert_eq!(parse_break("  a"), None);
     }
 }
-

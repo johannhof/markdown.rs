@@ -2,7 +2,7 @@ use parser::block::parse_blocks;
 use parser::Block;
 use parser::Block::Blockquote;
 
-pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)>{
+pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)> {
     // if the first char isnt a blockquote don't even bother
     if lines[0].is_empty() || &lines[0][0..1] != ">" {
         return None;
@@ -28,7 +28,7 @@ pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)>{
         }
         if line.is_empty() {
             prev_newline = true;
-        }else{
+        } else {
             prev_newline = false;
         }
         let mut begin = 0;
@@ -41,7 +41,7 @@ pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)>{
         if i > 0 {
             content.push('\n');
         }
-        content.push_str(&line[begin .. line.len()]);
+        content.push_str(&line[begin..line.len()]);
         i += 1;
     }
 
@@ -61,12 +61,12 @@ mod test {
     fn finds_blockquote() {
         match parse_blockquote(&vec!["> A citation", "> is good"]) {
             Some((Blockquote(_), 2)) => (),
-            _ => panic!()
+            _ => panic!(),
         }
 
         match parse_blockquote(&vec!["> A citation", "> is good,", "very good"]) {
             Some((Blockquote(_), 3)) => (),
-            _ => panic!()
+            _ => panic!(),
         }
     }
 
@@ -74,24 +74,18 @@ mod test {
     fn knows_when_to_stop() {
         match parse_blockquote(&vec!["> A citation", "> is good", "", "whatever"]) {
             Some((Blockquote(_), 3)) => (),
-            _ => panic!()
+            _ => panic!(),
         }
     }
 
     #[test]
     fn no_false_positives() {
-        assert_eq!(
-            parse_blockquote(&vec!["wat > this"]),
-            None
-        );
+        assert_eq!(parse_blockquote(&vec!["wat > this"]), None);
     }
 
     #[test]
     fn no_early_matching() {
-        assert_eq!(
-            parse_blockquote(&vec!["Hello", "> A citation", "> is good", "", "whatever"]),
-            None
-        );
+        assert_eq!(parse_blockquote(&vec!["Hello", "> A citation", "> is good", "", "whatever"]),
+                   None);
     }
 }
-

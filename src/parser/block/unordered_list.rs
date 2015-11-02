@@ -4,7 +4,7 @@ use parser::Block::{UnorderedList, Paragraph};
 use parser::ListItem;
 use regex::Regex;
 
-pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
+pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
     let list_begin = Regex::new(r"^(?P<indent> *)(-|\+|\*) (?P<content>.*)").unwrap();
     let new_paragraph = Regex::new(r"^ +").unwrap();
     let indented = Regex::new(r"^ {0,4}(?P<content>.*)").unwrap();
@@ -53,7 +53,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
                 break;
             }
 
-            if list_begin.is_match(line.unwrap()){
+            if list_begin.is_match(line.unwrap()) {
                 let caps = list_begin.captures(line.unwrap()).unwrap();
                 let indent = caps.name("indent").unwrap().len();
                 if indent < 2 || indent <= last_indent {
@@ -64,7 +64,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
             // newline means we start a new paragraph
             if line.unwrap().is_empty() {
                 prev_newline = true;
-            }else{
+            } else {
                 prev_newline = false;
             }
 
@@ -82,7 +82,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)>{
     for c in contents {
         if is_paragraph || c.len() > 1 {
             list_contents.push(ListItem::Paragraph(c));
-        }else if let Paragraph(content) = c[0].clone(){
+        } else if let Paragraph(content) = c[0].clone() {
             list_contents.push(ListItem::Simple(content));
         }
     }
@@ -103,12 +103,12 @@ mod test {
     fn finds_list() {
         match parse_unordered_list(&vec!["* A list", "* is good"]) {
             Some((UnorderedList(_), 2)) => (),
-            x => panic!("Found {:?}", x)
+            x => panic!("Found {:?}", x),
         }
 
         match parse_unordered_list(&vec!["* A list", "* is good", "laksjdnflakdsjnf"]) {
             Some((UnorderedList(_), 3)) => (),
-            x => panic!("Found {:?}", x)
+            x => panic!("Found {:?}", x),
         }
     }
 
@@ -116,29 +116,23 @@ mod test {
     fn knows_when_to_stop() {
         match parse_unordered_list(&vec!["* A list", "* is good", "", "laksjdnflakdsjnf"]) {
             Some((UnorderedList(_), 3)) => (),
-            x => panic!("Found {:?}", x)
+            x => panic!("Found {:?}", x),
         }
 
         match parse_unordered_list(&vec!["* A list", "", "laksjdnflakdsjnf"]) {
             Some((UnorderedList(_), 2)) => (),
-            x => panic!("Found {:?}", x)
+            x => panic!("Found {:?}", x),
         }
     }
 
     #[test]
     fn no_false_positives() {
-        assert_eq!(
-            parse_unordered_list(&vec!["test * test"]),
-            None
-        );
+        assert_eq!(parse_unordered_list(&vec!["test * test"]), None);
     }
 
     #[test]
     fn no_early_matching() {
-        assert_eq!(
-            parse_unordered_list(&vec!["test", "* whot", "* a list"]),
-            None
-        );
+        assert_eq!(parse_unordered_list(&vec!["test", "* whot", "* a list"]),
+                   None);
     }
 }
-

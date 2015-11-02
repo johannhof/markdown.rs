@@ -5,7 +5,7 @@ use parser::Block::Hr;
 pub fn parse_hr(lines: &[&str]) -> Option<(Block, usize)> {
     let horizontal_rule = Regex::new(r"^(===+)$|^(---+)$").unwrap();
 
-    if horizontal_rule.is_match(lines[0]){
+    if horizontal_rule.is_match(lines[0]) {
         return Some((Hr, 1));
     }
     None
@@ -20,12 +20,14 @@ mod test {
     fn finds_hr() {
         assert_eq!(parse_hr(&vec!["-------"]).unwrap(), (Hr, 1));
         assert_eq!(parse_hr(&vec!["---"]).unwrap(), (Hr, 1));
-        assert_eq!(parse_hr(&vec!["----------------------------"]).unwrap(), (Hr, 1));
+        assert_eq!(parse_hr(&vec!["----------------------------"]).unwrap(),
+                   (Hr, 1));
         assert_eq!(parse_hr(&vec!["-------", "abc"]).unwrap(), (Hr, 1));
 
         assert_eq!(parse_hr(&vec!["======="]).unwrap(), (Hr, 1));
         assert_eq!(parse_hr(&vec!["==="]).unwrap(), (Hr, 1));
-        assert_eq!(parse_hr(&vec!["============================"]).unwrap(), (Hr, 1));
+        assert_eq!(parse_hr(&vec!["============================"]).unwrap(),
+                   (Hr, 1));
         assert_eq!(parse_hr(&vec!["=======", "abc"]).unwrap(), (Hr, 1));
     }
 
@@ -42,4 +44,3 @@ mod test {
         assert_eq!(parse_hr(&vec!["=======---================="]), None);
     }
 }
-
