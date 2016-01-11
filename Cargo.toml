@@ -7,7 +7,7 @@ description = "Native Rust library for parsing Markdown and (outputting HTML)"
 repository = "https://github.com/johannhof/markdown.rs"
 readme = "README.md"
 keywords = ["markdown", "md", "html", "parser"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 
 exclude = [
     "test.md"
