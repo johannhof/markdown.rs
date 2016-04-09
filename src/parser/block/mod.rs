@@ -54,10 +54,7 @@ pub fn parse_blocks (md : &str) -> Vec<Block> {
                     _ => t.push(Text(" ".to_owned()))
                 }
 
-                // TODO use push_all once it's stable
-                for span in spans {
-                    t.push(span);
-                }
+                t.extend_from_slice(&spans);
                 i += 1;
             }
         }
