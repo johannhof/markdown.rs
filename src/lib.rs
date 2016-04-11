@@ -13,7 +13,7 @@ extern crate pipeline;
 
 use std::fs::File;
 use std::path::Path;
-use std::io::{Read, Error};
+use std::io::{self, Read};
 
 mod parser;
 mod html;
@@ -32,17 +32,11 @@ pub fn tokenize(text: &str) -> Vec<Block> {
 }
 
 /// Opens a file and converts its contents to HTML
-pub fn file_to_html(path: &Path) -> Result<String, Error> {
-    let mut file = match File::open(path) {
-        Ok(file) => file,
-        Err(e) => return Err(e),
-    };
+pub fn file_to_html(path: &Path) -> io::Result<String> {
+    let mut file = try!(File::open(path));
 
     let mut text = String::new();
-    match file.read_to_string(&mut text) {
-        Ok(_) => (),
-        Err(e) => return Err(e),
-    }
+    try!(file.read_to_string(&mut text));
 
     let result = parser::parse(&text);
     Ok(html::to_html(&result))
