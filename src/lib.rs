@@ -1,6 +1,6 @@
 //! A crate for parsing Markdown in Rust
 #![crate_name = "markdown"]
-#![deny(missing_docs)]
+// #![deny(missing_docs)]
 // #![deny(warnings)]
 
 #![cfg_attr(feature="clippy", feature(plugin))]
@@ -15,7 +15,7 @@ use std::fs::File;
 use std::path::Path;
 use std::io::{self, Read};
 
-mod parser;
+pub mod parser;
 mod html;
 
 use parser::Block;
