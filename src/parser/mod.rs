@@ -1,6 +1,7 @@
 mod span;
 mod block;
 
+#[allow(missing_docs)]
 #[derive(Debug, PartialEq, Clone)]
 pub enum Block {
     Header(Vec<Span>, usize),
@@ -13,12 +14,14 @@ pub enum Block {
     Hr
 }
 
+#[allow(missing_docs)]
 #[derive(Debug, PartialEq, Clone)]
 pub enum ListItem {
     Simple(Vec<Span>),
     Paragraph(Vec<Block>)
 }
 
+#[allow(missing_docs)]
 #[derive(Debug, PartialEq, Clone)]
 pub enum Span {
     Break,
