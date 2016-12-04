@@ -18,10 +18,131 @@ fn compare(name: &str) {
     difference::assert_diff(&comp, &markdown::file_to_html(md).unwrap(), " ", 0);
 }
 
+fn roundtrip(name: &str) {
+    let html = format!("tests/fixtures/docs-maruku-unittest/{}.html", name);
+    let text = format!("tests/fixtures/docs-maruku-unittest/{}.text", name);
+    let mut comp = String::new();
+    File::open(Path::new(&html)).unwrap().read_to_string(&mut comp).unwrap();
+    let md = Path::new(&text);
+
+    let mut tokens = String::new();
+    File::open(md).unwrap().read_to_string(&mut tokens).unwrap();
+    
+    let v = markdown::tokenize(&tokens);
+    println!("{:?}", v);
+    let out = markdown::generate_markdown(v);
+    
+    println!("BEGIN\n{}\nEND", out);
+    
+    difference::assert_diff(&comp, &markdown::to_html(&out), " ", 0);
+}
+
+#[test]
+pub fn rt_alt() {
+    roundtrip("alt")
+}
+
+#[test]
+pub fn rt_blank() {
+    roundtrip("blank")
+}
+
+
+#[test]
+pub fn rt_blanks_in_code() {
+    roundtrip("blanks_in_code")
+}
+
+
+#[test]
+pub fn rt_code() {
+    roundtrip("code")
+}
+
+
+#[test]
+pub fn rt_code2() {
+    roundtrip("code2")
+}
+
+
+#[test]
+pub fn rt_code3() {
+    roundtrip("code3")
+}
+
+#[test]
+pub fn rt_easy() {
+    roundtrip("easy")
+}
+
+#[test]
+pub fn rt_headers() {
+    roundtrip("headers")
+}
+
+//#[test]
+//pub fn rt_entities() {
+    //roundtrip("entities")
+//}
+
+#[test]
+pub fn rt_list1() {
+    roundtrip("list1")
+}
+
+#[test]
+pub fn rt_list2() {
+    roundtrip("list2")
+}
+
+#[test]
+pub fn rt_list3() {
+    roundtrip("list3")
+}
+
+#[test]
+pub fn rt_lists() {
+    roundtrip("lists")
+}
+
+#[test]
+pub fn rt_lists8() {
+    roundtrip("lists8")
+}
+
+#[test]
+pub fn rt_one() {
+    roundtrip("one")
+}
+
+#[test]
+pub fn rt_paragraph() {
+    roundtrip("paragraph")
+}
+
+#[test]
+pub fn rt_paragraphs() {
+    roundtrip("paragraphs")
+}
+
+#[test]
+pub fn rt_test() {
+    roundtrip("test")
+}
+
+#[test]
+pub fn rt_wrapping() {
+    roundtrip("wrapping")
+}
+
+
+
 #[test]
 pub fn alt() {
     compare("alt")
 }
+
 
 #[test]
 pub fn blank() {
@@ -112,3 +233,4 @@ pub fn test() {
 pub fn wrapping() {
     compare("wrapping")
 }
+
