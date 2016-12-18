@@ -18,7 +18,7 @@ use std::io::{self, Read};
 mod parser;
 mod html;
 
-use parser::Block;
+pub use parser::{Block, ListItem, Span};
 
 /// Converts a Markdown string to HTML
 pub fn to_html(text: &str) -> String {
