@@ -10,7 +10,7 @@ To include markdown in your project add the following to your Cargo.toml:
 
 ```toml
 [dependencies]
-markdown = "0.1"
+markdown = "0.2"
 
 ```
 
