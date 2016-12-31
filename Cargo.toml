@@ -24,7 +24,7 @@ unstable = []
 [dependencies]
 regex = "0.1.41"
 pipeline = "0.5.0"
-clippy = {version = "*", optional = true}
+clippy = {version = "0", optional = true}
 
 [dev-dependencies]
 difference = "0.4"
