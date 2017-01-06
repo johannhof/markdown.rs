@@ -1,10 +1,10 @@
 use super::{Block, ListItem, Span};
 
-trait IteratorMyExt<I> where I : Iterator {
+trait JoinHelper<I> where I : Iterator {
     fn j(self, sep:&'static str) -> String;
 }
 
-impl<I> IteratorMyExt<I> for I where I : Iterator<Item=String> {
+impl<I> JoinHelper<I> for I where I : Iterator<Item=String> {
     fn j(self, sep:&'static str) -> String {
         self.collect::<Vec<String>>().join(sep)
     }
