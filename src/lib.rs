@@ -16,7 +16,7 @@ use std::path::Path;
 use std::io::{self, Read};
 
 mod parser;
-mod generator;
+mod markdown_generator;
 mod html;
 
 pub use parser::{Block, ListItem, Span};
@@ -34,7 +34,7 @@ pub fn tokenize(text: &str) -> Vec<Block> {
 
 /// Convert tokenset of Markdown items back to String
 pub fn generate_markdown(x: Vec<Block>) -> String {
-    generator::generate(x)
+    markdown_generator::generate(x)
 }
 
 /// Opens a file and converts its contents to HTML
