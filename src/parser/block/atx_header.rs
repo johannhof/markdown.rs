@@ -10,8 +10,8 @@ pub fn parse_atx_header(lines: &[&str]) -> Option<(Block, usize)> {
 
     if ATX_HEADER_RE.is_match(lines[0]) {
         let caps = ATX_HEADER_RE.captures(lines[0]).unwrap();
-        return Some((Header(parse_spans(caps.name("text").unwrap()),
-                            caps.name("level").unwrap().len()),
+        return Some((Header(parse_spans(caps.name("text").unwrap().as_str()),
+                            caps.name("level").unwrap().as_str().len()),
                      1));
     }
     None

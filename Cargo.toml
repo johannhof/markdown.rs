@@ -23,9 +23,9 @@ unstable = []
 
 [dependencies]
 clippy = {version = "0", optional = true}
-lazy_static = "0"
-pipeline = "0"
-regex = "0"
+lazy_static = "0.2"
+pipeline = "0.5"
+regex = "0.2"
 
 [dev-dependencies]
 difference = "0.4"

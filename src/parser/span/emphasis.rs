@@ -11,11 +11,11 @@ pub fn parse_emphasis(text: &str) -> Option<(Span, usize)> {
 
     if EMPHASIS_UNDERSCORE.is_match(text) {
         let caps = EMPHASIS_UNDERSCORE.captures(text).unwrap();
-        let t = caps.name("text").unwrap();
+        let t = caps.name("text").unwrap().as_str();
         return Some((Emphasis(parse_spans(t)), t.len() + 2));
     } else if EMPHASIS_STAR.is_match(text) {
         let caps = EMPHASIS_STAR.captures(text).unwrap();
-        let t = caps.name("text").unwrap();
+        let t = caps.name("text").unwrap().as_str();
         return Some((Emphasis(parse_spans(t)), t.len() + 2));
     }
     None

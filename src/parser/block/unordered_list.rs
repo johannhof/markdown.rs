@@ -40,8 +40,8 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
 
         let caps = LIST_BEGIN.captures(line.unwrap()).unwrap();
 
-        let mut content = String::from(caps.name("content").unwrap());
-        let last_indent = caps.name("indent").unwrap().len();
+        let mut content = caps.name("content").unwrap().as_str().to_owned();
+        let last_indent = caps.name("indent").unwrap().as_str().len();
         i += 1;
 
         // parse additional lines of the listitem
@@ -54,7 +54,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
 
             if LIST_BEGIN.is_match(line.unwrap()) {
                 let caps = LIST_BEGIN.captures(line.unwrap()).unwrap();
-                let indent = caps.name("indent").unwrap().len();
+                let indent = caps.name("indent").unwrap().as_str().len();
                 if indent < 2 || indent <= last_indent {
                     break;
                 }
@@ -69,7 +69,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
 
             content.push('\n');
             let caps = INDENTED.captures(line.unwrap()).unwrap();
-            content.push_str(&caps.name("content").unwrap());
+            content.push_str(&caps.name("content").unwrap().as_str());
 
             i += 1;
         }

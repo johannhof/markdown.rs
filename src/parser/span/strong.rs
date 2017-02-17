@@ -11,11 +11,11 @@ pub fn parse_strong(text: &str) -> Option<(Span, usize)> {
 
     if STRONG_UNDERSCORE.is_match(text) {
         let caps = STRONG_UNDERSCORE.captures(text).unwrap();
-        let t = caps.name("text").unwrap();
+        let t = caps.name("text").unwrap().as_str();
         return Some((Strong(parse_spans(t)), t.len() + 4));
     } else if STRONG_STAR.is_match(text) {
         let caps = STRONG_STAR.captures(text).unwrap();
-        let t = caps.name("text").unwrap();
+        let t = caps.name("text").unwrap().as_str();
         return Some((Strong(parse_spans(t)), t.len() + 4));
     }
     None

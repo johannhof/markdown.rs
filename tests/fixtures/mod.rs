@@ -8,11 +8,11 @@ fn compare(name: &str) {
     let html = format!("tests/fixtures/docs-maruku-unittest/{}.html", name);
     let text = format!("tests/fixtures/docs-maruku-unittest/{}.text", name);
     let mut comp = String::new();
-    File::open(Path::new(&html)).unwrap().read_to_string(&mut comp);
+    File::open(Path::new(&html)).unwrap().read_to_string(&mut comp).unwrap();
     let md = Path::new(&text);
 
     let mut tokens = String::new();
-    File::open(md).unwrap().read_to_string(&mut tokens);
+    File::open(md).unwrap().read_to_string(&mut tokens).unwrap();
     println!("{:?}", markdown::tokenize(&tokens));
 
     difference::assert_diff(&comp, &markdown::file_to_html(md).unwrap(), " ", 0);

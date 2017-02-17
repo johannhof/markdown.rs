@@ -10,11 +10,11 @@ pub fn parse_code(text: &str) -> Option<(Span, usize)> {
 
     if CODE_DOUBLE.is_match(text) {
         let caps = CODE_DOUBLE.captures(text).unwrap();
-        let t = caps.name("text").unwrap();
+        let t = caps.name("text").unwrap().as_str();
         return Some((Code(t.to_owned()), t.len() + 4));
     } else if CODE_SINGLE.is_match(text) {
         let caps = CODE_SINGLE.captures(text).unwrap();
-        let t = caps.name("text").unwrap();
+        let t = caps.name("text").unwrap().as_str();
         return Some((Code(t.to_owned()), t.len() + 2));
     }
     None
