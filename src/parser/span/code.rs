@@ -3,15 +3,17 @@ use parser::Span;
 use parser::Span::Code;
 
 pub fn parse_code(text: &str) -> Option<(Span, usize)> {
-    let code_single = Regex::new(r"^`(?P<text>.+?)`").unwrap();
-    let code_double = Regex::new(r"^``(?P<text>.+?)``").unwrap();
+    lazy_static! {
+        static ref CODE_SINGLE :Regex = Regex::new(r"^`(?P<text>.+?)`").unwrap();
+        static ref CODE_DOUBLE :Regex = Regex::new(r"^``(?P<text>.+?)``").unwrap();
+    }
 
-    if code_double.is_match(text) {
-        let caps = code_double.captures(text).unwrap();
+    if CODE_DOUBLE.is_match(text) {
+        let caps = CODE_DOUBLE.captures(text).unwrap();
         let t = caps.name("text").unwrap();
         return Some((Code(t.to_owned()), t.len() + 4));
-    } else if code_single.is_match(text) {
-        let caps = code_single.captures(text).unwrap();
+    } else if CODE_SINGLE.is_match(text) {
+        let caps = CODE_SINGLE.captures(text).unwrap();
         let t = caps.name("text").unwrap();
         return Some((Code(t.to_owned()), t.len() + 2));
     }

@@ -11,6 +11,9 @@ extern crate regex;
 #[macro_use]
 extern crate pipeline;
 
+#[macro_use]
+extern crate lazy_static;
+
 use std::fs::File;
 use std::path::Path;
 use std::io::{self, Read};

@@ -4,10 +4,12 @@ use parser::Block::Header;
 use parser::span::parse_spans;
 
 pub fn parse_atx_header(lines: &[&str]) -> Option<(Block, usize)> {
-    let atx_header = Regex::new(r"^(?P<level>#{1,6})\s(?P<text>.*?)(?:\s#*)?$").unwrap();
+    lazy_static! {
+        static ref ATX_HEADER_RE :Regex = Regex::new(r"^(?P<level>#{1,6})\s(?P<text>.*?)(?:\s#*)?$").unwrap();
+    }
 
-    if atx_header.is_match(lines[0]) {
-        let caps = atx_header.captures(lines[0]).unwrap();
+    if ATX_HEADER_RE.is_match(lines[0]) {
+        let caps = ATX_HEADER_RE.captures(lines[0]).unwrap();
         return Some((Header(parse_spans(caps.name("text").unwrap()),
                             caps.name("level").unwrap().len()),
                      1));

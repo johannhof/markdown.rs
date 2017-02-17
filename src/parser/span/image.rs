@@ -3,11 +3,12 @@ use parser::Span;
 use parser::Span::Image;
 
 pub fn parse_image(text: &str) -> Option<(Span, usize)> {
-    let image = Regex::new("^!\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)")
-                    .unwrap();
+    lazy_static! {
+        static ref IMAGE :Regex = Regex::new("^!\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
+    }
 
-    if image.is_match(text) {
-        let caps = image.captures(text).unwrap();
+    if IMAGE.is_match(text) {
+        let caps = IMAGE.captures(text).unwrap();
         let text = caps.name("text").unwrap_or("").to_owned();
         let url = caps.name("url").unwrap_or("").to_owned();
         let title = caps.name("title").map(|t| t.to_owned());

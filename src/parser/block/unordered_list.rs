@@ -5,12 +5,14 @@ use parser::ListItem;
 use regex::Regex;
 
 pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
-    let list_begin = Regex::new(r"^(?P<indent> *)(-|\+|\*) (?P<content>.*)").unwrap();
-    let new_paragraph = Regex::new(r"^ +").unwrap();
-    let indented = Regex::new(r"^ {0,4}(?P<content>.*)").unwrap();
+    lazy_static! {
+        static ref LIST_BEGIN :Regex = Regex::new(r"^(?P<indent> *)(-|\+|\*) (?P<content>.*)").unwrap();
+        static ref NEW_PARAGRAPH :Regex = Regex::new(r"^ +").unwrap();
+        static ref INDENTED :Regex = Regex::new(r"^ {0,4}(?P<content>.*)").unwrap();
+    }
 
     // if the beginning doesn't match a list don't even bother
-    if !list_begin.is_match(lines[0]) {
+    if !LIST_BEGIN.is_match(lines[0]) {
         return None;
     }
 
@@ -28,10 +30,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
 
     // loop for list items
     loop {
-        let mut content = String::new();
-        let mut last_indent = 0;
-
-        if line.is_none() || !list_begin.is_match(line.unwrap()) {
+        if line.is_none() || !LIST_BEGIN.is_match(line.unwrap()) {
             break;
         }
         if prev_newline {
@@ -39,22 +38,22 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
             prev_newline = false;
         }
 
-        let caps = list_begin.captures(line.unwrap()).unwrap();
+        let caps = LIST_BEGIN.captures(line.unwrap()).unwrap();
 
-        content.push_str(&caps.name("content").unwrap());
-        last_indent = caps.name("indent").unwrap().len();
+        let mut content = String::from(caps.name("content").unwrap());
+        let last_indent = caps.name("indent").unwrap().len();
         i += 1;
 
         // parse additional lines of the listitem
         loop {
             line = line_iter.next();
 
-            if line.is_none() || (prev_newline && !new_paragraph.is_match(line.unwrap())) {
+            if line.is_none() || (prev_newline && !NEW_PARAGRAPH.is_match(line.unwrap())) {
                 break;
             }
 
-            if list_begin.is_match(line.unwrap()) {
-                let caps = list_begin.captures(line.unwrap()).unwrap();
+            if LIST_BEGIN.is_match(line.unwrap()) {
+                let caps = LIST_BEGIN.captures(line.unwrap()).unwrap();
                 let indent = caps.name("indent").unwrap().len();
                 if indent < 2 || indent <= last_indent {
                     break;
@@ -69,7 +68,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
             }
 
             content.push('\n');
-            let caps = indented.captures(line.unwrap()).unwrap();
+            let caps = INDENTED.captures(line.unwrap()).unwrap();
             content.push_str(&caps.name("content").unwrap());
 
             i += 1;

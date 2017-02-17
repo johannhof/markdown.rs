@@ -3,11 +3,12 @@ use parser::Span;
 use parser::Span::Link;
 
 pub fn parse_link(text: &str) -> Option<(Span, usize)> {
-    let link = Regex::new("^\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)")
-                   .unwrap();
+    lazy_static! {
+        static ref LINK :Regex = Regex::new("^\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
+    }
 
-    if link.is_match(text) {
-        let caps = link.captures(text).unwrap();
+    if LINK.is_match(text) {
+        let caps = LINK.captures(text).unwrap();
         let text = caps.name("text").unwrap_or("").to_owned();
         let url = caps.name("url").unwrap_or("").to_owned();
         let title = caps.name("title").map(|t| t.to_owned());

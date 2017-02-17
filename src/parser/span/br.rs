@@ -3,9 +3,11 @@ use parser::Span;
 use parser::Span::Break;
 
 pub fn parse_break(text: &str) -> Option<(Span, usize)> {
-    let br = Regex::new(r"^ {2}$").unwrap();
+    lazy_static! {
+        static ref BR: Regex = Regex::new(r"^ {2}$").unwrap();
+    }
 
-    if br.is_match(text) {
+    if BR.is_match(text) {
         return Some((Break, 2));
     }
     None

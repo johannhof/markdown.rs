@@ -4,15 +4,17 @@ use parser::Span;
 use parser::Span::Emphasis;
 
 pub fn parse_emphasis(text: &str) -> Option<(Span, usize)> {
-    let emphasis_underscore = Regex::new(r"^_(?P<text>.+?)_").unwrap();
-    let emphasis_star = Regex::new(r"^\*(?P<text>.+?)\*").unwrap();
+    lazy_static! {
+        static ref EMPHASIS_UNDERSCORE :Regex = Regex::new(r"^_(?P<text>.+?)_").unwrap();
+        static ref EMPHASIS_STAR :Regex = Regex::new(r"^\*(?P<text>.+?)\*").unwrap();
+    }
 
-    if emphasis_underscore.is_match(text) {
-        let caps = emphasis_underscore.captures(text).unwrap();
+    if EMPHASIS_UNDERSCORE.is_match(text) {
+        let caps = EMPHASIS_UNDERSCORE.captures(text).unwrap();
         let t = caps.name("text").unwrap();
         return Some((Emphasis(parse_spans(t)), t.len() + 2));
-    } else if emphasis_star.is_match(text) {
-        let caps = emphasis_star.captures(text).unwrap();
+    } else if EMPHASIS_STAR.is_match(text) {
+        let caps = EMPHASIS_STAR.captures(text).unwrap();
         let t = caps.name("text").unwrap();
         return Some((Emphasis(parse_spans(t)), t.len() + 2));
     }

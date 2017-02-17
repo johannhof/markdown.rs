@@ -4,15 +4,17 @@ use parser::Span;
 use parser::Span::Strong;
 
 pub fn parse_strong(text: &str) -> Option<(Span, usize)> {
-    let strong_underscore = Regex::new(r"^__(?P<text>.+?)__").unwrap();
-    let strong_star = Regex::new(r"^\*\*(?P<text>.+?)\*\*").unwrap();
+    lazy_static! {
+        static ref STRONG_UNDERSCORE :Regex = Regex::new(r"^__(?P<text>.+?)__").unwrap();
+        static ref STRONG_STAR :Regex = Regex::new(r"^\*\*(?P<text>.+?)\*\*").unwrap();
+    }
 
-    if strong_underscore.is_match(text) {
-        let caps = strong_underscore.captures(text).unwrap();
+    if STRONG_UNDERSCORE.is_match(text) {
+        let caps = STRONG_UNDERSCORE.captures(text).unwrap();
         let t = caps.name("text").unwrap();
         return Some((Strong(parse_spans(t)), t.len() + 4));
-    } else if strong_star.is_match(text) {
-        let caps = strong_star.captures(text).unwrap();
+    } else if STRONG_STAR.is_match(text) {
+        let caps = STRONG_STAR.captures(text).unwrap();
         let t = caps.name("text").unwrap();
         return Some((Strong(parse_spans(t)), t.len() + 4));
     }
