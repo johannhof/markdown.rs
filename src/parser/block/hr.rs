@@ -3,9 +3,11 @@ use parser::Block;
 use parser::Block::Hr;
 
 pub fn parse_hr(lines: &[&str]) -> Option<(Block, usize)> {
-    let horizontal_rule = Regex::new(r"^(===+)$|^(---+)$").unwrap();
+    lazy_static! {
+        static ref HORIZONTAL_RULE :Regex = Regex::new(r"^(===+)$|^(---+)$").unwrap();
+    }
 
-    if horizontal_rule.is_match(lines[0]) {
+    if HORIZONTAL_RULE.is_match(lines[0]) {
         return Some((Hr, 1));
     }
     None

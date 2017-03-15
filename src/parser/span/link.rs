@@ -3,14 +3,16 @@ use parser::Span;
 use parser::Span::Link;
 
 pub fn parse_link(text: &str) -> Option<(Span, usize)> {
-    let link = Regex::new("^\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)")
-                   .unwrap();
+    lazy_static! {
+        static ref LINK :Regex = Regex::new("^\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
+    }
 
-    if link.is_match(text) {
-        let caps = link.captures(text).unwrap();
-        let text = caps.name("text").unwrap_or("").to_owned();
-        let url = caps.name("url").unwrap_or("").to_owned();
-        let title = caps.name("title").map(|t| t.to_owned());
+    if LINK.is_match(text) {
+        let caps = LINK.captures(text).unwrap();
+        let text = if let Some(mat) = caps.name("text") { mat.as_str().to_owned() } else { "".to_owned() };
+        let url = if let Some(mat) = caps.name("url") { mat.as_str().to_owned() } else { "".to_owned() };
+        let title = if let Some(mat) = caps.name("title") { Some(mat.as_str().to_owned()) } else { None };
+        // let title = caps.name("title").map(|t| t.to_owned());
         // TODO correctly get whitespace length between url and title
         let len = text.len() + url.len() + 4 + title.clone().map_or(0, |t| t.len() + 3);
         return Some((Link(text, url, title), len));

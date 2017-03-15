@@ -3,14 +3,15 @@ use parser::Span;
 use parser::Span::Image;
 
 pub fn parse_image(text: &str) -> Option<(Span, usize)> {
-    let image = Regex::new("^!\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)")
-                    .unwrap();
+    lazy_static! {
+        static ref IMAGE :Regex = Regex::new("^!\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
+    }
 
-    if image.is_match(text) {
-        let caps = image.captures(text).unwrap();
-        let text = caps.name("text").unwrap_or("").to_owned();
-        let url = caps.name("url").unwrap_or("").to_owned();
-        let title = caps.name("title").map(|t| t.to_owned());
+    if IMAGE.is_match(text) {
+        let caps = IMAGE.captures(text).unwrap();
+        let text = if let Some(mat) = caps.name("text") { mat.as_str().to_owned() } else { "".to_owned() };
+        let url = if let Some(mat) = caps.name("url") { mat.as_str().to_owned() } else { "".to_owned() };
+        let title = if let Some(mat) = caps.name("title") { Some(mat.as_str().to_owned()) } else { None };
         // TODO correctly get whitespace length between url and title
         let len = text.len() + url.len() + 5 + title.clone().map_or(0, |t| t.len() + 3);
         return Some((Image(text, url, title), len));

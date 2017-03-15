@@ -4,13 +4,15 @@ use parser::Block::Header;
 use parser::span::parse_spans;
 
 pub fn parse_setext_header(lines: &[&str]) -> Option<(Block, usize)> {
-    let horizontal_rule_1 = Regex::new(r"^===+$").unwrap();
-    let horizontal_rule_2 = Regex::new(r"^---+$").unwrap();
+    lazy_static! {
+        static ref HORIZONTAL_RULE_1 :Regex = Regex::new(r"^===+$").unwrap();
+        static ref HORIZONTAL_RULE_2 :Regex = Regex::new(r"^---+$").unwrap();
+    }
 
     if lines.len() > 1 {
-        if horizontal_rule_1.is_match(lines[1]) {
+        if HORIZONTAL_RULE_1.is_match(lines[1]) {
             return Some((Header(parse_spans(lines[0]), 1), 2));
-        } else if horizontal_rule_2.is_match(lines[1]) {
+        } else if HORIZONTAL_RULE_2.is_match(lines[1]) {
             return Some((Header(parse_spans(lines[0]), 2), 2));
         }
     }
