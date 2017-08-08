@@ -34,8 +34,13 @@ pub fn parse_spans(text: &str) -> Vec<Span>{
                 i += consumed_chars;
             }
             None => {
-                t.push_str(&text[i..i + 1]);
-                i += 1;
+                let mut e = i + 1;
+                while !text.is_char_boundary(e) {
+                    e += 1;
+                }
+
+                t.push_str(&text[i..e]);
+                i += e - i;
             }
         }
     }
@@ -69,6 +74,7 @@ fn parse_span(text: &str) -> Option<(Span, usize)>{
 mod test {
     use parser::Span::{Text, Break, Code, Emphasis, Strong, Link, Image};
     use parser::span::parse_spans;
+    use std::str;
 
     #[test]
     fn converts_into_text() {
@@ -132,6 +138,12 @@ mod test {
             Break
             ]
             );
+    }
+
+    #[test]
+    fn properly_consumes_multibyte_utf8() {
+        let test_phrase = str::from_utf8(b"This shouldn\xE2\x80\x99t panic").unwrap();
+        let _ = parse_spans(&test_phrase);
     }
 }
 
