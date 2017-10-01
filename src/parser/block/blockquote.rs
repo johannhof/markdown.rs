@@ -34,7 +34,8 @@ pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)> {
         let mut chars = line.chars();
         let begin = match chars.next() {
             Some('>') => match chars.next() {
-                Some(' ') => 2, _ => 1,
+                Some(' ') => 2,
+                _ => 1,
             }, _ => 0,
         };
         if i > 0 {
