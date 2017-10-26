@@ -4,7 +4,7 @@ use parser::Block::Blockquote;
 
 pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)> {
     // if the first char isnt a blockquote don't even bother
-    if lines[0].is_empty() || &lines[0][0..1] != ">" {
+    if lines[0].is_empty() || !lines[0].starts_with(">") {
         return None;
     }
 
@@ -23,7 +23,7 @@ pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)> {
         // stop parsing on two newlines or if the paragraph after
         // a newline isn't started with a >
         // we continue to parse if it's just another empty line
-        if prev_newline && line.len() > 0 && &line[0..1] != ">" {
+        if prev_newline && line.len() > 0 && !line.starts_with(">") {
             break;
         }
         if line.is_empty() {
@@ -31,13 +31,13 @@ pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)> {
         } else {
             prev_newline = false;
         }
-        let mut begin = 0;
-        if line.len() > 0 && &line[0..1] == ">" {
-            begin = 1;
-            if line.len() > 1 && &line[1..2] == " " {
-                begin = 2;
-            }
-        }
+        let mut chars = line.chars();
+        let begin = match chars.next() {
+            Some('>') => match chars.next() {
+                Some(' ') => 2,
+                _ => 1,
+            }, _ => 0,
+        };
         if i > 0 {
             content.push('\n');
         }
