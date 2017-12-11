@@ -105,6 +105,7 @@ mod test {
     use super::parse_ordered_list;
     use parser::Block::OrderedList;
     use parser::OrderedListType;
+    use parser::ListItem::Paragraph;
     fn a_type() -> OrderedListType  { OrderedListType("a".to_string()) }
     fn A_type() -> OrderedListType  { OrderedListType("A".to_string()) }
     fn i_type() -> OrderedListType  { OrderedListType("i".to_string()) }
@@ -147,12 +148,16 @@ mod test {
         match parse_ordered_list(&vec!["1. A list", "     1.1. One point one", "     1.2. One point two"]) {
              // Some((OrderedList([Paragraph([Paragraph([Text("A list")]), OrderedList([Simple([Text("One point one")]), Simple([Text("One point two")])], OrderedListType("1"))])], OrderedListType("1")), 3)) => (),
             Some( (OrderedList(ref items, ref lt), 3) ) if lt == &n_type() =>
-                match items[1] {
-                    OrderedList(_, ref lt1) if lt == &n_type() => (),
+                match &items[0] {
+                    &Paragraph(ref items) => match &items[1] {
+                        &OrderedList(_, ref lt1) if lt == &n_type() => (),
+                        x => panic!("Found {:?}", x),
+                    }
                     x => panic!("Found {:?}", x),
                 },
             x => panic!("Found {:?}", x),
         }
+
     }
 
     #[test]
