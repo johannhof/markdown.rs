@@ -146,7 +146,6 @@ mod test {
     #[test]
     fn multi_level_list() {
         match parse_ordered_list(&vec!["1. A list", "     1.1. One point one", "     1.2. One point two"]) {
-             // Some((OrderedList([Paragraph([Paragraph([Text("A list")]), OrderedList([Simple([Text("One point one")]), Simple([Text("One point two")])], OrderedListType("1"))])], OrderedListType("1")), 3)) => (),
             Some( (OrderedList(ref items, ref lt), 3) ) if lt == &n_type() =>
                 match &items[0] {
                     &Paragraph(ref items) => match &items[1] {
