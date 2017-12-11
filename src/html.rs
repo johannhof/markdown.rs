@@ -1,7 +1,6 @@
 use parser::Block;
-use parser::ListItem;
-use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock, UnorderedList, Raw};
-use parser::Span;
+use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock, UnorderedList, OrderedList, Raw};
+use parser::{Span, ListItem, OrderedListType};
 use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
 
 // takes a number of elements and returns their collective text as a slug
@@ -35,6 +34,7 @@ pub fn to_html(blocks: &[Block]) -> String {
             Blockquote(ref elements) => format_blockquote(elements),
             CodeBlock(ref elements) => format_codeblock(elements),
             UnorderedList(ref elements) => format_unordered_list(elements),
+            OrderedList(ref elements, ref num_type) => format_ordered_list(elements,num_type),
             Raw(ref elements) => elements.to_owned(),
             Hr => format!("<hr>"),
         };
@@ -81,7 +81,7 @@ fn escape(text: &str) -> String {
         .replace(">", "&gt;")
 }
 
-fn format_unordered_list(elements: &[ListItem]) -> String {
+fn format_list(elements: &[ListItem], start_tag: &str, end_tag: &str) -> String {
     let mut ret = String::new();
     for list_item in elements {
         let mut content = String::new();
@@ -96,7 +96,15 @@ fn format_unordered_list(elements: &[ListItem]) -> String {
 
         ret.push_str(&format!("\n<li>{}</li>\n", content))
     }
-    format!("<ul>{}</ul>\n\n", ret)
+    format!("<{}>{}</{}>\n\n", start_tag, ret, end_tag)
+}
+
+fn format_unordered_list(elements: &[ListItem]) -> String {
+    format_list(elements, "ul", "ul")
+}
+
+fn format_ordered_list(elements: &[ListItem], num_type: &OrderedListType) -> String {
+    format_list(elements, &format!("ol type=\"{}\"", num_type.0), "ol")
 }
 
 fn format_codeblock(elements: &str) -> String {
