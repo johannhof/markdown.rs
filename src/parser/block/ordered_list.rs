@@ -149,7 +149,7 @@ mod test {
             Some( (OrderedList(ref items, ref lt), 3) ) if lt == &n_type() =>
                 match &items[0] {
                     &Paragraph(ref items) => match &items[1] {
-                        &OrderedList(_, ref lt1) if lt == &n_type() => (),
+                        &OrderedList(_, ref lt1) if lt1 == &n_type() => (),
                         x => panic!("Found {:?}", x),
                     }
                     x => panic!("Found {:?}", x),
