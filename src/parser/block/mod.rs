@@ -9,12 +9,14 @@ mod hr;
 mod code_block;
 mod blockquote;
 mod unordered_list;
+mod ordered_list;
 use self::atx_header::parse_atx_header;
 use self::setext_header::parse_setext_header;
 use self::hr::parse_hr;
 use self::code_block::parse_code_block;
 use self::blockquote::parse_blockquote;
 use self::unordered_list::parse_unordered_list;
+use self::ordered_list::parse_ordered_list;
 
 pub fn parse_blocks (md : &str) -> Vec<Block> {
     let mut blocks = vec![];
@@ -74,6 +76,7 @@ fn parse_block (lines: &[&str]) -> Option<(Block, usize)>{
         => parse_code_block
         => parse_blockquote
         => parse_unordered_list
+        => parse_ordered_list
         )
 }
 
