@@ -19,7 +19,13 @@ fn gen_block(b : Block) -> String {
                 ),
         Paragraph(s) => generate_from_spans(s),
         Blockquote(bb) => generate(bb).lines().map(|x|format!("> {}", x)).j("\n"),
-        CodeBlock(x) => x.lines().map(|x|format!("    {}",x)).j("\n"),
+        CodeBlock(lang, x) => {
+            if lang.is_none() {
+                x.lines().map(|x|format!("    {}",x)).j("\n")
+            } else {
+                format!("```{}\n{}```", lang.unwrap(), x)
+            }
+        },
         //OrderedList(Vec<ListItem>),
         UnorderedList(x) => generate_from_li(x),
         Raw(x) => x,
