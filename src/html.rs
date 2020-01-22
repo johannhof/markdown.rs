@@ -99,11 +99,11 @@ fn format_unordered_list(elements: &[ListItem]) -> String {
     format!("<ul>{}</ul>\n\n", ret)
 }
 
-fn format_codeblock(language: &Option<String>,elements: &str) -> String {
-    if language.is_none() {
+fn format_codeblock(lang: &Option<String>,elements: &str) -> String {
+    if lang.is_none() || (lang.is_some() && lang.as_ref().unwrap().is_empty()) {
         format!("<pre><code>{}</code></pre>\n\n", &escape(elements))
     } else {
-        format!("<pre><code class=\"language-{}\">{}</code></pre>\n\n", &escape(language.as_ref().unwrap()), &escape(elements))
+        format!("<pre><code class=\"language-{}\">{}</code></pre>\n\n", &escape(lang.as_ref().unwrap()), &escape(elements))
     }
 }
 
