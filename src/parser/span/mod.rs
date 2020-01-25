@@ -25,7 +25,7 @@ pub fn parse_spans(text: &str) -> Vec<Span>{
                     // if this text is on the very left
                     // trim the left whitespace
                     if tokens.is_empty() {
-                        t = t.trim_left().to_owned()
+                        t = t.trim_start().to_owned()
                     }
                     tokens.push(Text(t));
                 }
@@ -48,11 +48,11 @@ pub fn parse_spans(text: &str) -> Vec<Span>{
         // if this text is on the very left
         // trim the left whitespace
         if tokens.is_empty() {
-            t = t.trim_left().to_owned();
+            t = t.trim_start().to_owned();
         }
         // we're at the very end of this line,
         // trim trailing whitespace
-        t = t.trim_right().to_owned();
+        t = t.trim_end().to_owned();
         tokens.push(Text(t));
     }
     tokens
