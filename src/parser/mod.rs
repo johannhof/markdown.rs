@@ -1,5 +1,5 @@
-mod span;
 mod block;
+mod span;
 
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -13,17 +13,17 @@ pub enum Block {
     Blockquote(Vec<Block>),
     CodeBlock(Option<String>, String),
     //String is the type of list: A,a,i,I or 1
-    OrderedList(Vec<ListItem>,OrderedListType),
+    OrderedList(Vec<ListItem>, OrderedListType),
     UnorderedList(Vec<ListItem>),
     Raw(String),
-    Hr
+    Hr,
 }
 
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq, Clone)]
 pub enum ListItem {
     Simple(Vec<Span>),
-    Paragraph(Vec<Block>)
+    Paragraph(Vec<Block>),
 }
 
 #[allow(missing_docs)]
@@ -36,10 +36,9 @@ pub enum Span {
     Image(String, String, Option<String>),
 
     Emphasis(Vec<Span>),
-    Strong(Vec<Span>)
+    Strong(Vec<Span>),
 }
 
-pub fn parse (md : &str) -> Vec<Block> {
+pub fn parse(md: &str) -> Vec<Block> {
     block::parse_blocks(md)
 }
-

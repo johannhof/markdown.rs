@@ -1,7 +1,9 @@
 use parser::Block;
-use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock, UnorderedList, OrderedList, Raw};
-use parser::{Span, ListItem, OrderedListType};
-use parser::Span::{Break, Text, Emphasis, Strong, Code, Link, Image};
+use parser::Block::{
+    Blockquote, CodeBlock, Header, Hr, OrderedList, Paragraph, Raw, UnorderedList,
+};
+use parser::Span::{Break, Code, Emphasis, Image, Link, Strong, Text};
+use parser::{ListItem, OrderedListType, Span};
 
 // takes a number of elements and returns their collective text as a slug
 fn slugify(elements: &[Span]) -> String {
@@ -10,10 +12,9 @@ fn slugify(elements: &[Span]) -> String {
     for el in elements {
         let next = match *el {
             Break => "".to_owned(),
-            Text(ref text) |
-            Link(ref text, _, _) |
-            Image(ref text, _, _) |
-            Code(ref text) => text.trim().replace(" ", "_").to_lowercase().to_owned(),
+            Text(ref text) | Link(ref text, _, _) | Image(ref text, _, _) | Code(ref text) => {
+                text.trim().replace(" ", "_").to_lowercase().to_owned()
+            }
             Strong(ref content) | Emphasis(ref content) => slugify(content),
         };
         if !ret.is_empty() {
@@ -34,7 +35,7 @@ pub fn to_html(blocks: &[Block]) -> String {
             Blockquote(ref elements) => format_blockquote(elements),
             CodeBlock(ref lang, ref elements) => format_codeblock(lang, elements),
             UnorderedList(ref elements) => format_unordered_list(elements),
-            OrderedList(ref elements, ref num_type) => format_ordered_list(elements,num_type),
+            OrderedList(ref elements, ref num_type) => format_ordered_list(elements, num_type),
             Raw(ref elements) => elements.to_owned(),
             Hr => format!("<hr>"),
         };
@@ -52,19 +53,24 @@ fn format_spans(elements: &[Span]) -> String {
             Break => format!("<br />"),
             Text(ref text) => format!("{}", &escape(text)),
             Code(ref text) => format!("<code>{}</code>", &escape(text)),
-            Link(ref text, ref url, None) =>
-                format!("<a href='{}'>{}</a>", &escape(url), &escape(text)),
-            Link(ref text, ref url, Some(ref title)) => format!("<a href='{}' title='{}'>{}</a>",
-                                                                &escape(url),
-                                                                &escape(title),
-                                                                &escape(text)),
-            Image(ref text, ref url, None) =>
-                format!("<img src='{}' alt='{}' />", &escape(url), &escape(text)),
-            Image(ref text, ref url, Some(ref title)) =>
-                format!("<img src='{}' title='{}' alt='{}' />",
-                        &escape(url),
-                        &escape(title),
-                        &escape(text)),
+            Link(ref text, ref url, None) => {
+                format!("<a href='{}'>{}</a>", &escape(url), &escape(text))
+            }
+            Link(ref text, ref url, Some(ref title)) => format!(
+                "<a href='{}' title='{}'>{}</a>",
+                &escape(url),
+                &escape(title),
+                &escape(text)
+            ),
+            Image(ref text, ref url, None) => {
+                format!("<img src='{}' alt='{}' />", &escape(url), &escape(text))
+            }
+            Image(ref text, ref url, Some(ref title)) => format!(
+                "<img src='{}' title='{}' alt='{}' />",
+                &escape(url),
+                &escape(title),
+                &escape(text)
+            ),
             Emphasis(ref content) => format!("<em>{}</em>", format_spans(content)),
             Strong(ref content) => format!("<strong>{}</strong>", format_spans(content)),
         };
@@ -86,9 +92,7 @@ fn format_list(elements: &[ListItem], start_tag: &str, end_tag: &str) -> String 
     for list_item in elements {
         let mut content = String::new();
         match *list_item {
-            ListItem::Simple(ref els) => {
-                content.push_str(&format_spans(els))
-            }
+            ListItem::Simple(ref els) => content.push_str(&format_spans(els)),
             ListItem::Paragraph(ref paragraphs) => {
                 content.push_str(&format!("\n{}", to_html(paragraphs)))
             }
@@ -107,11 +111,15 @@ fn format_ordered_list(elements: &[ListItem], num_type: &OrderedListType) -> Str
     format_list(elements, &format!("ol type=\"{}\"", num_type.0), "ol")
 }
 
-fn format_codeblock(lang: &Option<String>,elements: &str) -> String {
+fn format_codeblock(lang: &Option<String>, elements: &str) -> String {
     if lang.is_none() || (lang.is_some() && lang.as_ref().unwrap().is_empty()) {
         format!("<pre><code>{}</code></pre>\n\n", &escape(elements))
     } else {
-        format!("<pre><code class=\"language-{}\">{}</code></pre>\n\n", &escape(lang.as_ref().unwrap()), &escape(elements))
+        format!(
+            "<pre><code class=\"language-{}\">{}</code></pre>\n\n",
+            &escape(lang.as_ref().unwrap()),
+            &escape(elements)
+        )
     }
 }
 
@@ -124,9 +132,11 @@ fn format_paragraph(elements: &[Span]) -> String {
 }
 
 fn format_header(elements: &[Span], level: usize) -> String {
-    format!("<h{} id='{}'>{}</h{}>\n\n",
-            level,
-            slugify(elements),
-            format_spans(elements),
-            level)
+    format!(
+        "<h{} id='{}'>{}</h{}>\n\n",
+        level,
+        slugify(elements),
+        format_spans(elements),
+        level
+    )
 }

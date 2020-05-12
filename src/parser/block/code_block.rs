@@ -82,7 +82,10 @@ mod test {
 
         assert_eq!(
             parse_code_block(&vec!["```testlang", "Test", "this", "```"]).unwrap(),
-            ((CodeBlock(Some(String::from("testlang")), "Test\nthis".to_owned()), 4))
+            ((
+                CodeBlock(Some(String::from("testlang")), "Test\nthis".to_owned()),
+                4
+            ))
         );
     }
 

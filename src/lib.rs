@@ -2,9 +2,8 @@
 #![crate_name = "markdown"]
 #![deny(missing_docs)]
 // #![deny(warnings)]
-
-#![cfg_attr(feature="clippy", feature(plugin))]
-#![cfg_attr(feature="clippy", plugin(clippy))]
+#![cfg_attr(feature = "clippy", feature(plugin))]
+#![cfg_attr(feature = "clippy", plugin(clippy))]
 
 extern crate regex;
 
@@ -15,12 +14,12 @@ extern crate pipeline;
 extern crate lazy_static;
 
 use std::fs::File;
-use std::path::Path;
 use std::io::{self, Read};
+use std::path::Path;
 
-mod parser;
-mod markdown_generator;
 mod html;
+mod markdown_generator;
+mod parser;
 
 pub use parser::{Block, ListItem, Span};
 
@@ -42,7 +41,7 @@ pub fn generate_markdown(x: Vec<Block>) -> String {
 
 /// Opens a file and converts its contents to HTML
 pub fn file_to_html(path: &Path) -> io::Result<String> {
-    let mut file =File::open(path)?;
+    let mut file = File::open(path)?;
 
     let mut text = String::new();
     file.read_to_string(&mut text)?;

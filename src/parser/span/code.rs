@@ -1,11 +1,11 @@
-use regex::Regex;
 use parser::Span;
 use parser::Span::Code;
+use regex::Regex;
 
 pub fn parse_code(text: &str) -> Option<(Span, usize)> {
     lazy_static! {
-        static ref CODE_SINGLE :Regex = Regex::new(r"^`(?P<text>.+?)`").unwrap();
-        static ref CODE_DOUBLE :Regex = Regex::new(r"^``(?P<text>.+?)``").unwrap();
+        static ref CODE_SINGLE: Regex = Regex::new(r"^`(?P<text>.+?)`").unwrap();
+        static ref CODE_DOUBLE: Regex = Regex::new(r"^``(?P<text>.+?)``").unwrap();
     }
 
     if CODE_DOUBLE.is_match(text) {
@@ -22,26 +22,40 @@ pub fn parse_code(text: &str) -> Option<(Span, usize)> {
 
 #[test]
 fn finds_code() {
-    assert_eq!(parse_code("`testing things` test"),
-               Some((Code("testing things".to_owned()), 16)));
+    assert_eq!(
+        parse_code("`testing things` test"),
+        Some((Code("testing things".to_owned()), 16))
+    );
 
-    assert_eq!(parse_code("``testing things`` test"),
-               Some((Code("testing things".to_owned()), 18)));
+    assert_eq!(
+        parse_code("``testing things`` test"),
+        Some((Code("testing things".to_owned()), 18))
+    );
 
-    assert_eq!(parse_code("``testing things`` things`` test"),
-               Some((Code("testing things".to_owned()), 18)));
+    assert_eq!(
+        parse_code("``testing things`` things`` test"),
+        Some((Code("testing things".to_owned()), 18))
+    );
 
-    assert_eq!(parse_code("`w` testing things test"),
-               Some((Code("w".to_owned()), 3)));
+    assert_eq!(
+        parse_code("`w` testing things test"),
+        Some((Code("w".to_owned()), 3))
+    );
 
-    assert_eq!(parse_code("`w`` testing things test"),
-               Some((Code("w".to_owned()), 3)));
+    assert_eq!(
+        parse_code("`w`` testing things test"),
+        Some((Code("w".to_owned()), 3))
+    );
 
-    assert_eq!(parse_code("``w`` testing things test"),
-               Some((Code("w".to_owned()), 5)));
+    assert_eq!(
+        parse_code("``w`` testing things test"),
+        Some((Code("w".to_owned()), 5))
+    );
 
-    assert_eq!(parse_code("``w``` testing things test"),
-               Some((Code("w".to_owned()), 5)));
+    assert_eq!(
+        parse_code("``w``` testing things test"),
+        Some((Code("w".to_owned()), 5))
+    );
 }
 
 #[test]

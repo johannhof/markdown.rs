@@ -1,14 +1,17 @@
-use std::path::Path;
+use difference;
+use markdown;
 use std::fs::File;
 use std::io::Read;
-use markdown;
-use difference;
+use std::path::Path;
 
 fn compare(name: &str) {
     let html = format!("tests/fixtures/docs-maruku-unittest/{}.html", name);
     let text = format!("tests/fixtures/docs-maruku-unittest/{}.text", name);
     let mut comp = String::new();
-    File::open(Path::new(&html)).unwrap().read_to_string(&mut comp).unwrap();
+    File::open(Path::new(&html))
+        .unwrap()
+        .read_to_string(&mut comp)
+        .unwrap();
     let md = Path::new(&text);
 
     let mut tokens = String::new();
@@ -22,18 +25,21 @@ fn roundtrip(name: &str) {
     let html = format!("tests/fixtures/docs-maruku-unittest/{}.html", name);
     let text = format!("tests/fixtures/docs-maruku-unittest/{}.text", name);
     let mut comp = String::new();
-    File::open(Path::new(&html)).unwrap().read_to_string(&mut comp).unwrap();
+    File::open(Path::new(&html))
+        .unwrap()
+        .read_to_string(&mut comp)
+        .unwrap();
     let md = Path::new(&text);
 
     let mut tokens = String::new();
     File::open(md).unwrap().read_to_string(&mut tokens).unwrap();
-    
+
     let v = markdown::tokenize(&tokens);
     println!("{:?}", v);
     let out = markdown::generate_markdown(v);
-    
+
     println!("BEGIN\n{}\nEND", out);
-    
+
     difference::assert_diff(&comp, &markdown::to_html(&out), " ", 0);
 }
 
@@ -47,24 +53,20 @@ pub fn rt_blank() {
     roundtrip("blank")
 }
 
-
 #[test]
 pub fn rt_blanks_in_code() {
     roundtrip("blanks_in_code")
 }
-
 
 #[test]
 pub fn rt_code() {
     roundtrip("code")
 }
 
-
 #[test]
 pub fn rt_code2() {
     roundtrip("code2")
 }
-
 
 #[test]
 pub fn rt_code3() {
@@ -83,7 +85,7 @@ pub fn rt_headers() {
 
 //#[test]
 //pub fn rt_entities() {
-    //roundtrip("entities")
+//roundtrip("entities")
 //}
 
 #[test]
@@ -136,13 +138,10 @@ pub fn rt_wrapping() {
     roundtrip("wrapping")
 }
 
-
-
 #[test]
 pub fn alt() {
     compare("alt")
 }
-
 
 #[test]
 pub fn blank() {
@@ -181,7 +180,7 @@ pub fn headers() {
 
 //#[test]
 //pub fn entities() {
-    //compare("entities")
+//compare("entities")
 //}
 
 #[test]
@@ -233,4 +232,3 @@ pub fn test() {
 pub fn wrapping() {
     compare("wrapping")
 }
-
