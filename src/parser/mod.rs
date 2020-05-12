@@ -15,6 +15,7 @@ pub enum Block {
     //String is the type of list: A,a,i,I or 1
     OrderedList(Vec<ListItem>, OrderedListType),
     UnorderedList(Vec<ListItem>),
+    LinkReference(String, String, Option<String>),
     Raw(String),
     Hr,
 }
@@ -33,8 +34,8 @@ pub enum Span {
     Text(String),
     Code(String),
     Link(String, String, Option<String>),
+    ReferenceLink(String, String),
     Image(String, String, Option<String>),
-
     Emphasis(Vec<Span>),
     Strong(Vec<Span>),
 }

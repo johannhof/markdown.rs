@@ -6,12 +6,14 @@ mod code;
 mod emphasis;
 mod image;
 mod link;
+mod reference_link;
 mod strong;
 use self::br::parse_break;
 use self::code::parse_code;
 use self::emphasis::parse_emphasis;
 use self::image::parse_image;
 use self::link::parse_link;
+use self::reference_link::parse_reference_link;
 use self::strong::parse_strong;
 
 pub fn parse_spans(text: &str) -> Vec<Span> {
@@ -67,13 +69,14 @@ fn parse_span(text: &str) -> Option<(Span, usize)> {
     => parse_break
     => parse_image
     => parse_link
+    => parse_reference_link
     )
 }
 
 #[cfg(test)]
 mod test {
     use parser::span::parse_spans;
-    use parser::Span::{Break, Code, Emphasis, Image, Link, Strong, Text};
+    use parser::Span::{Break, Code, Emphasis, Image, Link, ReferenceLink, Strong, Text};
     use std::str;
 
     #[test]
@@ -165,6 +168,18 @@ mod test {
     }
 
     #[test]
+    fn finds_reference_link() {
+        assert_eq!(
+            parse_spans("this is [an example][ref] test"),
+            vec![
+                Text("this is ".to_owned()),
+                ReferenceLink("an example".to_owned(), "ref".to_owned()),
+                Text(" test".to_owned())
+            ]
+        );
+    }
+
+    #[test]
     fn finds_image() {
         assert_eq!(
             parse_spans("this is ![an example](example.com) test"),
@@ -179,7 +194,7 @@ mod test {
     #[test]
     fn finds_everything() {
         assert_eq!(
-            parse_spans("some text ![an image](image.com) _emphasis_ __strong__ `teh codez` [a link](example.com)  "),
+            parse_spans("some text ![an image](image.com) _emphasis_ __strong__ `teh codez` [a link](example.com) [ref link][ref]  "),
             vec![
             Text("some text ".to_owned()),
             Image("an image".to_owned(), "image.com".to_owned(), None),
@@ -191,6 +206,8 @@ mod test {
             Code("teh codez".to_owned()),
             Text(" ".to_owned()),
             Link("a link".to_owned(), "example.com".to_owned(), None),
+            Text(" ".to_owned()),
+            ReferenceLink("ref link".to_owned(), "ref".to_owned()),
             Break
             ]
             );

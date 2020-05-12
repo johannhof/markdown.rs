@@ -4,9 +4,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 
-fn compare(name: &str) {
-    let html = format!("tests/fixtures/docs-maruku-unittest/{}.html", name);
-    let text = format!("tests/fixtures/docs-maruku-unittest/{}.text", name);
+fn compare_fn(html: String, text: String) {
     let mut comp = String::new();
     File::open(Path::new(&html))
         .unwrap()
@@ -17,8 +15,24 @@ fn compare(name: &str) {
     let mut tokens = String::new();
     File::open(md).unwrap().read_to_string(&mut tokens).unwrap();
     println!("{:?}", markdown::tokenize(&tokens));
+    let generated = markdown::file_to_html(md).unwrap();
+    println!("{}", generated);
 
-    difference::assert_diff(&comp, &markdown::file_to_html(md).unwrap(), " ", 0);
+    difference::assert_diff(&comp, &generated, " ", 0);
+}
+
+fn compare(name: &str) {
+    compare_fn(
+        format!("tests/fixtures/docs-maruku-unittest/{}.html", name),
+        format!("tests/fixtures/docs-maruku-unittest/{}.text", name),
+    )
+}
+
+fn us_compare(name: &str) {
+    compare_fn(
+        format!("tests/fixtures/markdown-rs/{}.html", name),
+        format!("tests/fixtures/markdown-rs/{}.md", name),
+    )
 }
 
 fn roundtrip(name: &str) {
@@ -231,4 +245,19 @@ pub fn test() {
 #[test]
 pub fn wrapping() {
     compare("wrapping")
+}
+
+#[test]
+pub fn ref_link() {
+    us_compare("ref_link")
+}
+
+#[test]
+pub fn ref_links() {
+    us_compare("ref_links")
+}
+
+#[test]
+pub fn ref_lnks_staggered() {
+    us_compare("ref_links_staggered")
 }

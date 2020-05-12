@@ -33,7 +33,6 @@ TODO
 - [ ] Inline HTML
 - [ ] Backslash Escapes
 - [ ] Automatic Links
-- [ ] Reference-Style Links
 - [ ] List wrapping
 - [ ] HTML Entities
 - [ ] Obscure Emails

@@ -10,6 +10,7 @@ mod hr;
 mod ordered_list;
 mod setext_header;
 mod unordered_list;
+mod link_reference;
 use self::atx_header::parse_atx_header;
 use self::blockquote::parse_blockquote;
 use self::code_block::parse_code_block;
@@ -17,11 +18,13 @@ use self::hr::parse_hr;
 use self::ordered_list::parse_ordered_list;
 use self::setext_header::parse_setext_header;
 use self::unordered_list::parse_unordered_list;
+use self::link_reference::parse_link_reference;
 
 pub fn parse_blocks(md: &str) -> Vec<Block> {
     let mut blocks = vec![];
     let mut t = vec![];
     let lines: Vec<&str> = md.lines().collect();
+
     let mut i = 0;
     while i < lines.len() {
         match parse_block(&lines[i..lines.len()]) {
@@ -60,9 +63,11 @@ pub fn parse_blocks(md: &str) -> Vec<Block> {
             }
         }
     }
+
     if !t.is_empty() {
         blocks.push(Paragraph(t));
     }
+
     blocks
 }
 
@@ -76,13 +81,14 @@ fn parse_block(lines: &[&str]) -> Option<(Block, usize)> {
     => parse_blockquote
     => parse_unordered_list
     => parse_ordered_list
+    => parse_link_reference
     )
 }
 
 #[cfg(test)]
 mod test {
     use super::parse_blocks;
-    use parser::Block::{Blockquote, CodeBlock, Header, Hr, Paragraph};
+    use parser::Block::{Blockquote, CodeBlock, Header, Hr, Paragraph, LinkReference};
     use parser::Span::Text;
 
     #[test]
@@ -123,6 +129,27 @@ mod test {
             vec![CodeBlock(
                 Some(String::new()),
                 "this is code\nand this as well".to_owned()
+            )]
+        );
+    }
+
+    #[test]
+    fn finds_link_reference() {
+        assert_eq!(
+            parse_blocks("[ref]: https://genbyte.dev \"Genbyte\""),
+            vec![LinkReference(
+                "ref".to_owned(),
+                "https://genbyte.dev".to_owned(),
+                Some("Genbyte".to_owned())
+            )]
+        );
+
+        assert_eq!(
+            parse_blocks("[ref]: https://genbyte.dev"),
+            vec![LinkReference(
+                "ref".to_owned(),
+                "https://genbyte.dev".to_owned(),
+                None
             )]
         );
     }
