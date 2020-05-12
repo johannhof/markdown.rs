@@ -2,13 +2,18 @@ mod span;
 mod block;
 
 #[allow(missing_docs)]
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub struct OrderedListType(pub String);
+
+#[allow(missing_docs)]
 #[derive(Debug, PartialEq, Clone)]
 pub enum Block {
     Header(Vec<Span>, usize),
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
     CodeBlock(Option<String>, String),
-    //OrderedList(Vec<ListItem>),
+    //String is the type of list: A,a,i,I or 1
+    OrderedList(Vec<ListItem>,OrderedListType),
     UnorderedList(Vec<ListItem>),
     Raw(String),
     Hr
