@@ -30,6 +30,7 @@ assert_eq!(&html, "<strong>I am markdown</strong>")
 TODO
 ----------
 
+- [ ] Reference Style Images
 - [ ] Inline HTML
 - [ ] Backslash Escapes
 - [ ] Automatic Links
