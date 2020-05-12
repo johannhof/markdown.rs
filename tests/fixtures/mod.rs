@@ -253,6 +253,11 @@ pub fn ref_link() {
 }
 
 #[test]
+pub fn ref_link_no_ref() {
+    us_compare("ref_link_no_ref")
+}
+
+#[test]
 pub fn ref_links() {
     us_compare("ref_links")
 }

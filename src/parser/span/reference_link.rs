@@ -4,8 +4,7 @@ use regex::Regex;
 
 pub fn parse_reference_link(text: &str) -> Option<(Span, usize)> {
     lazy_static! {
-        static ref LINK: Regex =
-            Regex::new("^\\[(?P<text>.*?)\\]\\[(?P<url>.*?)\\]").unwrap();
+        static ref LINK: Regex = Regex::new("^\\[(?P<text>.*?)\\]\\[(?P<url>.*?)\\]").unwrap();
     }
 
     if LINK.is_match(text) {
@@ -31,10 +30,7 @@ pub fn parse_reference_link(text: &str) -> Option<(Span, usize)> {
 fn finds_link() {
     assert_eq!(
         parse_reference_link("[an example][ref] test"),
-        Some((
-            ReferenceLink("an example".to_owned(), "ref".to_owned()),
-            17
-        ))
+        Some((ReferenceLink("an example".to_owned(), "ref".to_owned()), 17))
     );
 
     assert_eq!(
@@ -51,7 +47,6 @@ fn finds_link() {
         parse_reference_link("[][] test"),
         Some((ReferenceLink("".to_owned(), "".to_owned()), 4))
     );
-
 
     assert_eq!(
         parse_reference_link("[an example][example] test [a link](example.com)"),
@@ -72,5 +67,8 @@ fn no_false_positives() {
 
 #[test]
 fn no_early_matching() {
-    assert_eq!(parse_reference_link("were [an example][example] test"), None);
+    assert_eq!(
+        parse_reference_link("were [an example][example] test"),
+        None
+    );
 }

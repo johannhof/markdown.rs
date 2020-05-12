@@ -5,7 +5,8 @@ use regex::Regex;
 pub fn parse_link_reference(lines: &[&str]) -> Option<(Block, usize)> {
     lazy_static! {
         static ref LINK_REFERENCE: Regex =
-            Regex::new("^\\[(?P<reference>.*?)\\]:\\s(?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?$").unwrap();
+            Regex::new("^\\[(?P<reference>.*?)\\]:\\s(?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?$")
+                .unwrap();
     }
 
     if LINK_REFERENCE.is_match(lines[0]) {
@@ -55,7 +56,14 @@ mod test {
     fn finds_link_reference() {
         assert_eq!(
             parse_link_reference(&vec!["[ref]: link \"title\"", "next line"]).unwrap(),
-            (LinkReference("ref".to_owned(), "link".to_owned(), Some("title".to_owned())), 1)
+            (
+                LinkReference(
+                    "ref".to_owned(),
+                    "link".to_owned(),
+                    Some("title".to_owned())
+                ),
+                1
+            )
         );
 
         assert_eq!(
@@ -71,10 +79,7 @@ mod test {
             None
         );
 
-        assert_eq!(
-            parse_link_reference(&vec!["[ref]: ", "next line"]),
-            None
-        );
+        assert_eq!(parse_link_reference(&vec!["[ref]: ", "next line"]), None);
 
         assert_eq!(
             parse_link_reference(&vec!["ahh [ref]: link \"title\"", "next line"]),
