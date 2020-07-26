@@ -1,5 +1,5 @@
 //! A crate for parsing Markdown in Rust
-#![crate_name = "markdown"]
+#![crate_name = "markly"]
 #![deny(missing_docs)]
 // #![deny(warnings)]
 #![cfg_attr(feature = "clippy", feature(plugin))]

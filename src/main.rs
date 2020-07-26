@@ -1,4 +1,4 @@
-extern crate markdown;
+extern crate markly;
 
 use std::env;
 use std::path::Path;
@@ -9,5 +9,5 @@ fn main() {
     let path = Path::new(&args[1]);
     // let display = path.display();
 
-    println!("{}", markdown::file_to_html(&path).unwrap());
+    println!("{}", markly::file_to_html(&path).unwrap());
 }
