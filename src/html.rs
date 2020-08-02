@@ -33,7 +33,7 @@ pub fn to_html(blocks: &[Block]) -> String {
             Header(ref elements, level) => format_header(elements, level),
             Paragraph(ref elements) => format_paragraph(elements),
             Blockquote(ref elements) => format_blockquote(elements),
-            CodeBlock(ref elements) => format_codeblock(elements),
+            CodeBlock(ref lang, ref elements) => format_codeblock(lang, elements),
             UnorderedList(ref elements) => format_unordered_list(elements),
             Raw(ref elements) => elements.to_owned(),
             Hr => format!("<hr>"),
@@ -99,8 +99,12 @@ fn format_unordered_list(elements: &[ListItem]) -> String {
     format!("<ul>{}</ul>\n\n", ret)
 }
 
-fn format_codeblock(elements: &str) -> String {
-    format!("<pre><code>{}</code></pre>\n\n", &escape(elements))
+fn format_codeblock(lang: &Option<String>,elements: &str) -> String {
+    if lang.is_none() || (lang.is_some() && lang.as_ref().unwrap().is_empty()) {
+        format!("<pre><code>{}</code></pre>\n\n", &escape(elements))
+    } else {
+        format!("<pre><code class=\"language-{}\">{}</code></pre>\n\n", &escape(lang.as_ref().unwrap()), &escape(elements))
+    }
 }
 
 fn format_blockquote(elements: &[Block]) -> String {

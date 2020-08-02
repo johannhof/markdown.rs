@@ -7,7 +7,7 @@ pub enum Block {
     Header(Vec<Span>, usize),
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
-    CodeBlock(String),
+    CodeBlock(Option<String>, String),
     //OrderedList(Vec<ListItem>),
     UnorderedList(Vec<ListItem>),
     Raw(String),
