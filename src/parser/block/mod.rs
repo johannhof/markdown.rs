@@ -122,8 +122,13 @@ mod test {
     fn finds_code_block() {
         assert_eq!(
             parse_blocks("    this is code\n    and this as well"),
-            vec![CodeBlock("this is code\nand this as well".to_owned())]
-            );
+            vec![CodeBlock(None, "this is code\nand this as well".to_owned())]
+        );
+
+        assert_eq!(
+            parse_blocks("```\nthis is code\nand this as well\n```"),
+            vec![CodeBlock(Some(String::new()), "this is code\nand this as well".to_owned())]
+        );
     }
 
     #[test]

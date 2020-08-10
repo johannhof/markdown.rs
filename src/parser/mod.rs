@@ -11,7 +11,7 @@ pub enum Block {
     Header(Vec<Span>, usize),
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
-    CodeBlock(String),
+    CodeBlock(Option<String>, String),
     //String is the type of list: A,a,i,I or 1
     OrderedList(Vec<ListItem>,OrderedListType),
     UnorderedList(Vec<ListItem>),
