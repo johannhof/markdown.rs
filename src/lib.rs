@@ -42,10 +42,10 @@ pub fn generate_markdown(x: Vec<Block>) -> String {
 
 /// Opens a file and converts its contents to HTML
 pub fn file_to_html(path: &Path) -> io::Result<String> {
-    let mut file = try!(File::open(path));
+    let mut file = File::open(path)?;
 
     let mut text = String::new();
-    try!(file.read_to_string(&mut text));
+    file.read_to_string(&mut text)?;
 
     let result = parser::parse(&text);
     Ok(html::to_html(&result))
