@@ -5,8 +5,8 @@ use markdown;
 use difference;
 
 fn compare(name: &str) {
-    let html = format!("tests/fixtures/docs-maruku-unittest/{}.html", name);
-    let text = format!("tests/fixtures/docs-maruku-unittest/{}.text", name);
+    let html = format!("tests/fixtures/{}.html", name);
+    let text = format!("tests/fixtures/{}.text", name);
     let mut comp = String::new();
     File::open(Path::new(&html)).unwrap().read_to_string(&mut comp).unwrap();
     let md = Path::new(&text);
@@ -19,8 +19,8 @@ fn compare(name: &str) {
 }
 
 fn roundtrip(name: &str) {
-    let html = format!("tests/fixtures/docs-maruku-unittest/{}.html", name);
-    let text = format!("tests/fixtures/docs-maruku-unittest/{}.text", name);
+    let html = format!("tests/fixtures/{}.html", name);
+    let text = format!("tests/fixtures/{}.text", name);
     let mut comp = String::new();
     File::open(Path::new(&html)).unwrap().read_to_string(&mut comp).unwrap();
     let md = Path::new(&text);
@@ -39,198 +39,205 @@ fn roundtrip(name: &str) {
 
 #[test]
 pub fn rt_alt() {
-    roundtrip("alt")
+    roundtrip("docs-maruku-unittest/alt")
 }
 
 #[test]
 pub fn rt_blank() {
-    roundtrip("blank")
+    roundtrip("docs-maruku-unittest/blank")
 }
 
 
 #[test]
 pub fn rt_blanks_in_code() {
-    roundtrip("blanks_in_code")
+    roundtrip("docs-maruku-unittest/blanks_in_code")
 }
 
 
 #[test]
 pub fn rt_code() {
-    roundtrip("code")
+    roundtrip("docs-maruku-unittest/code")
 }
 
 
 #[test]
 pub fn rt_code2() {
-    roundtrip("code2")
+    roundtrip("docs-maruku-unittest/code2")
 }
 
 
 #[test]
 pub fn rt_code3() {
-    roundtrip("code3")
+    roundtrip("docs-maruku-unittest/code3")
 }
 
 #[test]
 pub fn rt_easy() {
-    roundtrip("easy")
+    roundtrip("docs-maruku-unittest/easy")
 }
 
 #[test]
 pub fn rt_headers() {
-    roundtrip("headers")
+    roundtrip("docs-maruku-unittest/headers")
 }
 
 //#[test]
 //pub fn rt_entities() {
-    //roundtrip("entities")
+    //roundtrip("docs-maruku-unittest/entities")
 //}
 
 #[test]
 pub fn rt_list1() {
-    roundtrip("list1")
+    roundtrip("docs-maruku-unittest/list1")
 }
 
 #[test]
 pub fn rt_list2() {
-    roundtrip("list2")
+    roundtrip("docs-maruku-unittest/list2")
 }
 
 #[test]
 pub fn rt_list3() {
-    roundtrip("list3")
+    roundtrip("docs-maruku-unittest/list3")
 }
 
 #[test]
 pub fn rt_lists() {
-    roundtrip("lists")
+    roundtrip("docs-maruku-unittest/lists")
 }
 
 #[test]
 pub fn rt_lists8() {
-    roundtrip("lists8")
+    roundtrip("docs-maruku-unittest/lists8")
 }
 
 #[test]
 pub fn rt_one() {
-    roundtrip("one")
+    roundtrip("docs-maruku-unittest/one")
 }
 
 #[test]
 pub fn rt_paragraph() {
-    roundtrip("paragraph")
+    roundtrip("docs-maruku-unittest/paragraph")
 }
 
 #[test]
 pub fn rt_paragraphs() {
-    roundtrip("paragraphs")
+    roundtrip("docs-maruku-unittest/paragraphs")
 }
 
 #[test]
 pub fn rt_test() {
-    roundtrip("test")
+    roundtrip("docs-maruku-unittest/test")
 }
 
 #[test]
 pub fn rt_wrapping() {
-    roundtrip("wrapping")
+    roundtrip("docs-maruku-unittest/wrapping")
 }
 
+#[test]
+pub fn utf8() {
+    compare("custom/utf8")
+}
 
+#[test]
+pub fn rt_utf8() {
+    roundtrip("custom/utf8")
+}
 
 #[test]
 pub fn alt() {
-    compare("alt")
+    compare("docs-maruku-unittest/alt")
 }
-
 
 #[test]
 pub fn blank() {
-    compare("blank")
+    compare("docs-maruku-unittest/blank")
 }
 
 #[test]
 pub fn blanks_in_code() {
-    compare("blanks_in_code")
+    compare("docs-maruku-unittest/blanks_in_code")
 }
 
 #[test]
 pub fn code() {
-    compare("code")
+    compare("docs-maruku-unittest/code")
 }
 
 #[test]
 pub fn code2() {
-    compare("code2")
+    compare("docs-maruku-unittest/code2")
 }
 
 #[test]
 pub fn code3() {
-    compare("code3")
+    compare("docs-maruku-unittest/code3")
 }
 
 #[test]
 pub fn easy() {
-    compare("easy")
+    compare("docs-maruku-unittest/easy")
 }
 
 #[test]
 pub fn headers() {
-    compare("headers")
+    compare("docs-maruku-unittest/headers")
 }
 
 //#[test]
 //pub fn entities() {
-    //compare("entities")
+    //compare("docs-maruku-unittest/entities")
 //}
 
 #[test]
 pub fn list1() {
-    compare("list1")
+    compare("docs-maruku-unittest/list1")
 }
 
 #[test]
 pub fn list2() {
-    compare("list2")
+    compare("docs-maruku-unittest/list2")
 }
 
 #[test]
 pub fn list3() {
-    compare("list3")
+    compare("docs-maruku-unittest/list3")
 }
 
 #[test]
 pub fn lists() {
-    compare("lists")
+    compare("docs-maruku-unittest/lists")
 }
 
 #[test]
 pub fn lists8() {
-    compare("lists8")
+    compare("docs-maruku-unittest/lists8")
 }
 
 #[test]
 pub fn one() {
-    compare("one")
+    compare("docs-maruku-unittest/one")
 }
 
 #[test]
 pub fn paragraph() {
-    compare("paragraph")
+    compare("docs-maruku-unittest/paragraph")
 }
 
 #[test]
 pub fn paragraphs() {
-    compare("paragraphs")
+    compare("docs-maruku-unittest/paragraphs")
 }
 
 #[test]
 pub fn test() {
-    compare("test")
+    compare("docs-maruku-unittest/test")
 }
 
 #[test]
 pub fn wrapping() {
-    compare("wrapping")
+    compare("docs-maruku-unittest/wrapping")
 }
 
