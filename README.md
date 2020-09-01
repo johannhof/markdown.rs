@@ -35,7 +35,7 @@ TODO
 - [ ] Automatic Links
 - [ ] Reference-Style Links
 - [ ] List wrapping
-- [ ] HTML Entities
+- [x] HTML Entities
 - [ ] Obscure Emails
 
 ## License
