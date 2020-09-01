@@ -47,13 +47,13 @@ pub fn parse_blocks (md : &str) -> Vec<Block> {
 
                 let spans = parse_spans(lines[i]);
 
-                // add a whitespace between linebreaks
+                // add a newline between linebreaks
                 // except when we have a break element or nothing
                 match (t.last(), spans.first()) {
                     (Some(&Break), _) => {},
                     (_, None) => {},
                     (None, _) => {},
-                    _ => t.push(Text(" ".to_owned()))
+                    _ => t.push(Text("\n".to_owned()))
                 }
 
                 t.extend_from_slice(&spans);
