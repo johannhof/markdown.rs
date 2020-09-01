@@ -3,7 +3,35 @@ mod block;
 
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub struct OrderedListType(pub String);
+pub enum OrderedListType {
+    Numeric,
+    Lowercase,
+    Uppercase,
+    LowercaseRoman,
+    UppercaseRoman,
+}
+
+impl OrderedListType {
+    pub fn from_str(type_str: &str) -> OrderedListType {
+        match type_str {
+            "a" => OrderedListType::Lowercase,
+            "A" => OrderedListType::Uppercase,
+            "i" => OrderedListType::LowercaseRoman,
+            "I" => OrderedListType::UppercaseRoman,
+            _ => OrderedListType::Numeric,
+        }
+    }
+
+    pub fn to_str(&self) -> &'static str {
+        match self {
+            OrderedListType::Lowercase => "a",
+            OrderedListType::Uppercase => "A",
+            OrderedListType::LowercaseRoman => "i",
+            OrderedListType::UppercaseRoman => "I",
+            OrderedListType::Numeric => "1",
+        }
+    }
+}
 
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq, Clone)]
