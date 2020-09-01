@@ -36,7 +36,8 @@ pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)> {
             Some('>') => match chars.next() {
                 Some(' ') => 2,
                 _ => 1,
-            }, _ => 0,
+            },
+            _ => 0,
         };
         if i > 0 {
             content.push('\n');
@@ -85,7 +86,9 @@ mod test {
 
     #[test]
     fn no_early_matching() {
-        assert_eq!(parse_blockquote(&vec!["Hello", "> A citation", "> is good", "", "whatever"]),
-                   None);
+        assert_eq!(
+            parse_blockquote(&vec!["Hello", "> A citation", "> is good", "", "whatever"]),
+            None
+        );
     }
 }

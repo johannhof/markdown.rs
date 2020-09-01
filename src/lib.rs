@@ -2,9 +2,8 @@
 #![crate_name = "markdown"]
 #![deny(missing_docs)]
 // #![deny(warnings)]
-
-#![cfg_attr(feature="clippy", feature(plugin))]
-#![cfg_attr(feature="clippy", plugin(clippy))]
+#![cfg_attr(feature = "clippy", feature(plugin))]
+#![cfg_attr(feature = "clippy", plugin(clippy))]
 
 extern crate regex;
 
@@ -15,12 +14,12 @@ extern crate pipeline;
 extern crate lazy_static;
 
 use std::fs::File;
-use std::path::Path;
 use std::io::{self, Read};
+use std::path::Path;
 
-mod parser;
-mod markdown_generator;
 mod html;
+mod markdown_generator;
+mod parser;
 
 pub use parser::{Block, ListItem, Span};
 

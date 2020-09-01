@@ -149,13 +149,15 @@ mod test {
             "     1.1. One point one",
             "     1.2. One point two",
         ]) {
-            Some((OrderedList(ref items, lt), 3)) if lt == OrderedListType::Numeric => match &items[0] {
-                &Paragraph(ref items) => match &items[1] {
-                    &OrderedList(_, ref lt1) if lt1 == &OrderedListType::Numeric => (),
+            Some((OrderedList(ref items, lt), 3)) if lt == OrderedListType::Numeric => {
+                match &items[0] {
+                    &Paragraph(ref items) => match &items[1] {
+                        &OrderedList(_, ref lt1) if lt1 == &OrderedListType::Numeric => (),
+                        x => panic!("Found {:?}", x),
+                    },
                     x => panic!("Found {:?}", x),
-                },
-                x => panic!("Found {:?}", x),
-            },
+                }
+            }
             x => panic!("Found {:?}", x),
         }
     }

@@ -1,14 +1,17 @@
-use std::path::Path;
+use difference;
+use markdown;
 use std::fs::File;
 use std::io::Read;
-use markdown;
-use difference;
+use std::path::Path;
 
 fn compare(name: &str) {
     let html = format!("tests/fixtures/files/{}.html", name);
     let text = format!("tests/fixtures/files/{}.text", name);
     let mut comp = String::new();
-    File::open(Path::new(&html)).unwrap().read_to_string(&mut comp).unwrap();
+    File::open(Path::new(&html))
+        .unwrap()
+        .read_to_string(&mut comp)
+        .unwrap();
     let md = Path::new(&text);
 
     let mut tokens = String::new();
@@ -22,7 +25,10 @@ fn roundtrip(name: &str) {
     let html = format!("tests/fixtures/files/{}.html", name);
     let text = format!("tests/fixtures/files/{}.text", name);
     let mut comp = String::new();
-    File::open(Path::new(&html)).unwrap().read_to_string(&mut comp).unwrap();
+    File::open(Path::new(&html))
+        .unwrap()
+        .read_to_string(&mut comp)
+        .unwrap();
     let md = Path::new(&text);
 
     let mut tokens = String::new();
@@ -204,7 +210,7 @@ pub fn olist() {
 
 //#[test]
 //pub fn rt_olist() {
-    //roundtrip("olist")
+//roundtrip("olist")
 //}
 
 #[test]

@@ -1,4 +1,4 @@
-extern crate markdown;
 extern crate difference;
+extern crate markdown;
 
 mod fixtures;

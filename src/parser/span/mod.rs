@@ -4,24 +4,24 @@ use parser::Span::Text;
 mod br;
 mod code;
 mod emphasis;
-mod strong;
-mod link;
 mod image;
+mod link;
+mod strong;
 use self::br::parse_break;
 use self::code::parse_code;
 use self::emphasis::parse_emphasis;
-use self::strong::parse_strong;
-use self::link::parse_link;
 use self::image::parse_image;
+use self::link::parse_link;
+use self::strong::parse_strong;
 
-pub fn parse_spans(text: &str) -> Vec<Span>{
+pub fn parse_spans(text: &str) -> Vec<Span> {
     let mut tokens = vec![];
     let mut t = String::new();
     let mut i = 0;
     while i < text.len() {
-        match parse_span(&text[i .. text.len()]){
+        match parse_span(&text[i..text.len()]) {
             Some((span, consumed_chars)) => {
-                if !t.is_empty(){
+                if !t.is_empty() {
                     // if this text is on the very left
                     // trim the left whitespace
                     if tokens.is_empty() {
@@ -44,7 +44,7 @@ pub fn parse_spans(text: &str) -> Vec<Span>{
             }
         }
     }
-    if !t.is_empty(){
+    if !t.is_empty() {
         // if this text is on the very left
         // trim the left whitespace
         if tokens.is_empty() {
@@ -58,66 +58,126 @@ pub fn parse_spans(text: &str) -> Vec<Span>{
     tokens
 }
 
-fn parse_span(text: &str) -> Option<(Span, usize)>{
+fn parse_span(text: &str) -> Option<(Span, usize)> {
     pipe_opt!(
-        text
-        => parse_code
-        => parse_strong
-        => parse_emphasis
-        => parse_break
-        => parse_image
-        => parse_link
-        )
+    text
+    => parse_code
+    => parse_strong
+    => parse_emphasis
+    => parse_break
+    => parse_image
+    => parse_link
+    )
 }
 
 #[cfg(test)]
 mod test {
-    use parser::Span::{Text, Break, Code, Emphasis, Strong, Link, Image};
     use parser::span::parse_spans;
+    use parser::Span::{Break, Code, Emphasis, Image, Link, Strong, Text};
     use std::str;
 
     #[test]
     fn converts_into_text() {
-        assert_eq!(parse_spans("this is a test"), vec![Text("this is a test".to_owned())]);
+        assert_eq!(
+            parse_spans("this is a test"),
+            vec![Text("this is a test".to_owned())]
+        );
     }
 
     #[test]
     fn finds_breaks() {
-        assert_eq!(parse_spans("this is a test  "), vec![Text("this is a test".to_owned()), Break]);
+        assert_eq!(
+            parse_spans("this is a test  "),
+            vec![Text("this is a test".to_owned()), Break]
+        );
     }
 
     #[test]
     fn finds_code() {
-        assert_eq!(parse_spans("this `is a` test"), vec![Text("this ".to_owned()), Code("is a".to_owned()), Text(" test".to_owned())]);
-        assert_eq!(parse_spans("this ``is a`` test"), vec![Text("this ".to_owned()), Code("is a".to_owned()), Text(" test".to_owned())]);
+        assert_eq!(
+            parse_spans("this `is a` test"),
+            vec![
+                Text("this ".to_owned()),
+                Code("is a".to_owned()),
+                Text(" test".to_owned())
+            ]
+        );
+        assert_eq!(
+            parse_spans("this ``is a`` test"),
+            vec![
+                Text("this ".to_owned()),
+                Code("is a".to_owned()),
+                Text(" test".to_owned())
+            ]
+        );
     }
 
     #[test]
     fn finds_emphasis() {
-        assert_eq!(parse_spans("this _is a_ test"), vec![Text("this ".to_owned()), Emphasis(vec![Text("is a".to_owned())]), Text(" test".to_owned())]);
-        assert_eq!(parse_spans("this *is a* test"), vec![Text("this ".to_owned()), Emphasis(vec![Text("is a".to_owned())]), Text(" test".to_owned())]);
+        assert_eq!(
+            parse_spans("this _is a_ test"),
+            vec![
+                Text("this ".to_owned()),
+                Emphasis(vec![Text("is a".to_owned())]),
+                Text(" test".to_owned())
+            ]
+        );
+        assert_eq!(
+            parse_spans("this *is a* test"),
+            vec![
+                Text("this ".to_owned()),
+                Emphasis(vec![Text("is a".to_owned())]),
+                Text(" test".to_owned())
+            ]
+        );
     }
 
     #[test]
     fn finds_strong() {
-        assert_eq!(parse_spans("this __is a__ test"), vec![Text("this ".to_owned()), Strong(vec![Text("is a".to_owned())]), Text(" test".to_owned())]);
-        assert_eq!(parse_spans("this **is a** test"), vec![Text("this ".to_owned()), Strong(vec![Text("is a".to_owned())]), Text(" test".to_owned())]);
+        assert_eq!(
+            parse_spans("this __is a__ test"),
+            vec![
+                Text("this ".to_owned()),
+                Strong(vec![Text("is a".to_owned())]),
+                Text(" test".to_owned())
+            ]
+        );
+        assert_eq!(
+            parse_spans("this **is a** test"),
+            vec![
+                Text("this ".to_owned()),
+                Strong(vec![Text("is a".to_owned())]),
+                Text(" test".to_owned())
+            ]
+        );
     }
 
     #[test]
     fn finds_link() {
         assert_eq!(
             parse_spans("this is [an example](example.com) test"),
-            vec![Text("this is ".to_owned()), Link(vec![Text("an example".to_owned())], "example.com".to_owned(), None), Text(" test".to_owned())]
-            );
+            vec![
+                Text("this is ".to_owned()),
+                Link(
+                    vec![Text("an example".to_owned())],
+                    "example.com".to_owned(),
+                    None
+                ),
+                Text(" test".to_owned())
+            ]
+        );
     }
 
     #[test]
     fn finds_image() {
         assert_eq!(
             parse_spans("this is ![an example](example.com) test"),
-            vec![Text("this is ".to_owned()), Image("an example".to_owned(), "example.com".to_owned(), None), Text(" test".to_owned())]
-            );
+            vec![
+                Text("this is ".to_owned()),
+                Image("an example".to_owned(), "example.com".to_owned(), None),
+                Text(" test".to_owned())
+            ]
+        );
     }
 
     #[test]
@@ -146,4 +206,3 @@ mod test {
         let _ = parse_spans(&test_phrase);
     }
 }
-

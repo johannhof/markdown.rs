@@ -1,6 +1,6 @@
-use regex::Regex;
 use parser::Span;
 use parser::Span::Break;
+use regex::Regex;
 
 pub fn parse_break(text: &str) -> Option<(Span, usize)> {
     lazy_static! {
@@ -15,8 +15,8 @@ pub fn parse_break(text: &str) -> Option<(Span, usize)> {
 
 #[cfg(test)]
 mod test {
-    use parser::Span::Break;
     use super::parse_break;
+    use parser::Span::Break;
 
     #[test]
     fn finds_breaks() {

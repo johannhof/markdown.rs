@@ -1,14 +1,15 @@
-use parser::Block;
 use parser::block::parse_blocks;
-use parser::Block::{UnorderedList, Paragraph};
+use parser::Block;
+use parser::Block::{Paragraph, UnorderedList};
 use parser::ListItem;
 use regex::Regex;
 
 pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
     lazy_static! {
-        static ref LIST_BEGIN :Regex = Regex::new(r"^(?P<indent> *)(-|\+|\*) (?P<content>.*)").unwrap();
-        static ref NEW_PARAGRAPH :Regex = Regex::new(r"^ +").unwrap();
-        static ref INDENTED :Regex = Regex::new(r"^ {0,4}(?P<content>.*)").unwrap();
+        static ref LIST_BEGIN: Regex =
+            Regex::new(r"^(?P<indent> *)(-|\+|\*) (?P<content>.*)").unwrap();
+        static ref NEW_PARAGRAPH: Regex = Regex::new(r"^ +").unwrap();
+        static ref INDENTED: Regex = Regex::new(r"^ {0,4}(?P<content>.*)").unwrap();
     }
 
     // if the beginning doesn't match a list don't even bother
@@ -131,7 +132,9 @@ mod test {
 
     #[test]
     fn no_early_matching() {
-        assert_eq!(parse_unordered_list(&vec!["test", "* whot", "* a list"]),
-                   None);
+        assert_eq!(
+            parse_unordered_list(&vec!["test", "* whot", "* a list"]),
+            None
+        );
     }
 }
