@@ -108,7 +108,7 @@ mod test {
     fn finds_link() {
         assert_eq!(
             parse_spans("this is [an example](example.com) test"),
-            vec![Text("this is ".to_owned()), Link("an example".to_owned(), "example.com".to_owned(), None), Text(" test".to_owned())]
+            vec![Text("this is ".to_owned()), Link(vec![Text("an example".to_owned())], "example.com".to_owned(), None), Text(" test".to_owned())]
             );
     }
 
@@ -134,7 +134,7 @@ mod test {
             Text(" ".to_owned()),
             Code("teh codez".to_owned()),
             Text(" ".to_owned()),
-            Link("a link".to_owned(), "example.com".to_owned(), None),
+            Link(vec![Text("a link".to_owned())], "example.com".to_owned(), None),
             Break
             ]
             );

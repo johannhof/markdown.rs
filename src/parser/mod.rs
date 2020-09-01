@@ -32,7 +32,7 @@ pub enum Span {
     Break,
     Text(String),
     Code(String),
-    Link(String, String, Option<String>),
+    Link(Vec<Span>, String, Option<String>),
     Image(String, String, Option<String>),
 
     Emphasis(Vec<Span>),

@@ -1,3 +1,4 @@
+use regex::Regex;
 use parser::Block;
 use parser::Block::{Header, Paragraph, Blockquote, Hr, CodeBlock, UnorderedList, OrderedList, Raw};
 use parser::{Span, ListItem, OrderedListType};
@@ -11,9 +12,9 @@ fn slugify(elements: &[Span]) -> String {
         let next = match *el {
             Break => "".to_owned(),
             Text(ref text) |
-            Link(ref text, _, _) |
             Image(ref text, _, _) |
             Code(ref text) => text.trim().replace(" ", "_").to_lowercase().to_owned(),
+            Link(ref content, _, _) |
             Strong(ref content) | Emphasis(ref content) => slugify(content),
         };
         if !ret.is_empty() {
@@ -50,21 +51,21 @@ fn format_spans(elements: &[Span]) -> String {
     for element in elements.iter() {
         let next = match *element {
             Break => format!("<br />"),
-            Text(ref text) => format!("{}", &escape(text)),
-            Code(ref text) => format!("<code>{}</code>", &escape(text)),
-            Link(ref text, ref url, None) =>
-                format!("<a href='{}'>{}</a>", &escape(url), &escape(text)),
-            Link(ref text, ref url, Some(ref title)) => format!("<a href='{}' title='{}'>{}</a>",
-                                                                &escape(url),
-                                                                &escape(title),
-                                                                &escape(text)),
+            Text(ref text) => format!("{}", &escape(text, true)),
+            Code(ref text) => format!("<code>{}</code>", &escape(text, false)),
+            Link(ref content, ref url, None) =>
+                format!("<a href=\"{}\">{}</a>", &escape(url, false), format_spans(content)),
+            Link(ref content, ref url, Some(ref title)) => format!("<a href=\"{}\" title=\"{}\">{}</a>",
+                                                                &escape(url, false),
+                                                                &escape(title, true),
+                                                                format_spans(content)),
             Image(ref text, ref url, None) =>
-                format!("<img src='{}' alt='{}' />", &escape(url), &escape(text)),
+                format!("<img src=\"{}\" alt=\"{}\" />", &escape(url, false), &escape(text, true)),
             Image(ref text, ref url, Some(ref title)) =>
-                format!("<img src='{}' title='{}' alt='{}' />",
-                        &escape(url),
-                        &escape(title),
-                        &escape(text)),
+                format!("<img src=\"{}\" title=\"{}\" alt=\"{}\" />",
+                        &escape(url, false),
+                        &escape(title, true),
+                        &escape(text, true)),
             Emphasis(ref content) => format!("<em>{}</em>", format_spans(content)),
             Strong(ref content) => format!("<strong>{}</strong>", format_spans(content)),
         };
@@ -73,12 +74,25 @@ fn format_spans(elements: &[Span]) -> String {
     ret
 }
 
-fn escape(text: &str) -> String {
-    text.replace("&", "&amp;")
+fn escape(text: &str, replace_entities: bool) -> String {
+    lazy_static! {
+        static ref AMPERSAND :Regex = Regex::new(r"&amp;(?P<x>\w+;)").unwrap();
+    }
+
+    let replaced = text.replace("&", "&amp;")
         .replace("<", "&lt;")
         .replace("\"", "&quot;")
         .replace("'", "&#8217;")
-        .replace(">", "&gt;")
+        .replace(">", "&gt;");
+
+    // We can't do lookarounds in the regex crate to match only ampersands with
+    // no entity; afterwards, so we do this ugly hack where we revert the replacement
+    // everywhere it wasn't desired.
+    if replace_entities {
+        return AMPERSAND.replace_all(&replaced, "&$x").into_owned()
+    }
+
+    return replaced;
 }
 
 fn format_list(elements: &[ListItem], start_tag: &str, end_tag: &str) -> String {
@@ -104,14 +118,18 @@ fn format_unordered_list(elements: &[ListItem]) -> String {
 }
 
 fn format_ordered_list(elements: &[ListItem], num_type: &OrderedListType) -> String {
-    format_list(elements, &format!("ol type=\"{}\"", num_type.0), "ol")
+    if num_type != &OrderedListType::Numeric {
+        format_list(elements, &format!("ol type=\"{}\"", num_type.to_str()), "ol")
+    } else {
+        format_list(elements, "ol", "ol")
+    }
 }
 
 fn format_codeblock(lang: &Option<String>,elements: &str) -> String {
     if lang.is_none() || (lang.is_some() && lang.as_ref().unwrap().is_empty()) {
-        format!("<pre><code>{}</code></pre>\n\n", &escape(elements))
+        format!("<pre><code>{}</code></pre>\n\n", &escape(elements, false))
     } else {
-        format!("<pre><code class=\"language-{}\">{}</code></pre>\n\n", &escape(lang.as_ref().unwrap()), &escape(elements))
+        format!("<pre><code class=\"language-{}\">{}</code></pre>\n\n", &escape(lang.as_ref().unwrap(), false), &escape(elements, false))
     }
 }
 
