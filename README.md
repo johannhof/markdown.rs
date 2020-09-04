@@ -31,7 +31,7 @@ TODO
 ----------
 
 - [ ] Inline HTML
-- [ ] Backslash Escapes
+- [x] Backslash Escapes
 - [ ] Automatic Links
 - [ ] Reference-Style Links
 - [ ] List wrapping

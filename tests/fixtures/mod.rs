@@ -124,6 +124,16 @@ pub fn rt_entities() {
 }
 
 #[test]
+pub fn escaping() {
+    compare("escaping")
+}
+
+#[test]
+pub fn rt_escaping() {
+    roundtrip("escaping")
+}
+
+#[test]
 pub fn headers() {
     compare("headers")
 }

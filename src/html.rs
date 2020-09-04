@@ -2,7 +2,7 @@ use parser::Block;
 use parser::Block::{
     Blockquote, CodeBlock, Header, Hr, OrderedList, Paragraph, Raw, UnorderedList,
 };
-use parser::Span::{Break, Code, Emphasis, Image, Link, Strong, Text};
+use parser::Span::{Break, Code, Emphasis, Image, Link, Literal, Strong, Text};
 use parser::{ListItem, OrderedListType, Span};
 use regex::Regex;
 
@@ -13,6 +13,7 @@ fn slugify(elements: &[Span]) -> String {
     for el in elements {
         let next = match *el {
             Break => "".to_owned(),
+            Literal(character) => character.to_string(),
             Text(ref text) | Image(ref text, _, _) | Code(ref text) => {
                 text.trim().replace(" ", "_").to_lowercase().to_owned()
             }
@@ -54,6 +55,7 @@ fn format_spans(elements: &[Span]) -> String {
     for element in elements.iter() {
         let next = match *element {
             Break => format!("<br />"),
+            Literal(character) => character.to_string(),
             Text(ref text) => format!("{}", &escape(text, true)),
             Code(ref text) => format!("<code>{}</code>", &escape(text, false)),
             Link(ref content, ref url, None) => format!(

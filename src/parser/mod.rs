@@ -60,6 +60,7 @@ pub enum Span {
     Break,
     Text(String),
     Code(String),
+    Literal(char),
     Link(Vec<Span>, String, Option<String>),
     Image(String, String, Option<String>),
 

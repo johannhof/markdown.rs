@@ -6,7 +6,7 @@ pub fn parse_code_block(lines: &[&str]) -> Option<(Block, usize)> {
     lazy_static! {
         static ref CODE_BLOCK_SPACES: Regex = Regex::new(r"^ {4}").unwrap();
         static ref CODE_BLOCK_TABS: Regex = Regex::new(r"^\t").unwrap();
-        static ref CODE_BLOCK_BACKTICKS: Regex = Regex::new(r"```").unwrap();
+        static ref CODE_BLOCK_BACKTICKS: Regex = Regex::new(r"^```").unwrap();
     }
 
     let mut content = String::new();
