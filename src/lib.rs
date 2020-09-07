@@ -1,9 +1,7 @@
 //! A crate for parsing Markdown in Rust
 #![crate_name = "markdown"]
 #![deny(missing_docs)]
-// #![deny(warnings)]
-#![cfg_attr(feature = "clippy", feature(plugin))]
-#![cfg_attr(feature = "clippy", plugin(clippy))]
+#![deny(warnings)]
 
 extern crate regex;
 

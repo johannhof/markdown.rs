@@ -74,6 +74,16 @@ pub fn rt_blanks_in_code() {
 }
 
 #[test]
+pub fn brackets_in_links() {
+    compare("brackets_in_links")
+}
+
+#[test]
+pub fn rt_brackets_in_links() {
+    roundtrip("brackets_in_links")
+}
+
+#[test]
 pub fn code() {
     compare("code")
 }
