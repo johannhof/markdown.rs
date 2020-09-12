@@ -154,6 +154,11 @@ pub fn rt_headers() {
 }
 
 #[test]
+pub fn hex_entities() {
+    compare("hex_entities")
+}
+
+#[test]
 pub fn list1() {
     compare("list1")
 }

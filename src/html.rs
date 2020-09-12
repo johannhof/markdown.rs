@@ -148,7 +148,7 @@ fn format_spans(elements: &[Span], link_references: &LinkReferenceMap) -> String
 
 fn escape(text: &str, replace_entities: bool) -> String {
     lazy_static! {
-        static ref AMPERSAND: Regex = Regex::new(r"&amp;(?P<x>\w+;)").unwrap();
+        static ref AMPERSAND: Regex = Regex::new(r"&amp;(?P<x>\S+;)").unwrap();
     }
 
     let replaced = text
