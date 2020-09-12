@@ -59,7 +59,7 @@ pub fn to_html(blocks: &[Block]) -> String {
             }
             LinkReference(_, _, _) => "".to_owned(),
             Raw(ref elements) => elements.to_owned(),
-            Hr => format!("<hr>"),
+            Hr => format!("<hr />\n\n"),
         };
         ret.push_str(&next)
     }

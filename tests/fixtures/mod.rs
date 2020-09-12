@@ -159,6 +159,11 @@ pub fn hex_entities() {
 }
 
 #[test]
+pub fn rt_hex_entities() {
+    roundtrip("hex_entities")
+}
+
+#[test]
 pub fn list1() {
     compare("list1")
 }
@@ -207,6 +212,16 @@ pub fn lists8() {
 pub fn rt_lists8() {
     roundtrip("lists8")
 }
+
+#[test]
+pub fn lists_ol() {
+    compare("lists_ol")
+}
+
+//#[test]
+//pub fn rt_lists_ol() {
+//roundtrip("lists_ol")
+//}
 
 #[test]
 pub fn links() {

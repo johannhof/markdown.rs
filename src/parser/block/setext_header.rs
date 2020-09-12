@@ -9,7 +9,7 @@ pub fn parse_setext_header(lines: &[&str]) -> Option<(Block, usize)> {
         static ref HORIZONTAL_RULE_2: Regex = Regex::new(r"^---+$").unwrap();
     }
 
-    if lines.len() > 1 {
+    if lines.len() > 1 && !lines[0].is_empty() {
         if HORIZONTAL_RULE_1.is_match(lines[1]) {
             return Some((Header(parse_spans(lines[0]), 1), 2));
         } else if HORIZONTAL_RULE_2.is_match(lines[1]) {

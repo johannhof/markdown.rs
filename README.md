@@ -31,11 +31,7 @@ TODO
 ----------
 
 - [ ] Inline HTML
-- [x] Backslash Escapes
 - [ ] Automatic Links
-- [x] Reference-Style Links
-- [ ] List wrapping
-- [x] HTML Entities
 - [ ] Obscure Emails
 
 ## License
