@@ -103,7 +103,6 @@ pub fn parse_ordered_list(lines: &[&str]) -> Option<(Block, usize)> {
     None
 }
 
-#[allow(non_snake_case)]
 #[cfg(test)]
 mod test {
     use super::parse_ordered_list;

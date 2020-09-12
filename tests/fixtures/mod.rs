@@ -204,6 +204,16 @@ pub fn rt_lists8() {
 }
 
 #[test]
+pub fn links() {
+    compare("links")
+}
+
+#[test]
+pub fn rt_links() {
+    roundtrip("links")
+}
+
+#[test]
 pub fn numbers() {
     compare("numbers")
 }

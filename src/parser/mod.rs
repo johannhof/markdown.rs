@@ -40,7 +40,8 @@ pub enum Block {
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
     CodeBlock(Option<String>, String),
-    //String is the type of list: A,a,i,I or 1
+    /** A link reference with the fields: (id, url, [title]) **/
+    LinkReference(String, String, Option<String>),
     OrderedList(Vec<ListItem>, OrderedListType),
     UnorderedList(Vec<ListItem>),
     Raw(String),
@@ -62,6 +63,12 @@ pub enum Span {
     Code(String),
     Literal(char),
     Link(Vec<Span>, String, Option<String>),
+    /**
+     * A reference-style link with the fields: (content, url, raw)
+     * The "raw" field is used internally for falling back to the original
+     * markdown link if the corresponding reference is not found at render time.
+     **/
+    RefLink(Vec<Span>, String, String),
     Image(String, String, Option<String>),
 
     Emphasis(Vec<Span>),

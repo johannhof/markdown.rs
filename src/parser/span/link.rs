@@ -1,18 +1,20 @@
 use parser::span::parse_spans;
 use parser::Span;
-use parser::Span::Link;
+use parser::Span::{Link, RefLink};
 use regex::Regex;
 
 pub fn parse_link(text: &str) -> Option<(Span, usize)> {
     lazy_static! {
+        // This is the second part of the regex, that matches the reference or url and title.
+        static ref LINK_ATTR_STR: &'static str = "(?:\\s*\\[(?P<ref>.*)\\]|\\((?P<url>.*?)(?:\\s*\"(?P<title>.*?)\")?\\s*\\))?";
         // This regex does not sufficiently cover the edge case where there are brackets (e.g. for
         // images) inside a link text. It's sufficient for identifying links anyway, we'll properly
         // figure out the braces below.
+        static ref LINK_STR: String = "^\\[(?P<text>.*?)\\]".to_owned() + &LINK_ATTR_STR;
         static ref LINK: Regex =
-            Regex::new("^\\[(?P<text>.*?)\\]\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
-        // This is simply the second part of the above regex, that matches the url and title.
+            Regex::new(&LINK_STR).unwrap();
         static ref LINK_ATTR: Regex =
-            Regex::new("^\\((?P<url>.*?)(?:\\s\"(?P<title>.*?)\")?\\)").unwrap();
+            Regex::new(&("^".to_owned() + &LINK_ATTR_STR)).unwrap();
     }
 
     if LINK.is_match(text) {
@@ -54,12 +56,31 @@ pub fn parse_link(text: &str) -> Option<(Span, usize)> {
         }
 
         let caps = LINK_ATTR.captures(chars.as_str()).unwrap();
-        let url = caps.name("url").map_or("", |t| t.as_str()).to_owned();
-        let title = caps.name("title").map(|t| t.as_str().to_owned());
 
-        // TODO correctly get whitespace length between url and title
-        let len = content.len() + url.len() + 4 + title.as_ref().map_or(0, |t| t.len() + 3);
-        return Some((Link(parse_spans(&content), url, title), len));
+        // Check whether we have an inline link (in which case the "url" field is captured),
+        // whether there's an explicit reference provided or if we should implicitly use the link
+        // content as reference.
+        if let Some(url) = caps.name("url") {
+            let url = url.as_str().trim().to_owned();
+            let title = caps.name("title").map(|t| t.as_str().to_owned());
+            let len = 1 + content.len() + 1 + caps[0].len();
+
+            return Some((Link(parse_spans(&content), url, title), len));
+        } else if let Some(reference) = caps.name("ref") {
+            let reference = reference.as_str().trim().to_lowercase();
+            let len = 1 + content.len() + 1 + caps[0].len();
+            let raw = ["[", &content, "]", &caps[0]].join("");
+
+            return Some((RefLink(parse_spans(&content), reference, raw), len));
+        } else {
+            // Leave the reference empty, the HTML generating code will try to match both reference
+            // and slugified content.
+            let reference = "".to_owned();
+            let len = 1 + content.len() + 1;
+            let raw = ["[", &content, "]"].join("");
+
+            return Some((RefLink(parse_spans(&content), reference, raw), len));
+        }
     }
     None
 }
@@ -67,7 +88,7 @@ pub fn parse_link(text: &str) -> Option<(Span, usize)> {
 #[cfg(test)]
 mod test {
     use parser::span::parse_link;
-    use parser::Span::{Image, Link, Literal, Text};
+    use parser::Span::{Image, Link, Literal, RefLink, Text};
 
     #[test]
     fn finds_link() {
@@ -80,6 +101,18 @@ mod test {
                     None
                 ),
                 25
+            ))
+        );
+
+        assert_eq!(
+            parse_link("[an example][example]"),
+            Some((
+                RefLink(
+                    vec![Text("an example".to_owned())],
+                    "example".to_owned(),
+                    "[an example][example]".to_owned()
+                ),
+                21
             ))
         );
 
@@ -99,6 +132,18 @@ mod test {
         assert_eq!(
             parse_link("[]() test"),
             Some((Link(vec![], "".to_owned(), None), 4))
+        );
+
+        assert_eq!(
+            parse_link("[()] test"),
+            Some((
+                RefLink(
+                    vec![Text("()".to_owned())],
+                    "".to_owned(),
+                    "[()]".to_owned()
+                ),
+                4
+            ))
         );
 
         assert_eq!(
@@ -144,7 +189,11 @@ mod test {
             parse_link("[huh[]wow](example.com)"),
             Some((
                 Link(
-                    vec![Text("huh[]wow".to_owned())],
+                    vec![
+                        Text("huh".to_owned()),
+                        RefLink(vec![], "".to_owned(), "[]".to_owned()),
+                        Text("wow".to_owned())
+                    ],
                     "example.com".to_owned(),
                     None
                 ),
@@ -180,9 +229,36 @@ mod test {
     }
 
     #[test]
+    fn space_length() {
+        assert_eq!(
+            parse_link("[an example]      [example]"),
+            Some((
+                RefLink(
+                    vec![Text("an example".to_owned())],
+                    "example".to_owned(),
+                    "[an example]      [example]".to_owned()
+                ),
+                27
+            ))
+        );
+
+        assert_eq!(
+            parse_link("[an example](example.com           \"Title\") test"),
+            Some((
+                Link(
+                    vec![Text("an example".to_owned())],
+                    "example.com".to_owned(),
+                    Some("Title".to_owned())
+                ),
+                43
+            ))
+        );
+    }
+
+    #[test]
     fn no_false_positives() {
-        assert_eq!(parse_link("[()] testing things test"), None);
         assert_eq!(parse_link("()[] testing things test"), None);
+        assert_eq!(parse_link("[[][[]] testing things test"), None);
     }
 
     #[test]

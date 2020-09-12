@@ -36,6 +36,8 @@ fn gen_block(b: Block) -> String {
         // [TODO]: Ordered list generation - 2017-12-10 10:12pm
         OrderedList(_x, _num_type) => unimplemented!("Generate ordered list"),
         UnorderedList(x) => generate_from_li(x),
+        LinkReference(id, url, None) => format!("[{}]: {}", id, url),
+        LinkReference(id, url, Some(title)) => format!("[{}]: {} \"{}\"", id, url, title),
         Raw(x) => x,
         Hr => "\n\n".to_string(),
     }
@@ -50,6 +52,7 @@ fn gen_span(s: Span) -> String {
         Code(x) => format!("`{}`", x),
         Link(a, b, None) => format!("[{}]({})", generate_from_spans(a), b),
         Link(a, b, Some(c)) => format!("[{}]({} \"{}\")", generate_from_spans(a), b, c),
+        RefLink(_, _, raw) => raw,
         Image(a, b, None) => format!("![{}]({})", a, b),
         Image(a, b, Some(c)) => format!("![{}]({} \"{}\")", a, b, c),
         Emphasis(x) => format!("*{}*", generate_from_spans(x)),
