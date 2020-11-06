@@ -73,12 +73,13 @@ fn parse_block(lines: &[&str]) -> Option<(Block, usize)> {
     lines
     => parse_hr
     => parse_atx_header
-    => parse_setext_header
     => parse_code_block
     => parse_blockquote
     => parse_unordered_list
     => parse_ordered_list
     => parse_link_reference
+    // Must not match before anything else. See: https://spec.commonmark.org/0.29/#setext-headings
+    => parse_setext_header
     )
 }
 
