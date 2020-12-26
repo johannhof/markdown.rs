@@ -7,6 +7,7 @@ mod atx_header;
 mod blockquote;
 mod code_block;
 mod hr;
+mod html_block;
 mod link_reference;
 mod ordered_list;
 mod setext_header;
@@ -15,6 +16,7 @@ use self::atx_header::parse_atx_header;
 use self::blockquote::parse_blockquote;
 use self::code_block::parse_code_block;
 use self::hr::parse_hr;
+use self::html_block::parse_html_block;
 use self::link_reference::parse_link_reference;
 use self::ordered_list::parse_ordered_list;
 use self::setext_header::parse_setext_header;
@@ -74,6 +76,7 @@ fn parse_block(lines: &[&str]) -> Option<(Block, usize)> {
     => parse_hr
     => parse_atx_header
     => parse_code_block
+    => parse_html_block
     => parse_blockquote
     => parse_unordered_list
     => parse_ordered_list

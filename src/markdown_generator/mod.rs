@@ -33,6 +33,7 @@ fn gen_block(b: Block) -> String {
                 format!("```{}\n{}```", lang.unwrap(), x)
             }
         }
+        HtmlBlock(_x) => unimplemented!("Generate HTML block"),
         // [TODO]: Ordered list generation - 2017-12-10 10:12pm
         OrderedList(_x, _num_type) => unimplemented!("Generate ordered list"),
         UnorderedList(x) => generate_from_li(x),
