@@ -28,4 +28,9 @@ regex = "1"
 
 [dev-dependencies]
 difference = "0.4"
+criterion = "0.3"
+
+[[bench]]
+name = "to_html"
+harness = false
 

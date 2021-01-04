@@ -5,17 +5,16 @@ use regex::Regex;
 
 pub fn parse_emphasis(text: &str) -> Option<(Span, usize)> {
     lazy_static! {
-        static ref EMPHASIS_UNDERSCORE: Regex = Regex::new(r"^_(?P<text>.+?)_").unwrap();
-        static ref EMPHASIS_STAR: Regex = Regex::new(r"^\*(?P<text>.+?)\*").unwrap();
+        static ref EMPHASIS: Regex =
+            Regex::new(r"^_(?P<underscore_text>.+?)_|^\*(?P<star_text>.+?)\*").unwrap();
     }
 
-    if EMPHASIS_UNDERSCORE.is_match(text) {
-        let caps = EMPHASIS_UNDERSCORE.captures(text).unwrap();
-        let t = caps.name("text").unwrap().as_str();
-        return Some((Emphasis(parse_spans(t)), t.len() + 2));
-    } else if EMPHASIS_STAR.is_match(text) {
-        let caps = EMPHASIS_STAR.captures(text).unwrap();
-        let t = caps.name("text").unwrap().as_str();
+    if EMPHASIS.is_match(text) {
+        let caps = EMPHASIS.captures(text).expect("is_match returned true");
+        let t = caps
+            .name("underscore_text")
+            .unwrap_or_else(|| caps.name("star_text").unwrap())
+            .as_str();
         return Some((Emphasis(parse_spans(t)), t.len() + 2));
     }
     None
