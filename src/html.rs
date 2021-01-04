@@ -1,6 +1,7 @@
 use parser::Block;
 use parser::Block::{
-    Blockquote, CodeBlock, Header, Hr, LinkReference, OrderedList, Paragraph, Raw, UnorderedList,
+    Blockquote, CodeBlock, Header, Hr, HtmlBlock, LinkReference, OrderedList, Paragraph, Raw,
+    UnorderedList,
 };
 use parser::Span::{Break, Code, Emphasis, Image, Link, Literal, RefLink, Strong, Text};
 use parser::{ListItem, OrderedListType, Span};
@@ -53,6 +54,7 @@ pub fn to_html(blocks: &[Block]) -> String {
             Paragraph(ref elements) => format_paragraph(elements, &link_references),
             Blockquote(ref elements) => format_blockquote(elements),
             CodeBlock(ref lang, ref elements) => format_codeblock(lang, elements),
+            HtmlBlock(ref content) => format_htmlblock(content),
             UnorderedList(ref elements) => format_unordered_list(elements, &link_references),
             OrderedList(ref elements, ref num_type) => {
                 format_ordered_list(elements, num_type, &link_references)
@@ -220,6 +222,10 @@ fn format_codeblock(lang: &Option<String>, elements: &str) -> String {
             &escape(elements, false)
         )
     }
+}
+
+fn format_htmlblock(content: &String) -> String {
+    format!("{}\n", content)
 }
 
 fn format_blockquote(elements: &[Block]) -> String {

@@ -40,6 +40,7 @@ pub enum Block {
     Paragraph(Vec<Span>),
     Blockquote(Vec<Block>),
     CodeBlock(Option<String>, String),
+    HtmlBlock(String),
     /** A link reference with the fields: (id, url, [title]) **/
     LinkReference(String, String, Option<String>),
     OrderedList(Vec<ListItem>, OrderedListType),

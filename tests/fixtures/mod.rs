@@ -312,3 +312,18 @@ pub fn wrapping() {
 pub fn rt_wrapping() {
     roundtrip("wrapping")
 }
+
+#[test]
+pub fn simple_inline_html() {
+    compare("simple_inline_html")
+}
+
+#[test]
+pub fn inline_html_comments() {
+    compare("inline_html_comments")
+}
+
+#[test]
+pub fn advanced_inline_html() {
+    compare("advanced_inline_html")
+}
