@@ -5,17 +5,16 @@ use regex::Regex;
 
 pub fn parse_strong(text: &str) -> Option<(Span, usize)> {
     lazy_static! {
-        static ref STRONG_UNDERSCORE: Regex = Regex::new(r"^__(?P<text>.+?)__").unwrap();
-        static ref STRONG_STAR: Regex = Regex::new(r"^\*\*(?P<text>.+?)\*\*").unwrap();
+        static ref STRONG: Regex =
+            Regex::new(r"^__(?P<underscore_text>.+?)__|^\*\*(?P<star_text>.+?)\*\*").unwrap();
     }
 
-    if STRONG_UNDERSCORE.is_match(text) {
-        let caps = STRONG_UNDERSCORE.captures(text).unwrap();
-        let t = caps.name("text").unwrap().as_str();
-        return Some((Strong(parse_spans(t)), t.len() + 4));
-    } else if STRONG_STAR.is_match(text) {
-        let caps = STRONG_STAR.captures(text).unwrap();
-        let t = caps.name("text").unwrap().as_str();
+    if STRONG.is_match(text) {
+        let caps = STRONG.captures(text).expect("is_match returned true");
+        let t = caps
+            .name("underscore_text")
+            .unwrap_or_else(|| caps.name("star_text").unwrap())
+            .as_str();
         return Some((Strong(parse_spans(t)), t.len() + 4));
     }
     None

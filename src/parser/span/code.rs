@@ -4,18 +4,23 @@ use regex::Regex;
 
 pub fn parse_code(text: &str) -> Option<(Span, usize)> {
     lazy_static! {
-        static ref CODE_SINGLE: Regex = Regex::new(r"^`(?P<text>.+?)`").unwrap();
-        static ref CODE_DOUBLE: Regex = Regex::new(r"^``(?P<text>.+?)``").unwrap();
+        static ref CODE: Regex =
+            Regex::new(r"^``(?P<double_text>.+?)``|^`(?P<single_text>.+?)`").unwrap();
     }
 
-    if CODE_DOUBLE.is_match(text) {
-        let caps = CODE_DOUBLE.captures(text).unwrap();
-        let t = caps.name("text").unwrap().as_str();
-        return Some((Code(t.to_owned()), t.len() + 4));
-    } else if CODE_SINGLE.is_match(text) {
-        let caps = CODE_SINGLE.captures(text).unwrap();
-        let t = caps.name("text").unwrap().as_str();
-        return Some((Code(t.to_owned()), t.len() + 2));
+    if CODE.is_match(text) {
+        let caps = CODE.captures(text).expect("is_match returned true");
+        return match (caps.name("double_text"), caps.name("single_text")) {
+            (Some(m), _) => {
+                let t = m.as_str();
+                Some((Code(t.to_owned()), t.len() + 4))
+            }
+            (None, Some(m)) => {
+                let t = m.as_str();
+                Some((Code(t.to_owned()), t.len() + 2))
+            }
+            _ => unreachable!("CODE.is_match returned true"),
+        };
     }
     None
 }
