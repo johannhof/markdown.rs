@@ -81,7 +81,7 @@ pub fn parse_html_block(lines: &[&str]) -> Option<(Block, usize)> {
         while let Some((tag, h, t)) = find_tag(&line[offset..]) {
             let idx = offset + h;
             offset += t;
-            if open_tag.len() > 0 {
+            if !open_tag.is_empty() {
                 if tag == open_tag {
                     // Deal with matching nested start-tags.
                     nest_count += 1;
@@ -120,8 +120,10 @@ pub fn parse_html_block(lines: &[&str]) -> Option<(Block, usize)> {
             }
         }
 
-        content.push_str(line);
-        content.push('\n');
+        if !open_tag.is_empty() {
+            content.push_str(line);
+            content.push('\n');
+        }
     }
 
     None
@@ -165,6 +167,20 @@ mod test {
         assert_eq!(
             parse_html_block(&vec!["<div>", "    more text", "</div>"]).unwrap(),
             ((HtmlBlock("<div>\n    more text\n</div>\n".to_owned()), 3))
+        );
+
+        assert_eq!(
+            parse_html_block(&vec![
+                "<div class=\"csv\">",
+                "<table>",
+                "</table>",
+                "</div>"
+            ])
+            .unwrap(),
+            ((
+                HtmlBlock("<div class=\"csv\">\n<table>\n</table>\n</div>\n".to_owned()),
+                4
+            ))
         );
     }
 
