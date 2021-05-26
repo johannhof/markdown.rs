@@ -1,4 +1,3 @@
-use difference;
 use markdown;
 use std::fs::File;
 use std::io::Read;
@@ -18,7 +17,7 @@ fn compare(name: &str) {
     File::open(md).unwrap().read_to_string(&mut tokens).unwrap();
     println!("{:?} -> {:?}", tokens, markdown::tokenize(&tokens));
 
-    difference::assert_diff(&comp, &markdown::file_to_html(md).unwrap(), " ", 0);
+    assert_diff!(&comp, &markdown::file_to_html(md).unwrap(), " ", 0);
 }
 
 fn roundtrip(name: &str) {
@@ -40,7 +39,7 @@ fn roundtrip(name: &str) {
 
     println!("BEGIN\n{}\nEND", out);
 
-    difference::assert_diff(&comp, &markdown::to_html(&out), " ", 0);
+    assert_diff!(&comp, &markdown::to_html(&out), " ", 0);
 }
 
 #[test]
