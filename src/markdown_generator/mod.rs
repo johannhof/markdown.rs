@@ -33,9 +33,8 @@ fn gen_block(b: Block) -> String {
                 format!("```{}\n{}```", lang.unwrap(), x)
             }
         }
-        // [TODO]: Ordered list generation - 2017-12-10 10:12pm
-        OrderedList(_x, _num_type) => unimplemented!("Generate ordered list"),
-        UnorderedList(x) => generate_from_li(x),
+        OrderedList(x, num_type) => generate_from_li(x, &format!("{}.", num_type.to_str())),
+        UnorderedList(x) => generate_from_li(x, "*"),
         LinkReference(id, url, None) => format!("[{}]: {}", id, url),
         LinkReference(id, url, Some(title)) => format!("[{}]: {} \"{}\"", id, url, title),
         Raw(x) => x,
@@ -60,13 +59,14 @@ fn gen_span(s: Span) -> String {
     }
 }
 
-fn generate_from_li(data: Vec<ListItem>) -> String {
+fn generate_from_li(data: Vec<ListItem>, marker: &str) -> String {
     use ListItem::*;
 
     data.into_iter()
         .map(|x| {
             format!(
-                "* {}",
+                "{} {}",
+                marker,
                 match x {
                     Simple(x) => generate_from_spans(x),
                     Paragraph(x) => format!(
