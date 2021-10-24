@@ -82,8 +82,10 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
     for c in contents {
         if is_paragraph || c.len() > 1 {
             list_contents.push(ListItem::Paragraph(c));
-        } else if let Paragraph(content) = c[0].clone() {
-            list_contents.push(ListItem::Simple(content));
+        } else if c.len() != 0 { 
+            if let Paragraph(content) = c[0].clone() {
+                list_contents.push(ListItem::Simple(content));
+            }
         }
     }
 
