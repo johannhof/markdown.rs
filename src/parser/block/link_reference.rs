@@ -23,6 +23,8 @@ pub fn parse_link_reference(lines: &[&str]) -> Option<(Block, usize)> {
             1,
         ));
     }
+    
+    if lines.len() < 2 { return None }
 
     if LINK_REFERENCE_FIRST_LINE.is_match(lines[0]) && LINK_REFERENCE_SECOND_LINE.is_match(lines[1])
     {

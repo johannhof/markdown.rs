@@ -79,7 +79,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
 
     let mut list_contents = vec![];
 
-    for c in contents {
+    for c in contents.into_iter().filter(|x| !x.is_empty()) {
         if is_paragraph || c.len() > 1 {
             list_contents.push(ListItem::Paragraph(c));
         } else if let Paragraph(content) = c[0].clone() {
