@@ -12,8 +12,11 @@ fn compare(name: &str) {
         .unwrap()
         .read_to_string(&mut comp)
         .unwrap();
+    
+    // Fix for windows
+    comp = comp.replace("\r", "");
+    
     let md = Path::new(&text);
-
     let mut tokens = String::new();
     File::open(md).unwrap().read_to_string(&mut tokens).unwrap();
     println!("{:?} -> {:?}", tokens, markdown::tokenize(&tokens));
@@ -29,8 +32,10 @@ fn roundtrip(name: &str) {
         .unwrap()
         .read_to_string(&mut comp)
         .unwrap();
-    let md = Path::new(&text);
+    // Fix for windows
+    comp = comp.replace("\r", "");
 
+    let md = Path::new(&text);
     let mut tokens = String::new();
     File::open(md).unwrap().read_to_string(&mut tokens).unwrap();
 
