@@ -19,7 +19,7 @@ pub fn parse_link(text: &str) -> Option<(Span, usize)> {
 
     if LINK.is_match(text) {
         let mut chars = text.chars();
-        let mut content = String::new();
+        let mut content_end_index = 0;
 
         // This tracks open vs. closed braces, it starts at 1 because we have an initial
         // open brace, we want to reach 0 to find the closing brace for the link.
@@ -27,14 +27,14 @@ pub fn parse_link(text: &str) -> Option<(Span, usize)> {
         let mut brace_level = 1;
 
         // Walk through the link content matching braces to ensure that we find the correct closing
-        // brace for the link, e.g. `[a link with ![an image](src) inside](link)` should not only parse
+        // brace for the link, e.g. `[a link with ![an image](src) inside](link)` should not parse just
         // `[a link with ![an image]`.
         while let Some(next) = chars.next() {
             // Skip escaped braces.
             if next == '\\' {
-                content.push(next);
-                if let Some(x) = chars.next() {
-                    content.push(x);
+                content_end_index += 1;
+                if let Some(_) = chars.next() {
+                    content_end_index += 1;
                 }
                 continue;
             } else if next == ']' {
@@ -45,8 +45,9 @@ pub fn parse_link(text: &str) -> Option<(Span, usize)> {
             if brace_level == 0 {
                 break;
             }
-            content.push(next);
+            content_end_index += 1;
         }
+        let content = &text[1..content_end_index + 1];
 
         // Unmatched braces inside a link text are not supported on purpose, e.g. consider the case
         // of `The brace character ([) is parsed [like this](https://example.com)`. Here we want
@@ -96,7 +97,7 @@ mod test {
             parse_link("[an example](example.com) test"),
             Some((
                 Link(
-                    vec![Text("an example".to_owned())],
+                    vec![Text("an example".into())],
                     "example.com".to_owned(),
                     None
                 ),
@@ -108,7 +109,7 @@ mod test {
             parse_link("[an example][example]"),
             Some((
                 RefLink(
-                    vec![Text("an example".to_owned())],
+                    vec![Text("an example".into())],
                     "example".to_owned(),
                     "[an example][example]".to_owned()
                 ),
@@ -124,7 +125,7 @@ mod test {
         assert_eq!(
             parse_link("[an example]() test"),
             Some((
-                Link(vec![Text("an example".to_owned())], "".to_owned(), None),
+                Link(vec![Text("an example".into())], "".to_owned(), None),
                 14
             ))
         );
@@ -138,7 +139,7 @@ mod test {
             parse_link("[()] test"),
             Some((
                 RefLink(
-                    vec![Text("()".to_owned())],
+                    vec![Text("()".into())],
                     "".to_owned(),
                     "[()]".to_owned()
                 ),
@@ -150,7 +151,7 @@ mod test {
             parse_link("[an example](example.com \"Title\") test"),
             Some((
                 Link(
-                    vec![Text("an example".to_owned())],
+                    vec![Text("an example".into())],
                     "example.com".to_owned(),
                     Some("Title".to_owned())
                 ),
@@ -162,7 +163,7 @@ mod test {
             parse_link("[an example](example.com) test [a link](example.com)"),
             Some((
                 Link(
-                    vec![Text("an example".to_owned())],
+                    vec![Text("an example".into())],
                     "example.com".to_owned(),
                     None
                 ),
@@ -190,9 +191,9 @@ mod test {
             Some((
                 Link(
                     vec![
-                        Text("huh".to_owned()),
+                        Text("huh".into()),
                         RefLink(vec![], "".to_owned(), "[]".to_owned()),
-                        Text("wow".to_owned())
+                        Text("wow".into())
                     ],
                     "example.com".to_owned(),
                     None
@@ -205,7 +206,7 @@ mod test {
             parse_link("[huh\\[wow](example.com)"),
             Some((
                 Link(
-                    vec![Text("huh".to_owned()), Literal('['), Text("wow".to_owned())],
+                    vec![Text("huh".into()), Literal('['), Text("wow".into())],
                     "example.com".to_owned(),
                     None
                 ),
@@ -219,7 +220,7 @@ mod test {
             parse_link("[an example](example.com \"Title (huh!)\") test"),
             Some((
                 Link(
-                    vec![Text("an example".to_owned())],
+                    vec![Text("an example".into())],
                     "example.com".to_owned(),
                     Some("Title (huh!)".to_owned())
                 ),
@@ -234,7 +235,7 @@ mod test {
             parse_link("[an example]      [example]"),
             Some((
                 RefLink(
-                    vec![Text("an example".to_owned())],
+                    vec![Text("an example".into())],
                     "example".to_owned(),
                     "[an example]      [example]".to_owned()
                 ),
@@ -246,7 +247,7 @@ mod test {
             parse_link("[an example](example.com           \"Title\") test"),
             Some((
                 Link(
-                    vec![Text("an example".to_owned())],
+                    vec![Text("an example".into())],
                     "example.com".to_owned(),
                     Some("Title".to_owned())
                 ),

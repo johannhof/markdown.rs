@@ -2,7 +2,7 @@ use parser::Block;
 use parser::Block::LinkReference;
 use regex::Regex;
 
-pub fn parse_link_reference(lines: &[&str]) -> Option<(Block, usize)> {
+pub fn parse_link_reference<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
     lazy_static! {
         static ref LINK_REFERENCE_SINGLE_LINE: Regex = Regex::new("^\\s*\\[(?P<id>[^\\[\\]]+)\\]:\\s*(?P<url>\\S+)(?:\\s+(?:'(?P<title1>.*)'|\"(?P<title2>.*)\"|\\((?P<title3>.*?)\\)))?\n?").unwrap();
         static ref LINK_REFERENCE_FIRST_LINE: Regex = Regex::new("^\\s*\\[(?P<id>[^\\[\\]]+)\\]:").unwrap();

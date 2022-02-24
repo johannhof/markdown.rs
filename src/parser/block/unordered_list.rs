@@ -1,10 +1,10 @@
-use parser::block::parse_blocks;
+use parser::block::parse_blocks_from_lines;
 use parser::Block;
 use parser::Block::{Paragraph, UnorderedList};
 use parser::ListItem;
 use regex::Regex;
 
-pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
+pub fn parse_unordered_list<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
     lazy_static! {
         static ref LIST_BEGIN: Regex =
             Regex::new(r"^(?P<indent> *)(-|\+|\*) (?P<content>.*)").unwrap();
@@ -41,7 +41,7 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
 
         let caps = LIST_BEGIN.captures(line.unwrap()).unwrap();
 
-        let mut content = caps.name("content").unwrap().as_str().to_owned();
+        let mut content = vec![caps.name("content").unwrap().as_str()];
         let last_indent = caps.name("indent").unwrap().as_str().len();
         i += 1;
 
@@ -68,13 +68,12 @@ pub fn parse_unordered_list(lines: &[&str]) -> Option<(Block, usize)> {
                 prev_newline = false;
             }
 
-            content.push('\n');
             let caps = INDENTED.captures(line.unwrap()).unwrap();
-            content.push_str(&caps.name("content").unwrap().as_str());
+            content.push(&caps.name("content").unwrap().as_str());
 
             i += 1;
         }
-        contents.push(parse_blocks(&content));
+        contents.push(parse_blocks_from_lines(&content));
     }
 
     let mut list_contents = vec![];

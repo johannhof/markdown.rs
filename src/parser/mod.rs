@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 mod block;
 mod span;
 
@@ -35,44 +37,44 @@ impl OrderedListType {
 
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq, Clone)]
-pub enum Block {
-    Header(Vec<Span>, usize),
-    Paragraph(Vec<Span>),
-    Blockquote(Vec<Block>),
+pub enum Block<'a> {
+    Header(Vec<Span<'a>>, usize),
+    Paragraph(Vec<Span<'a>>),
+    Blockquote(Vec<Block<'a>>),
     CodeBlock(Option<String>, String),
     /** A link reference with the fields: (id, url, [title]) **/
     LinkReference(String, String, Option<String>),
-    OrderedList(Vec<ListItem>, OrderedListType),
-    UnorderedList(Vec<ListItem>),
+    OrderedList(Vec<ListItem<'a>>, OrderedListType),
+    UnorderedList(Vec<ListItem<'a>>),
     Raw(String),
     Hr,
 }
 
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq, Clone)]
-pub enum ListItem {
-    Simple(Vec<Span>),
-    Paragraph(Vec<Block>),
+pub enum ListItem<'a> {
+    Simple(Vec<Span<'a>>),
+    Paragraph(Vec<Block<'a>>),
 }
 
 #[allow(missing_docs)]
 #[derive(Debug, PartialEq, Clone)]
-pub enum Span {
+pub enum Span<'a> {
     Break,
-    Text(String),
+    Text(Cow<'a, str>),
     Code(String),
     Literal(char),
-    Link(Vec<Span>, String, Option<String>),
+    Link(Vec<Span<'a>>, String, Option<String>),
     /**
      * A reference-style link with the fields: (content, url, raw)
      * The "raw" field is used internally for falling back to the original
      * markdown link if the corresponding reference is not found at render time.
      **/
-    RefLink(Vec<Span>, String, String),
+    RefLink(Vec<Span<'a>>, String, String),
     Image(String, String, Option<String>),
 
-    Emphasis(Vec<Span>),
-    Strong(Vec<Span>),
+    Emphasis(Vec<Span<'a>>),
+    Strong(Vec<Span<'a>>),
 }
 
 pub fn parse(md: &str) -> Vec<Block> {

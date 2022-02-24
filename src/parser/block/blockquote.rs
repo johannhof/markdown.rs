@@ -1,15 +1,15 @@
-use parser::block::parse_blocks;
+use parser::block::parse_blocks_from_lines;
 use parser::Block;
 use parser::Block::Blockquote;
 
-pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)> {
+pub fn parse_blockquote<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
     // if the first char isnt a blockquote don't even bother
     if lines[0].is_empty() || !lines[0].starts_with(">") {
         return None;
     }
 
     // the content of the blockquote
-    let mut content = String::new();
+    let mut content = Vec::new();
 
     // counts the number of parsed lines to return
     let mut i = 0;
@@ -39,15 +39,12 @@ pub fn parse_blockquote(lines: &[&str]) -> Option<(Block, usize)> {
             },
             _ => 0,
         };
-        if i > 0 {
-            content.push('\n');
-        }
-        content.push_str(&line[begin..line.len()]);
+        content.push(&line[begin..line.len()]);
         i += 1;
     }
 
     if i > 0 {
-        return Some((Blockquote(parse_blocks(&content)), i));
+        return Some((Blockquote(parse_blocks_from_lines(&content)), i));
     }
 
     None

@@ -2,7 +2,7 @@ use parser::Block;
 use parser::Block::CodeBlock;
 use regex::Regex;
 
-pub fn parse_code_block(lines: &[&str]) -> Option<(Block, usize)> {
+pub fn parse_code_block<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
     lazy_static! {
         static ref CODE_BLOCK_SPACES: Regex = Regex::new(r"^ {4}").unwrap();
         static ref CODE_BLOCK_TABS: Regex = Regex::new(r"^\t").unwrap();

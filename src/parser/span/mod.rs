@@ -1,5 +1,6 @@
 use parser::Span;
 use parser::Span::{Literal, Text};
+use std::borrow::Cow;
 
 mod code;
 mod emphasis;
@@ -12,13 +13,13 @@ use self::image::parse_image;
 use self::link::parse_link;
 use self::strong::parse_strong;
 
-enum SpanOrSpecial {
-    Span(Span),
-    SpanWithOffset(usize, Span)
+enum SpanOrSpecial<'a> {
+    Span(Span<'a>),
+    SpanWithOffset(usize, Span<'a>)
 }
 
-impl From<Span> for SpanOrSpecial {
-    fn from(other: Span) -> Self {
+impl<'a> From<Span<'a>> for SpanOrSpecial<'a> {
+    fn from(other: Span<'a>) -> Self {
         SpanOrSpecial::Span(other)
     }
 }
@@ -29,8 +30,7 @@ pub fn parse_spans(text: &str) -> Vec<Span> {
     buf
 }
 
-pub fn parse_spans_with_buffer(text: &str, tokens: &mut Vec<Span>) {
-    let mut t = String::new();
+pub fn parse_spans_with_buffer<'a>(text: &'a str, tokens: &mut Vec<Span<'a>>) {
     let mut i = 0;
     let mut text_token_start_index = 0;
     while i < text.len() {
@@ -40,19 +40,18 @@ pub fn parse_spans_with_buffer(text: &str, tokens: &mut Vec<Span>) {
                     SpanOrSpecial::Span(s) => (0, s),
                     SpanOrSpecial::SpanWithOffset(o, s) => (o, s)
                 };
-                t.push_str(&text[text_token_start_index..i + offset]);
+                let t = &text[text_token_start_index..i + offset];
                 if !t.is_empty() {
                     // if this text is on the very left
                     // trim the left whitespace
                     if tokens.is_empty() {
-                        tokens.push(Text(t.trim_start().to_owned()));
+                        tokens.push(Text(Cow::Borrowed(t.trim_start())));
                     } else {
-                        tokens.push(Text(t.clone()));
+                        tokens.push(Text(Cow::Borrowed(t)));
                     }
                 }
 
                 tokens.push(span);
-                t.clear();
                 i += consumed_chars;
                 text_token_start_index = i;
             }
@@ -64,17 +63,17 @@ pub fn parse_spans_with_buffer(text: &str, tokens: &mut Vec<Span>) {
             }
         }
     }
-    t.push_str(&text[text_token_start_index..]);
+    let mut t = &text[text_token_start_index..];
     if !t.is_empty() {
         // if this text is on the very left
         // trim the left whitespace
         if tokens.is_empty() {
-            t = t.trim_start().to_owned();
+            t = t.trim_start();
         }
         // we're at the very end of this line,
         // trim trailing whitespace
-        t = t.trim_end().to_owned();
-        tokens.push(Text(t));
+        t = t.trim_end();
+        tokens.push(Text(Cow::Borrowed(t)));
     }
 }
 
@@ -127,7 +126,7 @@ mod test {
     fn converts_into_text() {
         assert_eq!(
             parse_spans("this is a test"),
-            vec![Text("this is a test".to_owned())]
+            vec![Text("this is a test".into())]
         );
     }
 
@@ -140,7 +139,7 @@ mod test {
     fn finds_breaks() {
         assert_eq!(
             parse_spans("this is a test  "),
-            vec![Text("this is a test".to_owned()), Break]
+            vec![Text("this is a test".into()), Break]
         );
     }
 
@@ -149,17 +148,17 @@ mod test {
         assert_eq!(
             parse_spans("this `is a` test"),
             vec![
-                Text("this ".to_owned()),
+                Text("this ".into()),
                 Code("is a".to_owned()),
-                Text(" test".to_owned())
+                Text(" test".into())
             ]
         );
         assert_eq!(
             parse_spans("this ``is a`` test"),
             vec![
-                Text("this ".to_owned()),
+                Text("this ".into()),
                 Code("is a".to_owned()),
-                Text(" test".to_owned())
+                Text(" test".into())
             ]
         );
     }
@@ -169,17 +168,17 @@ mod test {
         assert_eq!(
             parse_spans("this _is a_ test"),
             vec![
-                Text("this ".to_owned()),
-                Emphasis(vec![Text("is a".to_owned())]),
-                Text(" test".to_owned())
+                Text("this ".into()),
+                Emphasis(vec![Text("is a".into())]),
+                Text(" test".into())
             ]
         );
         assert_eq!(
             parse_spans("this *is a* test"),
             vec![
-                Text("this ".to_owned()),
-                Emphasis(vec![Text("is a".to_owned())]),
-                Text(" test".to_owned())
+                Text("this ".into()),
+                Emphasis(vec![Text("is a".into())]),
+                Text(" test".into())
             ]
         );
     }
@@ -189,17 +188,17 @@ mod test {
         assert_eq!(
             parse_spans("this __is a__ test"),
             vec![
-                Text("this ".to_owned()),
-                Strong(vec![Text("is a".to_owned())]),
-                Text(" test".to_owned())
+                Text("this ".into()),
+                Strong(vec![Text("is a".into())]),
+                Text(" test".into())
             ]
         );
         assert_eq!(
             parse_spans("this **is a** test"),
             vec![
-                Text("this ".to_owned()),
-                Strong(vec![Text("is a".to_owned())]),
-                Text(" test".to_owned())
+                Text("this ".into()),
+                Strong(vec![Text("is a".into())]),
+                Text(" test".into())
             ]
         );
     }
@@ -209,13 +208,13 @@ mod test {
         assert_eq!(
             parse_spans("this is [an example](example.com) test"),
             vec![
-                Text("this is ".to_owned()),
+                Text("this is ".into()),
                 Link(
-                    vec![Text("an example".to_owned())],
+                    vec![Text("an example".into())],
                     "example.com".to_owned(),
                     None
                 ),
-                Text(" test".to_owned())
+                Text(" test".into())
             ]
         );
     }
@@ -225,9 +224,9 @@ mod test {
         assert_eq!(
             parse_spans("this is ![an example](example.com) test"),
             vec![
-                Text("this is ".to_owned()),
+                Text("this is ".into()),
                 Image("an example".to_owned(), "example.com".to_owned(), None),
-                Text(" test".to_owned())
+                Text(" test".into())
             ]
         );
     }
@@ -237,16 +236,16 @@ mod test {
         assert_eq!(
             parse_spans("some text ![an image](image.com) _emphasis_ __strong__ `teh codez` [a link](example.com)  "),
             vec![
-            Text("some text ".to_owned()),
+            Text("some text ".into()),
             Image("an image".to_owned(), "image.com".to_owned(), None),
-            Text(" ".to_owned()),
-            Emphasis(vec![Text("emphasis".to_owned())]),
-            Text(" ".to_owned()),
-            Strong(vec![Text("strong".to_owned())]),
-            Text(" ".to_owned()),
+            Text(" ".into()),
+            Emphasis(vec![Text("emphasis".into())]),
+            Text(" ".into()),
+            Strong(vec![Text("strong".into())]),
+            Text(" ".into()),
             Code("teh codez".to_owned()),
-            Text(" ".to_owned()),
-            Link(vec![Text("a link".to_owned())], "example.com".to_owned(), None),
+            Text(" ".into()),
+            Link(vec![Text("a link".into())], "example.com".to_owned(), None),
             Break
             ]
             );

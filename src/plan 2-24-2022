@@ -1,0 +1,12 @@
+blockquote, ordered_list, and unordered_list:
+
+1) Create a new function parse_blocks_with_lines<'a>(lines: &[&'a str]) -> Vec<Block<'a>>, refactoring as needed
+2) In each of blockquote, ordered_list, and unordered_list, `content` will be built out of trimmed-down lines from
+    the original input
+
+link.rs:
+Same approach as above should work, but MIGHT have to unconditionally convert to Cow::Owned instead? Unsure, haven't looked
+closely enough.
+
+
+Also, need to add a to_owned function on Block and Span that will convert Block<'a> into Block<'static> recursively.

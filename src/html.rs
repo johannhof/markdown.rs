@@ -17,7 +17,8 @@ fn slugify(elements: &[Span], no_spaces: bool) -> String {
         let next = match *el {
             Break => "".to_owned(),
             Literal(character) => character.to_string(),
-            Text(ref text) | Image(ref text, _, _) | Code(ref text) => text.trim().to_lowercase(),
+            Text(ref text) => text.trim().to_lowercase(),
+            Image(ref text, _, _) | Code(ref text) => text.trim().to_lowercase(),
             RefLink(ref content, _, _)
             | Link(ref content, _, _)
             | Strong(ref content)

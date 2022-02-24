@@ -47,7 +47,7 @@ fn gen_span(s: Span) -> String {
     use Span::*;
     match s {
         Break => "  \n".to_string(),
-        Text(x) => x,
+        Text(x) => x.into(),
         Literal(x) => format!("\\{}", x),
         Code(x) => format!("`{}`", x),
         Link(a, b, None) => format!("[{}]({})", generate_from_spans(a), b),

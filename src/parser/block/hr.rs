@@ -2,7 +2,7 @@ use parser::Block;
 use parser::Block::Hr;
 use regex::Regex;
 
-pub fn parse_hr(lines: &[&str]) -> Option<(Block, usize)> {
+pub fn parse_hr<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
     lazy_static! {
         static ref HORIZONTAL_RULE: Regex = Regex::new(r"^(===+)$|^(---+)$").unwrap();
     }

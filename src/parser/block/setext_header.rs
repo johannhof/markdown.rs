@@ -3,7 +3,7 @@ use parser::Block;
 use parser::Block::Header;
 use regex::Regex;
 
-pub fn parse_setext_header(lines: &[&str]) -> Option<(Block, usize)> {
+pub fn parse_setext_header<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
     lazy_static! {
         static ref HORIZONTAL_RULE_1: Regex = Regex::new(r"^===+$").unwrap();
         static ref HORIZONTAL_RULE_2: Regex = Regex::new(r"^---+$").unwrap();
@@ -29,22 +29,22 @@ mod test {
     fn finds_atx_header() {
         assert_eq!(
             parse_setext_header(&vec!["Test", "=========="]).unwrap(),
-            (Header(vec![Text("Test".to_owned())], 1), 2)
+            (Header(vec![Text("Test".into())], 1), 2)
         );
 
         assert_eq!(
             parse_setext_header(&vec!["Test", "----------"]).unwrap(),
-            (Header(vec![Text("Test".to_owned())], 2), 2)
+            (Header(vec![Text("Test".into())], 2), 2)
         );
 
         assert_eq!(
             parse_setext_header(&vec!["This is a test", "==="]).unwrap(),
-            (Header(vec![Text("This is a test".to_owned())], 1), 2)
+            (Header(vec![Text("This is a test".into())], 1), 2)
         );
 
         assert_eq!(
             parse_setext_header(&vec!["This is a test", "---"]).unwrap(),
-            (Header(vec![Text("This is a test".to_owned())], 2), 2)
+            (Header(vec![Text("This is a test".into())], 2), 2)
         );
     }
 }
