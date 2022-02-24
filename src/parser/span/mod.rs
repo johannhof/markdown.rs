@@ -24,7 +24,12 @@ impl From<Span> for SpanOrSpecial {
 }
 
 pub fn parse_spans(text: &str) -> Vec<Span> {
-    let mut tokens = vec![];
+    let mut buf = Vec::new();
+    parse_spans_with_buffer(text, &mut buf);
+    buf
+}
+
+pub fn parse_spans_with_buffer(text: &str, tokens: &mut Vec<Span>) {
     let mut t = String::new();
     let mut i = 0;
     let mut text_token_start_index = 0;
@@ -71,7 +76,6 @@ pub fn parse_spans(text: &str) -> Vec<Span> {
         t = t.trim_end().to_owned();
         tokens.push(Text(t));
     }
-    tokens
 }
 
 fn parse_escape(text: &str) -> Option<(Span, usize)> {

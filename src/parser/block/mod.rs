@@ -1,4 +1,4 @@
-use parser::span::parse_spans;
+use parser::span::parse_spans_with_buffer;
 use parser::Block;
 use parser::Block::Paragraph;
 use parser::Span::{Break, Text};
@@ -21,9 +21,9 @@ use self::setext_header::parse_setext_header;
 use self::unordered_list::parse_unordered_list;
 
 pub fn parse_blocks(md: &str) -> Vec<Block> {
-    let mut blocks = vec![];
     let mut t = vec![];
     let lines: Vec<&str> = md.lines().collect();
+    let mut blocks = Vec::with_capacity(lines.len());
     let mut i = 0;
     while i < lines.len() {
         match parse_block(&lines[i..lines.len()]) {
@@ -46,18 +46,24 @@ pub fn parse_blocks(md: &str) -> Vec<Block> {
                     t = Vec::new();
                 }
 
-                let spans = parse_spans(lines[i]);
+                let span_start_index = t.len();
+                parse_spans_with_buffer(lines[i], &mut t);
+                let last_span_before_call = if span_start_index == 0 {
+                    None
+                } else {
+                    t.get(span_start_index - 1)
+                };
+                let first_span_from_call = t.get(span_start_index);
 
                 // add a newline between linebreaks
                 // except when we have a break element or nothing
-                match (t.last(), spans.first()) {
+                match (last_span_before_call, first_span_from_call) {
                     (Some(&Break), _) => {}
                     (_, None) => {}
                     (None, _) => {}
-                    _ => t.push(Text("\n".to_owned())),
+                    _ => t.insert(span_start_index, Text("\n".to_owned())),
                 }
 
-                t.extend_from_slice(&spans);
                 i += 1;
             }
         }
