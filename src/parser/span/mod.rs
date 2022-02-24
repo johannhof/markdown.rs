@@ -27,6 +27,7 @@ pub fn parse_spans(text: &str) -> Vec<Span> {
     let mut tokens = vec![];
     let mut t = String::new();
     let mut i = 0;
+    let mut text_token_start_index = 0;
     while i < text.len() {
         match parse_span(&text[i..text.len()]) {
             Some((span_or_special, consumed_chars)) => {
@@ -34,31 +35,31 @@ pub fn parse_spans(text: &str) -> Vec<Span> {
                     SpanOrSpecial::Span(s) => (0, s),
                     SpanOrSpecial::SpanWithOffset(o, s) => (o, s)
                 };
-                t.push_str(&text[i..i + offset]);
+                t.push_str(&text[text_token_start_index..i + offset]);
                 if !t.is_empty() {
                     // if this text is on the very left
                     // trim the left whitespace
                     if tokens.is_empty() {
-                        t = t.trim_start().to_owned()
+                        tokens.push(Text(t.trim_start().to_owned()));
+                    } else {
+                        tokens.push(Text(t.clone()));
                     }
-                    tokens.push(Text(t));
                 }
 
                 tokens.push(span);
-                t = String::new();
+                t.clear();
                 i += consumed_chars;
+                text_token_start_index = i;
             }
             None => {
-                let mut e = i + 1;
-                while !text.is_char_boundary(e) {
-                    e += 1;
+                i += 1;
+                while !text.is_char_boundary(i) {
+                    i += 1;
                 }
-
-                t.push_str(&text[i..e]);
-                i += e - i;
             }
         }
     }
+    t.push_str(&text[text_token_start_index..]);
     if !t.is_empty() {
         // if this text is on the very left
         // trim the left whitespace
