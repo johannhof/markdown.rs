@@ -12,13 +12,29 @@ use self::image::parse_image;
 use self::link::parse_link;
 use self::strong::parse_strong;
 
+enum SpanOrSpecial {
+    Span(Span),
+    SpanWithOffset(usize, Span)
+}
+
+impl From<Span> for SpanOrSpecial {
+    fn from(other: Span) -> Self {
+        SpanOrSpecial::Span(other)
+    }
+}
+
 pub fn parse_spans(text: &str) -> Vec<Span> {
     let mut tokens = vec![];
     let mut t = String::new();
     let mut i = 0;
     while i < text.len() {
         match parse_span(&text[i..text.len()]) {
-            Some((span, consumed_chars)) => {
+            Some((span_or_special, consumed_chars)) => {
+                let (offset, span) = match span_or_special {
+                    SpanOrSpecial::Span(s) => (0, s),
+                    SpanOrSpecial::SpanWithOffset(o, s) => (o, s)
+                };
+                t.push_str(&text[i..i + offset]);
                 if !t.is_empty() {
                     // if this text is on the very left
                     // trim the left whitespace
@@ -27,6 +43,7 @@ pub fn parse_spans(text: &str) -> Vec<Span> {
                     }
                     tokens.push(Text(t));
                 }
+
                 tokens.push(span);
                 t = String::new();
                 i += consumed_chars;
@@ -71,18 +88,26 @@ fn parse_escape(text: &str) -> Option<(Span, usize)> {
     None
 }
 
-fn parse_span(text: &str) -> Option<(Span, usize)> {
+fn parse_span(text: &str) -> Option<(SpanOrSpecial, usize)> {
     let mut chars = text.chars();
     match (chars.next(), chars.next()) {
-        (Some('\\'), _) => parse_escape(text),
-        (Some('`'), _) => parse_code(text),
+        (Some('\\'), _) => parse_escape(text).map(|(a, b)| (a.into(), b)),
+        (Some('`'), _) => parse_code(text).map(|(a, b)| (a.into(), b)),
         (Some('*'), Some('*')) |
-        (Some('_'), Some('_')) => parse_strong(text),
+        (Some('_'), Some('_')) => parse_strong(text).map(|(a, b)| (a.into(), b)),
         (Some('*'), _) |
-        (Some('_'), _) => parse_emphasis(text),
-        (Some(' '), Some(' ')) if text.len() == 2 => Some((Span::Break, 2)),
-        (Some('!'), Some('[')) => parse_image(text),
-        (Some('['), _) => parse_link(text),
+        (Some('_'), _) => parse_emphasis(text).map(|(a, b)| (a.into(), b)),
+        (Some(' '), Some(' ')) if text.len() == 2 => Some((Span::Break.into(), 2)),
+        (Some('!'), Some('[')) => parse_image(text).map(|(a, b)| (a.into(), b)),
+        (Some('['), _) => parse_link(text).map(|(a, b)| (a.into(), b)),
+        (Some(c1), Some(x @ '*')) |
+        (Some(c1), Some(x @ '_')) => {
+            if c1.is_whitespace() && chars.next()?.is_whitespace() {
+                Some((SpanOrSpecial::SpanWithOffset(1, Span::Literal(x)), 2))
+            } else {
+                None
+            }
+        }
         _ => None
     }
 }

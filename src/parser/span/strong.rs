@@ -1,30 +1,45 @@
 use parser::span::parse_spans;
 use parser::Span;
 use parser::Span::Strong;
-use regex::Regex;
 
+/// Assumes that the first two characters of `text` are either ** or __.
 pub fn parse_strong(text: &str) -> Option<(Span, usize)> {
-    lazy_static! {
-        static ref STRONG_UNDERSCORE: Regex = Regex::new(r"^__(?P<text>.+?)__").unwrap();
-        static ref STRONG_STAR: Regex = Regex::new(r"^\*\*(?P<text>.+?)\*\*").unwrap();
+    // We can assume that the first character is either * or _ if this parsing function
+    // has been called.
+    let mut chars = text.chars().enumerate().peekable();
+    let emphasis_char = chars.next().unwrap().1;
+    chars.next();
+    
+    // Find the next emphasis_char, ignoring escaped characters
+    let mut end_index = None;
+    let mut first_in_pair_found = false;
+    while let Some((i, c)) = chars.next() {
+        if c == emphasis_char {
+            if first_in_pair_found {
+                end_index = Some(i - 1);
+                break;
+            } else {
+                first_in_pair_found = true;
+            }
+        } else {
+            first_in_pair_found = false;
+            if c == '\\' {
+                chars.next();
+            }
+        }
     }
-
-    if STRONG_UNDERSCORE.is_match(text) {
-        let caps = STRONG_UNDERSCORE.captures(text).unwrap();
-        let t = caps.name("text").unwrap().as_str();
-        return Some((Strong(parse_spans(t)), t.len() + 4));
-    } else if STRONG_STAR.is_match(text) {
-        let caps = STRONG_STAR.captures(text).unwrap();
-        let t = caps.name("text").unwrap().as_str();
-        return Some((Strong(parse_spans(t)), t.len() + 4));
+    let inner_text = &text[2..end_index?];
+    if inner_text.len() != 0 {
+        Some((Strong(parse_spans(inner_text)), inner_text.len() + 4))
+    } else {
+        None
     }
-    None
 }
 
 #[cfg(test)]
 mod test {
     use super::parse_strong;
-    use parser::Span::{Strong, Text};
+    use parser::Span::{Strong, Text, Literal};
 
     #[test]
     fn finds_strong() {
@@ -56,6 +71,35 @@ mod test {
         assert_eq!(
             parse_strong("__w___ testing things test"),
             Some((Strong(vec![Text("w".to_owned())]), 5))
+        );
+    }
+
+    #[test]
+    fn handles_escaped_strong() {
+        assert_eq!(
+            parse_strong("**escape\\** test**ing"),
+            Some((Strong(vec![
+                Text("escape".to_owned()),
+                Literal('*'),
+                Text("* test".to_owned())]), 18))
+        );
+
+        assert_eq!(
+            parse_strong("**fake escape\\\\** test**ing"),
+            Some((Strong(vec![Text("fake escape".to_owned()), Literal('\\')]), 17))
+        );
+
+        assert_eq!(
+            parse_strong("__escape\\__ test__ing"),
+            Some((Strong(vec![
+                Text("escape".to_owned()),
+                Literal('_'),
+                Text("_ test".to_owned())]), 18))
+        );
+
+        assert_eq!(
+            parse_strong("__fake escape\\\\__ test__ing"),
+            Some((Strong(vec![Text("fake escape".to_owned()), Literal('\\')]), 17))
         );
     }
 
