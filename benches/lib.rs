@@ -11,5 +11,9 @@ use std::fs;
 #[bench]
 fn parse_markdown_file(b: &mut Bencher) {
     let md = fs::read_to_string("benches/files/Markdown.md").unwrap();
+
+    // Force all the lazy_static's to initialize
+    test::black_box(markdown::tokenize(&md));
+    
     b.iter(|| markdown::tokenize(&md));
 }

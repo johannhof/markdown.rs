@@ -69,18 +69,54 @@ pub fn parse_blocks(md: &str) -> Vec<Block> {
 }
 
 fn parse_block(lines: &[&str]) -> Option<(Block, usize)> {
-    pipe_opt!(
-    lines
-    => parse_hr
-    => parse_atx_header
-    => parse_code_block
-    => parse_blockquote
-    => parse_unordered_list
-    => parse_ordered_list
-    => parse_link_reference
-    // Must not match before anything else. See: https://spec.commonmark.org/0.29/#setext-headings
-    => parse_setext_header
-    )
+    match lines[0].chars().nth(0)? {
+        '#' => parse_atx_header(lines),
+        '=' => parse_hr(lines),
+        '-' => parse_hr(lines).or_else(||parse_unordered_list(lines)),
+        '`' => parse_code_block(lines),
+        '>' => parse_blockquote(lines),
+        '0'..='9' => parse_ordered_list(lines),
+        '[' => parse_link_reference(lines),
+        '*' => parse_unordered_list(lines),
+        
+        // Slow path
+        '\t' => parse_code_block(lines)
+            .or_else(||parse_unordered_list(lines))
+            .or_else(||parse_ordered_list(lines))
+            .or_else(||parse_link_reference(lines)),
+
+        ' ' => {
+            // If there are less than 4 spaces, this can't be a code block. Use that
+            // to speed up the matching.
+            let mut iter = lines[0].chars().take(4).peekable();
+            while iter.peek() == Some(&' ') { iter.next(); }
+            
+            if let Some(c) = iter.peek() {
+                match c {
+                    '-' | '*' => parse_unordered_list(lines),
+                    '[' => parse_link_reference(lines),
+                    '0'..='9' => parse_ordered_list(lines),
+                    _ => None,
+                }
+            } else {
+                // Slow path
+                parse_code_block(lines)
+                    .or_else(||parse_unordered_list(lines))
+                    .or_else(||parse_ordered_list(lines))
+                    .or_else(||parse_link_reference(lines))
+            }
+        },
+        _ => None
+    }.or_else(|| {
+        if lines.len() > 1 {
+            if let Some(c1) = lines[1].chars().nth(0) {
+                if c1 == '-' || c1 == '=' {
+                    return parse_setext_header(lines);
+                }
+            }
+        }
+        None
+    })
 }
 
 #[cfg(test)]
