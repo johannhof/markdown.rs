@@ -26,11 +26,11 @@ fn gen_block(b: Block) -> String {
         ),
         Paragraph(s) => generate_from_spans(s),
         Blockquote(bb) => generate(bb).lines().map(|x| format!("> {}", x)).j("\n"),
-        CodeBlock(lang, x) => {
+        CodeBlock(lang, code_lines) => {
             if lang.is_none() {
-                x.lines().map(|x| format!("    {}", x)).j("\n")
+                code_lines.iter().map(|x| format!("    {}", x)).j("\n")
             } else {
-                format!("```{}\n{}```", lang.unwrap(), x)
+                format!("```{}\n{}```", lang.unwrap(), code_lines.iter().map(|x| String::from(*x)).j("\n"))
             }
         }
         // [TODO]: Ordered list generation - 2017-12-10 10:12pm

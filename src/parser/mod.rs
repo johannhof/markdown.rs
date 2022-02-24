@@ -41,7 +41,7 @@ pub enum Block<'a> {
     Header(Vec<Span<'a>>, usize),
     Paragraph(Vec<Span<'a>>),
     Blockquote(Vec<Block<'a>>),
-    CodeBlock(Option<String>, String),
+    CodeBlock(Option<Cow<'a, str>>, Vec<&'a str>),
     /** A link reference with the fields: (id, url, [title]) **/
     LinkReference(String, String, Option<String>),
     OrderedList(Vec<ListItem<'a>>, OrderedListType),
