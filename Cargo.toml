@@ -23,7 +23,6 @@ unstable = []
 
 [dependencies]
 lazy_static = "1.4.0"
-pipeline = "0.5"
 regex = "1"
 
 [dev-dependencies]

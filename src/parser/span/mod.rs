@@ -1,13 +1,11 @@
 use parser::Span;
 use parser::Span::{Literal, Text};
 
-mod br;
 mod code;
 mod emphasis;
 mod image;
 mod link;
 mod strong;
-use self::br::parse_break;
 use self::code::parse_code;
 use self::emphasis::parse_emphasis;
 use self::image::parse_image;
@@ -74,16 +72,19 @@ fn parse_escape(text: &str) -> Option<(Span, usize)> {
 }
 
 fn parse_span(text: &str) -> Option<(Span, usize)> {
-    pipe_opt!(
-    text
-    => parse_escape
-    => parse_code
-    => parse_strong
-    => parse_emphasis
-    => parse_break
-    => parse_image
-    => parse_link
-    )
+    let mut chars = text.chars();
+    match (chars.next(), chars.next()) {
+        (Some('\\'), _) => parse_escape(text),
+        (Some('`'), _) => parse_code(text),
+        (Some('*'), Some('*')) |
+        (Some('_'), Some('_')) => parse_strong(text),
+        (Some('*'), _) |
+        (Some('_'), _) => parse_emphasis(text),
+        (Some(' '), Some(' ')) if text.len() == 2 => Some((Span::Break, 2)),
+        (Some('!'), Some('[')) => parse_image(text),
+        (Some('['), _) => parse_link(text),
+        _ => None
+    }
 }
 
 #[cfg(test)]
