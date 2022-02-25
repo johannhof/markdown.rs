@@ -2,12 +2,8 @@ use parser::block::parse_blocks_from_lines;
 use parser::Block;
 use parser::Block::Blockquote;
 
+/// Assumes first character of first line is '>'
 pub fn parse_blockquote<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
-    // if the first char isnt a blockquote don't even bother
-    if lines[0].is_empty() || !lines[0].starts_with(">") {
-        return None;
-    }
-
     // the content of the blockquote
     let mut content = Vec::new();
 
@@ -74,18 +70,5 @@ mod test {
             Some((Blockquote(_), 3)) => (),
             _ => panic!(),
         }
-    }
-
-    #[test]
-    fn no_false_positives() {
-        assert_eq!(parse_blockquote(&vec!["wat > this"]), None);
-    }
-
-    #[test]
-    fn no_early_matching() {
-        assert_eq!(
-            parse_blockquote(&vec!["Hello", "> A citation", "> is good", "", "whatever"]),
-            None
-        );
     }
 }
