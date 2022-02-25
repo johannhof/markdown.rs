@@ -41,10 +41,10 @@ pub enum Block<'a> {
     Blockquote(Vec<Block<'a>>),
     CodeBlock(Option<&'a str>, Vec<&'a str>),
     /** A link reference with the fields: (id, url, [title]) **/
-    LinkReference(String, String, Option<String>),
+    LinkReference(String, &'a str, Option<&'a str>),
     OrderedList(Vec<ListItem<'a>>, OrderedListType),
     UnorderedList(Vec<ListItem<'a>>),
-    Raw(String),
+    Raw(&'a str),
     Hr,
 }
 
@@ -60,16 +60,16 @@ pub enum ListItem<'a> {
 pub enum Span<'a> {
     Break,
     Text(&'a str),
-    Code(String),
+    Code(&'a str),
     Literal(char),
-    Link(Vec<Span<'a>>, String, Option<String>),
+    Link(Vec<Span<'a>>, &'a str, Option<&'a str>),
     /**
      * A reference-style link with the fields: (content, url, raw)
      * The "raw" field is used internally for falling back to the original
      * markdown link if the corresponding reference is not found at render time.
      **/
-    RefLink(Vec<Span<'a>>, String, String),
-    Image(String, String, Option<String>),
+    RefLink(Vec<Span<'a>>, String, &'a str),
+    Image(&'a str, &'a str, Option<&'a str>),
 
     Emphasis(Vec<Span<'a>>),
     Strong(Vec<Span<'a>>),

@@ -29,22 +29,22 @@ mod test {
     fn finds_atx_header() {
         assert_eq!(
             parse_setext_header(&vec!["Test", "=========="]).unwrap(),
-            (Header(vec![Text("Test".into())], 1), 2)
+            (Header(vec![Text("Test")], 1), 2)
         );
 
         assert_eq!(
             parse_setext_header(&vec!["Test", "----------"]).unwrap(),
-            (Header(vec![Text("Test".into())], 2), 2)
+            (Header(vec![Text("Test")], 2), 2)
         );
 
         assert_eq!(
             parse_setext_header(&vec!["This is a test", "==="]).unwrap(),
-            (Header(vec![Text("This is a test".into())], 1), 2)
+            (Header(vec![Text("This is a test")], 1), 2)
         );
 
         assert_eq!(
             parse_setext_header(&vec!["This is a test", "---"]).unwrap(),
-            (Header(vec![Text("This is a test".into())], 2), 2)
+            (Header(vec![Text("This is a test")], 2), 2)
         );
     }
 }

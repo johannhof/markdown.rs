@@ -7,7 +7,7 @@ use parser::{ListItem, OrderedListType, Span};
 use regex::Regex;
 use std::collections::HashMap;
 
-type LinkReferenceMap<'a> = HashMap<&'a str, (&'a str, &'a Option<String>)>;
+type LinkReferenceMap<'a> = HashMap<&'a str, (&'a str, Option<&'a str>)>;
 
 // takes a number of elements and returns their collective text as a slug
 fn slugify(elements: &[Span], no_spaces: bool) -> String {
@@ -43,7 +43,7 @@ pub fn to_html(blocks: &[Block]) -> String {
     for block in blocks.iter() {
         match block {
             LinkReference(ref id, ref text, ref title) => {
-                link_references.insert(id, (text, title));
+                link_references.insert(id, (text, *title));
             }
             _ => {}
         };
@@ -59,7 +59,7 @@ pub fn to_html(blocks: &[Block]) -> String {
                 format_ordered_list(elements, num_type, &link_references)
             }
             LinkReference(_, _, _) => "".to_owned(),
-            Raw(ref elements) => elements.to_owned(),
+            Raw(elements) => elements.to_string(),
             Hr => format!("<hr />\n\n"),
         };
         ret.push_str(&next)
@@ -122,7 +122,7 @@ fn format_spans(elements: &[Span], link_references: &LinkReferenceMap) -> String
                         format_spans(content, link_references)
                     )
                 } else {
-                    raw.to_owned()
+                    raw.to_string()
                 }
             }
             Image(ref text, ref url, None) => format!(

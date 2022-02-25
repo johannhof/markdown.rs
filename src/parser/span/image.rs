@@ -12,17 +12,17 @@ pub fn parse_image(text: &str) -> Option<(Span, usize)> {
     if IMAGE.is_match(text) {
         let caps = IMAGE.captures(text).unwrap();
         let text = if let Some(mat) = caps.name("text") {
-            mat.as_str().to_owned()
+            mat.as_str()
         } else {
-            "".to_owned()
+            ""
         };
         let url = if let Some(mat) = caps.name("url") {
-            mat.as_str().to_owned()
+            mat.as_str()
         } else {
-            "".to_owned()
+            ""
         };
         let title = if let Some(mat) = caps.name("title") {
-            Some(mat.as_str().to_owned())
+            Some(mat.as_str())
         } else {
             None
         };
@@ -38,33 +38,33 @@ fn finds_image() {
     assert_eq!(
         parse_image("![an example](example.com) test"),
         Some((
-            Image("an example".to_owned(), "example.com".to_owned(), None),
+            Image("an example", "example.com", None),
             26
         ))
     );
 
     assert_eq!(
         parse_image("![](example.com) test"),
-        Some((Image("".to_owned(), "example.com".to_owned(), None), 16))
+        Some((Image("", "example.com", None), 16))
     );
 
     assert_eq!(
         parse_image("![an example]() test"),
-        Some((Image("an example".to_owned(), "".to_owned(), None), 15))
+        Some((Image("an example", "", None), 15))
     );
 
     assert_eq!(
         parse_image("![]() test"),
-        Some((Image("".to_owned(), "".to_owned(), None), 5))
+        Some((Image("", "", None), 5))
     );
 
     assert_eq!(
         parse_image("![an example](example.com \"Title\") test"),
         Some((
             Image(
-                "an example".to_owned(),
-                "example.com".to_owned(),
-                Some("Title".to_owned())
+                "an example",
+                "example.com",
+                Some("Title")
             ),
             34
         ))
@@ -73,7 +73,7 @@ fn finds_image() {
     assert_eq!(
         parse_image("![an example](example.com) test [a link](example.com)"),
         Some((
-            Image("an example".to_owned(), "example.com".to_owned(), None),
+            Image("an example", "example.com", None),
             26
         ))
     );

@@ -65,7 +65,7 @@ pub fn parse_blocks_from_lines<'a>(lines: &[&'a str]) -> Vec<Block<'a>> {
                     (Some(&Break), _) => {}
                     (_, None) => {}
                     (None, _) => {}
-                    _ => t.insert(span_start_index, Text("\n".into())),
+                    _ => t.insert(span_start_index, Text("\n")),
                 }
 
                 i += 1;
@@ -139,7 +139,7 @@ mod test {
     fn finds_atx_header() {
         assert_eq!(
             parse_blocks("### Test"),
-            vec![Header(vec![Text("Test".into())], 3)]
+            vec![Header(vec![Text("Test")], 3)]
         );
     }
 
@@ -147,11 +147,11 @@ mod test {
     fn finds_setext_header() {
         assert_eq!(
             parse_blocks("Test\n-------"),
-            vec![Header(vec![Text("Test".into())], 2)]
+            vec![Header(vec![Text("Test")], 2)]
         );
         assert_eq!(
             parse_blocks("Test\n======="),
-            vec![Header(vec![Text("Test".into())], 1)]
+            vec![Header(vec![Text("Test")], 1)]
         );
     }
 
@@ -171,7 +171,7 @@ mod test {
         assert_eq!(
             parse_blocks("```\nthis is code\nand this as well\n```"),
             vec![CodeBlock(
-                Some("".into()),
+                Some(""),
                 vec!["this is code", "and this as well"]
             )]
         );
@@ -182,39 +182,39 @@ mod test {
         assert_eq!(
             parse_blocks("> One Paragraph\n>\n> ## H2 \n>\n"),
             vec![Blockquote(vec![
-                Paragraph(vec![Text("One Paragraph".into())]),
-                Header(vec![Text("H2".into())], 2)
+                Paragraph(vec![Text("One Paragraph")]),
+                Header(vec![Text("H2")], 2)
             ])]
         );
 
         assert_eq!(
             parse_blocks("> One Paragraph\n>\n> > Another blockquote\n>\n"),
             vec![Blockquote(vec![
-                Paragraph(vec![Text("One Paragraph".into())]),
-                Blockquote(vec![Paragraph(vec![Text("Another blockquote".into())])])
+                Paragraph(vec![Text("One Paragraph")]),
+                Blockquote(vec![Paragraph(vec![Text("Another blockquote")])])
             ])]
         );
 
         assert_eq!(
             parse_blocks("> > One Paragraph\n> >\n> > Another blockquote\n>\n"),
             vec![Blockquote(vec![Blockquote(vec![
-                Paragraph(vec![Text("One Paragraph".into())]),
-                Paragraph(vec![Text("Another blockquote".into())])
+                Paragraph(vec![Text("One Paragraph")]),
+                Paragraph(vec![Text("Another blockquote")])
             ])])]
         );
 
         assert_eq!(
             parse_blocks("> One Paragraph, just > text \n>\n"),
             vec![Blockquote(vec![Paragraph(vec![Text(
-                "One Paragraph, just > text".into()
+                "One Paragraph, just > text"
             )])])]
         );
 
         assert_eq!(
             parse_blocks("> One Paragraph\n>\n> just > text \n>\n"),
             vec![Blockquote(vec![
-                Paragraph(vec![Text("One Paragraph".into())]),
-                Paragraph(vec![Text("just > text".into())])
+                Paragraph(vec![Text("One Paragraph")]),
+                Paragraph(vec![Text("just > text")])
             ])]
         );
     }

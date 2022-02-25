@@ -45,32 +45,32 @@ mod test {
     fn finds_strong() {
         assert_eq!(
             parse_strong("__testing things__ test"),
-            Some((Strong(vec![Text("testing things".into())]), 18))
+            Some((Strong(vec![Text("testing things")]), 18))
         );
 
         assert_eq!(
             parse_strong("**testing things** test"),
-            Some((Strong(vec![Text("testing things".into())]), 18))
+            Some((Strong(vec![Text("testing things")]), 18))
         );
 
         assert_eq!(
             parse_strong("__testing things__ things__ test"),
-            Some((Strong(vec![Text("testing things".into())]), 18))
+            Some((Strong(vec![Text("testing things")]), 18))
         );
 
         assert_eq!(
             parse_strong("__w__ things_ test"),
-            Some((Strong(vec![Text("w".into())]), 5))
+            Some((Strong(vec![Text("w")]), 5))
         );
 
         assert_eq!(
             parse_strong("**w** things** test"),
-            Some((Strong(vec![Text("w".into())]), 5))
+            Some((Strong(vec![Text("w")]), 5))
         );
 
         assert_eq!(
             parse_strong("__w___ testing things test"),
-            Some((Strong(vec![Text("w".into())]), 5))
+            Some((Strong(vec![Text("w")]), 5))
         );
     }
 
@@ -79,27 +79,27 @@ mod test {
         assert_eq!(
             parse_strong("**escape\\** test**ing"),
             Some((Strong(vec![
-                Text("escape".into()),
+                Text("escape"),
                 Literal('*'),
-                Text("* test".into())]), 18))
+                Text("* test")]), 18))
         );
 
         assert_eq!(
             parse_strong("**fake escape\\\\** test**ing"),
-            Some((Strong(vec![Text("fake escape".into()), Literal('\\')]), 17))
+            Some((Strong(vec![Text("fake escape"), Literal('\\')]), 17))
         );
 
         assert_eq!(
             parse_strong("__escape\\__ test__ing"),
             Some((Strong(vec![
-                Text("escape".into()),
+                Text("escape"),
                 Literal('_'),
-                Text("_ test".into())]), 18))
+                Text("_ test")]), 18))
         );
 
         assert_eq!(
             parse_strong("__fake escape\\\\__ test__ing"),
-            Some((Strong(vec![Text("fake escape".into()), Literal('\\')]), 17))
+            Some((Strong(vec![Text("fake escape"), Literal('\\')]), 17))
         );
     }
 

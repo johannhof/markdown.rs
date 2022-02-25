@@ -49,32 +49,32 @@ mod test {
     fn finds_emphasis() {
         assert_eq!(
             parse_emphasis("_testing things_ test"),
-            Some((Emphasis(vec![Text("testing things".into())]), 16))
+            Some((Emphasis(vec![Text("testing things")]), 16))
         );
 
         assert_eq!(
             parse_emphasis("*testing things* test"),
-            Some((Emphasis(vec![Text("testing things".into())]), 16))
+            Some((Emphasis(vec![Text("testing things")]), 16))
         );
 
         assert_eq!(
             parse_emphasis("_testing things_ things_ test"),
-            Some((Emphasis(vec![Text("testing things".into())]), 16))
+            Some((Emphasis(vec![Text("testing things")]), 16))
         );
 
         assert_eq!(
             parse_emphasis("_w_ things_ test"),
-            Some((Emphasis(vec![Text("w".into())]), 3))
+            Some((Emphasis(vec![Text("w")]), 3))
         );
 
         assert_eq!(
             parse_emphasis("*w* things* test"),
-            Some((Emphasis(vec![Text("w".into())]), 3))
+            Some((Emphasis(vec![Text("w")]), 3))
         );
 
         assert_eq!(
             parse_emphasis("_w__ testing things test"),
-            Some((Emphasis(vec![Text("w".into())]), 3))
+            Some((Emphasis(vec![Text("w")]), 3))
         );
     }
 
@@ -83,48 +83,48 @@ mod test {
         assert_eq!(
             parse_emphasis("*escape\\* test*ing"),
             Some((Emphasis(vec![
-                Text("escape".into()),
+                Text("escape"),
                 Literal('*'),
-                Text(" test".into())]), 15))
+                Text(" test")]), 15))
         );
 
         assert_eq!(
             parse_emphasis("*fake escape\\\\* test*ing"),
-            Some((Emphasis(vec![Text("fake escape".into()), Literal('\\')]), 15))
+            Some((Emphasis(vec![Text("fake escape"), Literal('\\')]), 15))
         );
 
         assert_eq!(
             parse_emphasis("_escape\\_ test_ing"),
             Some((Emphasis(vec![
-                Text("escape".into()),
+                Text("escape"),
                 Literal('_'),
-                Text(" test".into())]), 15))
+                Text(" test")]), 15))
         );
 
         assert_eq!(
             parse_emphasis("_fake escape\\\\_ test_ing"),
-            Some((Emphasis(vec![Text("fake escape".into()), Literal('\\')]), 15))
+            Some((Emphasis(vec![Text("fake escape"), Literal('\\')]), 15))
         );
 
         assert_eq!(
             parse_emphasis("*surrounding * whitespace* escape"),
             Some((Emphasis(vec![
-                Text("surrounding ".into()),
+                Text("surrounding "),
                 Literal('*'),
-                Text(" whitespace".into())]), 26))
+                Text(" whitespace")]), 26))
         );
 
         assert_eq!(
             parse_emphasis("_surrounding _ whitespace_ escape"),
             Some((Emphasis(vec![
-                Text("surrounding ".into()),
+                Text("surrounding "),
                 Literal('_'),
-                Text(" whitespace".into())]), 26))
+                Text(" whitespace")]), 26))
         );
 
         assert_eq!(
             parse_emphasis("*not *whitespace escaped*"),
-            Some((Emphasis(vec![Text("not".into())]), 6))
+            Some((Emphasis(vec![Text("not")]), 6))
         )
     }
 

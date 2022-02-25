@@ -57,30 +57,26 @@ pub fn parse_link(text: &str) -> Option<(Span, usize)> {
         }
 
         let caps = LINK_ATTR.captures(chars.as_str()).unwrap();
+        let raw_content = &text[..content_end_index + 2 + caps[0].len()];
 
         // Check whether we have an inline link (in which case the "url" field is captured),
         // whether there's an explicit reference provided or if we should implicitly use the link
         // content as reference.
         if let Some(url) = caps.name("url") {
-            let url = url.as_str().trim().to_owned();
-            let title = caps.name("title").map(|t| t.as_str().to_owned());
-            let len = 1 + content.len() + 1 + caps[0].len();
+            let url = url.as_str().trim();
+            let title = caps.name("title").map(|t| t.as_str());
 
-            return Some((Link(parse_spans(&content), url, title), len));
+            return Some((Link(parse_spans(&content), url, title), raw_content.len()));
         } else if let Some(reference) = caps.name("ref") {
             let reference = reference.as_str().trim().to_lowercase();
-            let len = 1 + content.len() + 1 + caps[0].len();
-            let raw = ["[", &content, "]", &caps[0]].join("");
 
-            return Some((RefLink(parse_spans(&content), reference, raw), len));
+            return Some((RefLink(parse_spans(&content), reference, raw_content), raw_content.len()));
         } else {
             // Leave the reference empty, the HTML generating code will try to match both reference
             // and slugified content.
             let reference = "".to_owned();
-            let len = 1 + content.len() + 1;
-            let raw = ["[", &content, "]"].join("");
 
-            return Some((RefLink(parse_spans(&content), reference, raw), len));
+            return Some((RefLink(parse_spans(&content), reference, raw_content), raw_content.len()));
         }
     }
     None
@@ -97,8 +93,8 @@ mod test {
             parse_link("[an example](example.com) test"),
             Some((
                 Link(
-                    vec![Text("an example".into())],
-                    "example.com".to_owned(),
+                    vec![Text("an example")],
+                    "example.com",
                     None
                 ),
                 25
@@ -109,9 +105,9 @@ mod test {
             parse_link("[an example][example]"),
             Some((
                 RefLink(
-                    vec![Text("an example".into())],
+                    vec![Text("an example")],
                     "example".to_owned(),
-                    "[an example][example]".to_owned()
+                    "[an example][example]"
                 ),
                 21
             ))
@@ -119,29 +115,29 @@ mod test {
 
         assert_eq!(
             parse_link("[](example.com) test"),
-            Some((Link(vec![], "example.com".to_owned(), None), 15))
+            Some((Link(vec![], "example.com", None), 15))
         );
 
         assert_eq!(
             parse_link("[an example]() test"),
             Some((
-                Link(vec![Text("an example".into())], "".to_owned(), None),
+                Link(vec![Text("an example")], "", None),
                 14
             ))
         );
 
         assert_eq!(
             parse_link("[]() test"),
-            Some((Link(vec![], "".to_owned(), None), 4))
+            Some((Link(vec![], "", None), 4))
         );
 
         assert_eq!(
             parse_link("[()] test"),
             Some((
                 RefLink(
-                    vec![Text("()".into())],
+                    vec![Text("()")],
                     "".to_owned(),
-                    "[()]".to_owned()
+                    "[()]"
                 ),
                 4
             ))
@@ -151,9 +147,9 @@ mod test {
             parse_link("[an example](example.com \"Title\") test"),
             Some((
                 Link(
-                    vec![Text("an example".into())],
-                    "example.com".to_owned(),
-                    Some("Title".to_owned())
+                    vec![Text("an example")],
+                    "example.com",
+                    Some("Title")
                 ),
                 33
             ))
@@ -163,8 +159,8 @@ mod test {
             parse_link("[an example](example.com) test [a link](example.com)"),
             Some((
                 Link(
-                    vec![Text("an example".into())],
-                    "example.com".to_owned(),
+                    vec![Text("an example")],
+                    "example.com",
                     None
                 ),
                 25
@@ -178,8 +174,8 @@ mod test {
             parse_link("[![test](abc)](example.com) test [a link](example.com)"),
             Some((
                 Link(
-                    vec![Image("test".to_owned(), "abc".to_owned(), None)],
-                    "example.com".to_owned(),
+                    vec![Image("test", "abc", None)],
+                    "example.com",
                     None
                 ),
                 27
@@ -191,11 +187,11 @@ mod test {
             Some((
                 Link(
                     vec![
-                        Text("huh".into()),
-                        RefLink(vec![], "".to_owned(), "[]".to_owned()),
-                        Text("wow".into())
+                        Text("huh"),
+                        RefLink(vec![], "".to_owned(), "[]"),
+                        Text("wow")
                     ],
-                    "example.com".to_owned(),
+                    "example.com",
                     None
                 ),
                 23
@@ -206,8 +202,8 @@ mod test {
             parse_link("[huh\\[wow](example.com)"),
             Some((
                 Link(
-                    vec![Text("huh".into()), Literal('['), Text("wow".into())],
-                    "example.com".to_owned(),
+                    vec![Text("huh"), Literal('['), Text("wow")],
+                    "example.com",
                     None
                 ),
                 23
@@ -220,9 +216,9 @@ mod test {
             parse_link("[an example](example.com \"Title (huh!)\") test"),
             Some((
                 Link(
-                    vec![Text("an example".into())],
-                    "example.com".to_owned(),
-                    Some("Title (huh!)".to_owned())
+                    vec![Text("an example")],
+                    "example.com",
+                    Some("Title (huh!)")
                 ),
                 40
             ))
@@ -235,9 +231,9 @@ mod test {
             parse_link("[an example]      [example]"),
             Some((
                 RefLink(
-                    vec![Text("an example".into())],
+                    vec![Text("an example")],
                     "example".to_owned(),
-                    "[an example]      [example]".to_owned()
+                    "[an example]      [example]"
                 ),
                 27
             ))
@@ -247,9 +243,9 @@ mod test {
             parse_link("[an example](example.com           \"Title\") test"),
             Some((
                 Link(
-                    vec![Text("an example".into())],
-                    "example.com".to_owned(),
-                    Some("Title".to_owned())
+                    vec![Text("an example")],
+                    "example.com",
+                    Some("Title")
                 ),
                 43
             ))

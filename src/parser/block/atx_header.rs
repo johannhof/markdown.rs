@@ -32,23 +32,23 @@ mod test {
     fn finds_atx_header() {
         assert_eq!(
             parse_atx_header(&vec!["### Test", "testtest"]).unwrap(),
-            (Header(vec![Text("Test".into())], 3), 1)
+            (Header(vec![Text("Test")], 3), 1)
         );
 
         assert_eq!(
             parse_atx_header(&vec!["# Test", "testtest"]).unwrap(),
-            (Header(vec![Text("Test".into())], 1), 1)
+            (Header(vec![Text("Test")], 1), 1)
         );
 
         assert_eq!(
             parse_atx_header(&vec!["###### Test", "testtest"]).unwrap(),
-            (Header(vec![Text("Test".into())], 6), 1)
+            (Header(vec![Text("Test")], 6), 1)
         );
 
         assert_eq!(
             parse_atx_header(&vec!["### Test and a pretty long sentence", "testtest"]).unwrap(),
             (
-                Header(vec![Text("Test and a pretty long sentence".into())], 3),
+                Header(vec![Text("Test and a pretty long sentence")], 3),
                 1
             )
         );
@@ -58,17 +58,17 @@ mod test {
     fn ignores_closing_hashes() {
         assert_eq!(
             parse_atx_header(&vec!["### Test ###", "testtest"]).unwrap(),
-            (Header(vec![Text("Test".into())], 3), 1)
+            (Header(vec![Text("Test")], 3), 1)
         );
 
         assert_eq!(
             parse_atx_header(&vec!["# Test #", "testtest"]).unwrap(),
-            (Header(vec![Text("Test".into())], 1), 1)
+            (Header(vec![Text("Test")], 1), 1)
         );
 
         assert_eq!(
             parse_atx_header(&vec!["###### Test ##", "testtest"]).unwrap(),
-            (Header(vec![Text("Test".into())], 6), 1)
+            (Header(vec![Text("Test")], 6), 1)
         );
 
         assert_eq!(
@@ -78,7 +78,7 @@ mod test {
             ])
             .unwrap(),
             (
-                Header(vec![Text("Test and a pretty long sentence".into())], 3),
+                Header(vec![Text("Test and a pretty long sentence")], 3),
                 1
             )
         );

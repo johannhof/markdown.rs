@@ -11,11 +11,11 @@ pub fn parse_code(text: &str) -> Option<(Span, usize)> {
     if CODE_DOUBLE.is_match(text) {
         let caps = CODE_DOUBLE.captures(text).unwrap();
         let t = caps.name("text").unwrap().as_str();
-        return Some((Code(t.to_owned()), t.len() + 4));
+        return Some((Code(t), t.len() + 4));
     } else if CODE_SINGLE.is_match(text) {
         let caps = CODE_SINGLE.captures(text).unwrap();
         let t = caps.name("text").unwrap().as_str();
-        return Some((Code(t.to_owned()), t.len() + 2));
+        return Some((Code(t), t.len() + 2));
     }
     None
 }
@@ -24,37 +24,37 @@ pub fn parse_code(text: &str) -> Option<(Span, usize)> {
 fn finds_code() {
     assert_eq!(
         parse_code("`testing things` test"),
-        Some((Code("testing things".to_owned()), 16))
+        Some((Code("testing things"), 16))
     );
 
     assert_eq!(
         parse_code("``testing things`` test"),
-        Some((Code("testing things".to_owned()), 18))
+        Some((Code("testing things"), 18))
     );
 
     assert_eq!(
         parse_code("``testing things`` things`` test"),
-        Some((Code("testing things".to_owned()), 18))
+        Some((Code("testing things"), 18))
     );
 
     assert_eq!(
         parse_code("`w` testing things test"),
-        Some((Code("w".to_owned()), 3))
+        Some((Code("w"), 3))
     );
 
     assert_eq!(
         parse_code("`w`` testing things test"),
-        Some((Code("w".to_owned()), 3))
+        Some((Code("w"), 3))
     );
 
     assert_eq!(
         parse_code("``w`` testing things test"),
-        Some((Code("w".to_owned()), 5))
+        Some((Code("w"), 5))
     );
 
     assert_eq!(
         parse_code("``w``` testing things test"),
-        Some((Code("w".to_owned()), 5))
+        Some((Code("w"), 5))
     );
 }
 

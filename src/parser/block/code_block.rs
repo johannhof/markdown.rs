@@ -83,7 +83,7 @@ mod test {
 
         assert_eq!(
             parse_code_block(&vec!["```testlang", "Test", "this", "```"]).unwrap(),
-            ((CodeBlock(Some("testlang".into()), vec!["Test", "this"]), 4))
+            ((CodeBlock(Some("testlang"), vec!["Test", "this"]), 4))
         );
     }
 

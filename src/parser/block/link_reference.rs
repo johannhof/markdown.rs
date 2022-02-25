@@ -14,11 +14,11 @@ pub fn parse_link_reference<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)>
         return Some((
             LinkReference(
                 caps.name("id").unwrap().as_str().to_lowercase(),
-                caps.name("url").unwrap().as_str().to_owned(),
+                caps.name("url").unwrap().as_str(),
                 caps.name("title1")
                     .or_else(|| caps.name("title2"))
                     .or_else(|| caps.name("title3"))
-                    .map(|s| s.as_str().to_owned()),
+                    .map(|s| s.as_str()),
             ),
             1,
         ));
@@ -31,12 +31,12 @@ pub fn parse_link_reference<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)>
         return Some((
             LinkReference(
                 caps1.name("id").unwrap().as_str().to_lowercase(),
-                caps2.name("url").unwrap().as_str().to_owned(),
+                caps2.name("url").unwrap().as_str(),
                 caps2
                     .name("title1")
                     .or_else(|| caps2.name("title2"))
                     .or_else(|| caps2.name("title3"))
-                    .map(|s| s.as_str().to_owned()),
+                    .map(|s| s.as_str()),
             ),
             2,
         ));
@@ -55,7 +55,7 @@ mod test {
         assert_eq!(
             parse_link_reference(&vec!["[Test]: https://example.com"]).unwrap(),
             (
-                LinkReference("test".to_owned(), "https://example.com".to_owned(), None),
+                LinkReference("test".to_owned(), "https://example.com", None),
                 1
             )
         );
@@ -65,8 +65,8 @@ mod test {
             (
                 LinkReference(
                     "test".to_owned(),
-                    "https://example.com".to_owned(),
-                    Some("example".to_owned())
+                    "https://example.com",
+                    Some("example")
                 ),
                 1
             )
@@ -77,8 +77,8 @@ mod test {
             (
                 LinkReference(
                     "test".to_owned(),
-                    "https://example.com".to_owned(),
-                    Some("example".to_owned())
+                    "https://example.com",
+                    Some("example")
                 ),
                 1
             )
@@ -89,8 +89,8 @@ mod test {
             (
                 LinkReference(
                     "test".to_owned(),
-                    "https://example.com".to_owned(),
-                    Some("example".to_owned())
+                    "https://example.com",
+                    Some("example")
                 ),
                 1
             )
@@ -102,8 +102,8 @@ mod test {
             (
                 LinkReference(
                     "test".to_owned(),
-                    "https://example.com".to_owned(),
-                    Some("example".to_owned())
+                    "https://example.com",
+                    Some("example")
                 ),
                 1
             )
@@ -114,8 +114,8 @@ mod test {
             (
                 LinkReference(
                     "test".to_owned(),
-                    "https://example.com".to_owned(),
-                    Some("example".to_owned())
+                    "https://example.com",
+                    Some("example")
                 ),
                 2
             )

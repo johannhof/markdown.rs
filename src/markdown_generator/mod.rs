@@ -38,7 +38,7 @@ fn gen_block(b: Block) -> String {
         UnorderedList(x) => generate_from_li(x),
         LinkReference(id, url, None) => format!("[{}]: {}", id, url),
         LinkReference(id, url, Some(title)) => format!("[{}]: {} \"{}\"", id, url, title),
-        Raw(x) => x,
+        Raw(x) => x.to_string(),
         Hr => "===".to_owned(),
     }
 }
@@ -47,12 +47,12 @@ fn gen_span(s: Span) -> String {
     use Span::*;
     match s {
         Break => "  \n".to_string(),
-        Text(x) => x.into(),
+        Text(x) => x.to_string(),
         Literal(x) => format!("\\{}", x),
         Code(x) => format!("`{}`", x),
         Link(a, b, None) => format!("[{}]({})", generate_from_spans(a), b),
         Link(a, b, Some(c)) => format!("[{}]({} \"{}\")", generate_from_spans(a), b, c),
-        RefLink(_, _, raw) => raw,
+        RefLink(_, _, raw) => raw.to_owned(),
         Image(a, b, None) => format!("![{}]({})", a, b),
         Image(a, b, Some(c)) => format!("![{}]({} \"{}\")", a, b, c),
         Emphasis(x) => format!("*{}*", generate_from_spans(x)),

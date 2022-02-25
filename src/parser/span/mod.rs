@@ -125,7 +125,7 @@ mod test {
     fn converts_into_text() {
         assert_eq!(
             parse_spans("this is a test"),
-            vec![Text("this is a test".into())]
+            vec![Text("this is a test")]
         );
     }
 
@@ -138,7 +138,7 @@ mod test {
     fn finds_breaks() {
         assert_eq!(
             parse_spans("this is a test  "),
-            vec![Text("this is a test".into()), Break]
+            vec![Text("this is a test"), Break]
         );
     }
 
@@ -147,17 +147,17 @@ mod test {
         assert_eq!(
             parse_spans("this `is a` test"),
             vec![
-                Text("this ".into()),
-                Code("is a".to_owned()),
-                Text(" test".into())
+                Text("this "),
+                Code("is a"),
+                Text(" test")
             ]
         );
         assert_eq!(
             parse_spans("this ``is a`` test"),
             vec![
-                Text("this ".into()),
-                Code("is a".to_owned()),
-                Text(" test".into())
+                Text("this "),
+                Code("is a"),
+                Text(" test")
             ]
         );
     }
@@ -167,17 +167,17 @@ mod test {
         assert_eq!(
             parse_spans("this _is a_ test"),
             vec![
-                Text("this ".into()),
-                Emphasis(vec![Text("is a".into())]),
-                Text(" test".into())
+                Text("this "),
+                Emphasis(vec![Text("is a")]),
+                Text(" test")
             ]
         );
         assert_eq!(
             parse_spans("this *is a* test"),
             vec![
-                Text("this ".into()),
-                Emphasis(vec![Text("is a".into())]),
-                Text(" test".into())
+                Text("this "),
+                Emphasis(vec![Text("is a")]),
+                Text(" test")
             ]
         );
     }
@@ -187,17 +187,17 @@ mod test {
         assert_eq!(
             parse_spans("this __is a__ test"),
             vec![
-                Text("this ".into()),
-                Strong(vec![Text("is a".into())]),
-                Text(" test".into())
+                Text("this "),
+                Strong(vec![Text("is a")]),
+                Text(" test")
             ]
         );
         assert_eq!(
             parse_spans("this **is a** test"),
             vec![
-                Text("this ".into()),
-                Strong(vec![Text("is a".into())]),
-                Text(" test".into())
+                Text("this "),
+                Strong(vec![Text("is a")]),
+                Text(" test")
             ]
         );
     }
@@ -207,13 +207,13 @@ mod test {
         assert_eq!(
             parse_spans("this is [an example](example.com) test"),
             vec![
-                Text("this is ".into()),
+                Text("this is "),
                 Link(
-                    vec![Text("an example".into())],
-                    "example.com".to_owned(),
+                    vec![Text("an example")],
+                    "example.com",
                     None
                 ),
-                Text(" test".into())
+                Text(" test")
             ]
         );
     }
@@ -223,9 +223,9 @@ mod test {
         assert_eq!(
             parse_spans("this is ![an example](example.com) test"),
             vec![
-                Text("this is ".into()),
-                Image("an example".to_owned(), "example.com".to_owned(), None),
-                Text(" test".into())
+                Text("this is "),
+                Image("an example", "example.com", None),
+                Text(" test")
             ]
         );
     }
@@ -235,16 +235,16 @@ mod test {
         assert_eq!(
             parse_spans("some text ![an image](image.com) _emphasis_ __strong__ `teh codez` [a link](example.com)  "),
             vec![
-            Text("some text ".into()),
-            Image("an image".to_owned(), "image.com".to_owned(), None),
-            Text(" ".into()),
-            Emphasis(vec![Text("emphasis".into())]),
-            Text(" ".into()),
-            Strong(vec![Text("strong".into())]),
-            Text(" ".into()),
-            Code("teh codez".to_owned()),
-            Text(" ".into()),
-            Link(vec![Text("a link".into())], "example.com".to_owned(), None),
+            Text("some text "),
+            Image("an image", "image.com", None),
+            Text(" "),
+            Emphasis(vec![Text("emphasis")]),
+            Text(" "),
+            Strong(vec![Text("strong")]),
+            Text(" "),
+            Code("teh codez"),
+            Text(" "),
+            Link(vec![Text("a link")], "example.com", None),
             Break
             ]
             );
