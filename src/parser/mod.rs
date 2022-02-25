@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 mod block;
 mod span;
 
@@ -41,7 +39,7 @@ pub enum Block<'a> {
     Header(Vec<Span<'a>>, usize),
     Paragraph(Vec<Span<'a>>),
     Blockquote(Vec<Block<'a>>),
-    CodeBlock(Option<Cow<'a, str>>, Vec<&'a str>),
+    CodeBlock(Option<&'a str>, Vec<&'a str>),
     /** A link reference with the fields: (id, url, [title]) **/
     LinkReference(String, String, Option<String>),
     OrderedList(Vec<ListItem<'a>>, OrderedListType),
@@ -61,7 +59,7 @@ pub enum ListItem<'a> {
 #[derive(Debug, PartialEq, Clone)]
 pub enum Span<'a> {
     Break,
-    Text(Cow<'a, str>),
+    Text(&'a str),
     Code(String),
     Literal(char),
     Link(Vec<Span<'a>>, String, Option<String>),

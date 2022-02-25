@@ -1,6 +1,5 @@
 use parser::Block;
 use parser::Block::CodeBlock;
-use std::borrow::Cow;
 
 pub fn parse_code_block<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
 
@@ -57,7 +56,7 @@ pub fn parse_code_block<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
 
     if line_number > 0 && ((backtick_opened && backtick_closed) || !backtick_opened) {
         return Some((
-            CodeBlock(lang.map(Cow::Borrowed), content),
+            CodeBlock(lang, content),
             line_number,
         ));
     }
@@ -69,18 +68,17 @@ pub fn parse_code_block<'a>(lines: &[&'a str]) -> Option<(Block<'a>, usize)> {
 mod test {
     use super::parse_code_block;
     use parser::Block::CodeBlock;
-    use std::borrow::Cow;
 
     #[test]
     fn finds_code_block() {
         assert_eq!(
             parse_code_block(&vec!["    Test"]).unwrap(),
-            ((CodeBlock(Option::<Cow<'static, str>>::None, vec!["Test"]), 1))
+            ((CodeBlock(None, vec!["Test"]), 1))
         );
 
         assert_eq!(
             parse_code_block(&vec!["    Test", "    this"]).unwrap(),
-            ((CodeBlock(Option::<Cow<'static, str>>::None, vec!["Test", "this"]), 2))
+            ((CodeBlock(None, vec!["Test", "this"]), 2))
         );
 
         assert_eq!(
@@ -93,7 +91,7 @@ mod test {
     fn knows_when_to_stop() {
         assert_eq!(
             parse_code_block(&vec!["    Test", "    this", "stuff", "    now"]).unwrap(),
-            ((CodeBlock(Option::<Cow<'static, str>>::None, vec!["Test", "this"]), 2))
+            ((CodeBlock(None, vec!["Test", "this"]), 2))
         );
     }
 

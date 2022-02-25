@@ -134,7 +134,6 @@ mod test {
     use super::parse_blocks;
     use parser::Block::{Blockquote, CodeBlock, Header, Hr, Paragraph};
     use parser::Span::Text;
-    use std::borrow::Cow;
 
     #[test]
     fn finds_atx_header() {
@@ -166,7 +165,7 @@ mod test {
     fn finds_code_block() {
         assert_eq!(
             parse_blocks("    this is code\n    and this as well"),
-            vec![CodeBlock(Option::<Cow<'static, str>>::None, vec!["this is code", "and this as well"])]
+            vec![CodeBlock(None, vec!["this is code", "and this as well"])]
         );
 
         assert_eq!(

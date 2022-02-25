@@ -1,6 +1,5 @@
 use parser::Span;
 use parser::Span::{Literal, Text};
-use std::borrow::Cow;
 
 mod code;
 mod emphasis;
@@ -45,9 +44,9 @@ pub fn parse_spans_with_buffer<'a>(text: &'a str, tokens: &mut Vec<Span<'a>>) {
                     // if this text is on the very left
                     // trim the left whitespace
                     if tokens.is_empty() {
-                        tokens.push(Text(Cow::Borrowed(t.trim_start())));
+                        tokens.push(Text(t.trim_start()));
                     } else {
-                        tokens.push(Text(Cow::Borrowed(t)));
+                        tokens.push(Text(t));
                     }
                 }
 
@@ -73,7 +72,7 @@ pub fn parse_spans_with_buffer<'a>(text: &'a str, tokens: &mut Vec<Span<'a>>) {
         // we're at the very end of this line,
         // trim trailing whitespace
         t = t.trim_end();
-        tokens.push(Text(Cow::Borrowed(t)));
+        tokens.push(Text(t));
     }
 }
 

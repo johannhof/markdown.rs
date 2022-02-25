@@ -6,7 +6,6 @@ use parser::Span::{Break, Code, Emphasis, Image, Link, Literal, RefLink, Strong,
 use parser::{ListItem, OrderedListType, Span};
 use regex::Regex;
 use std::collections::HashMap;
-use std::borrow::Cow;
 
 type LinkReferenceMap<'a> = HashMap<&'a str, (&'a str, &'a Option<String>)>;
 
@@ -212,7 +211,7 @@ fn format_ordered_list(
     }
 }
 
-fn format_codeblock(lang: &Option<Cow<str>>, elements: &[&str]) -> String {
+fn format_codeblock(lang: &Option<&str>, elements: &[&str]) -> String {
     let code = elements.iter()
         .map(|s| s.to_owned())
         .collect::<Vec<_>>()
