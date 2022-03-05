@@ -1,18 +1,45 @@
 mod block;
 mod span;
 
-#[allow(missing_docs)]
+/// The style for ordered list numerals
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum OrderedListType {
+    /// ```text
+    /// 1. First item
+    /// 2. Second item
+    /// 3. Third item
+    /// ```
     Numeric,
+    /// ```text
+    /// a. First item
+    /// b. Second item
+    /// c. Third item
+    /// ```
     Lowercase,
+    /// ```text
+    /// A. First item
+    /// B. Second item
+    /// C. Third item
+    /// ```
     Uppercase,
+    /// ```text
+    /// i. First item
+    /// ii. Second item
+    /// iii. Third item
+    /// iv. Fourth item
+    /// ```
     LowercaseRoman,
+    /// ```text
+    /// I. First item
+    /// II. Second item
+    /// III. Third item
+    /// IV. Fourth item
+    /// ```
     UppercaseRoman,
 }
 
 impl OrderedListType {
-    pub fn from_str(type_str: &str) -> OrderedListType {
+    fn from_str(type_str: &str) -> OrderedListType {
         match type_str {
             "a" => OrderedListType::Lowercase,
             "A" => OrderedListType::Uppercase,
@@ -22,7 +49,9 @@ impl OrderedListType {
         }
     }
 
-    pub fn to_str(&self) -> &'static str {
+    /// Converts the ordered list type into the corresponding <ol> "type"
+    /// attribute value.
+    pub fn to_html_type(&self) -> &'static str {
         match self {
             OrderedListType::Lowercase => "a",
             OrderedListType::Uppercase => "A",

@@ -201,7 +201,7 @@ fn format_ordered_list(
     if num_type != &OrderedListType::Numeric {
         format_list(
             elements,
-            &format!("ol type=\"{}\"", num_type.to_str()),
+            &format!("ol type=\"{}\"", num_type.to_html_type()),
             "ol",
             link_references,
         )
