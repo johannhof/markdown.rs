@@ -16,7 +16,7 @@ mod html;
 mod markdown_generator;
 mod parser;
 
-pub use parser::{Block, ListItem, Span};
+pub use parser::{Block, ListItem, Span, OrderedListType};
 
 /// Converts a Markdown string to HTML
 pub fn to_html(text: &str) -> String {
