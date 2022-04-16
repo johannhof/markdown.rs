@@ -37,6 +37,11 @@ pub fn generate_markdown(x: Vec<Block>) -> String {
     markdown_generator::generate(x)
 }
 
+/// Convert tokenset of Markdown items to html
+pub fn generate_html(x: Vec<Block>) -> String {
+    html::to_html(&result)
+}
+
 /// Opens a file and converts its contents to HTML
 pub fn file_to_html(path: &Path) -> io::Result<String> {
     let mut file = File::open(path)?;
