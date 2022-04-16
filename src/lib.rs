@@ -38,8 +38,8 @@ pub fn generate_markdown(x: Vec<Block>) -> String {
 }
 
 /// Convert tokenset of Markdown items to html
-pub fn generate_html(x: Vec<Block>) -> String {
-    html::to_html(&result)
+pub fn generate_html(x: &Vec<Block>) -> String {
+    html::to_html(x)
 }
 
 /// Opens a file and converts its contents to HTML
